@@ -1,0 +1,211 @@
+{
+  "test_time": "2026-02-06 12:55:35",
+  "base_url": "http://localhost:8000",
+  "system_before": {
+    "cpu_percent": 7.9,
+    "ram_used_gb": 15.2,
+    "ram_avail_gb": 110.5,
+    "load_1m": 0.99
+  },
+  "tests": {
+    "1_baseline": {
+      "snippet_batch_10": {
+        "count": 3,
+        "min": "455ms",
+        "p50": "458ms",
+        "p90": "475ms",
+        "p99": "n/a",
+        "max": "475ms",
+        "mean": "463ms"
+      },
+      "quick_score": {
+        "count": 3,
+        "min": "202ms",
+        "p50": "208ms",
+        "p90": "213ms",
+        "p99": "n/a",
+        "max": "213ms",
+        "mean": "208ms"
+      }
+    },
+    "2_concurrent_snippets": {
+      "c1": {
+        "count": 2,
+        "min": "511ms",
+        "p50": "511ms",
+        "p90": "512ms",
+        "p99": "n/a",
+        "max": "512ms",
+        "mean": "511ms",
+        "system": {
+          "cpu_percent": 6.9,
+          "ram_used_gb": 15.3,
+          "ram_avail_gb": 110.4,
+          "load_1m": 0.99
+        }
+      },
+      "c2": {
+        "count": 4,
+        "min": "514ms",
+        "p50": "698ms",
+        "p90": "884ms",
+        "p99": "n/a",
+        "max": "884ms",
+        "mean": "699ms",
+        "system": {
+          "cpu_percent": 2.7,
+          "ram_used_gb": 15.3,
+          "ram_avail_gb": 110.4,
+          "load_1m": 0.99
+        }
+      },
+      "c3": {
+        "count": 6,
+        "min": "507ms",
+        "p50": "904ms",
+        "p90": "1300ms",
+        "p99": "n/a",
+        "max": "1300ms",
+        "mean": "902ms",
+        "system": {
+          "cpu_percent": 8.0,
+          "ram_used_gb": 15.3,
+          "ram_avail_gb": 110.4,
+          "load_1m": 1.31
+        }
+      },
+      "c4": {
+        "count": 8,
+        "min": "531ms",
+        "p50": "1124ms",
+        "p90": "1738ms",
+        "p99": "n/a",
+        "max": "1738ms",
+        "mean": "1131ms",
+        "system": {
+          "cpu_percent": 4.7,
+          "ram_used_gb": 15.3,
+          "ram_avail_gb": 110.4,
+          "load_1m": 1.61
+        }
+      }
+    },
+    "3_concurrent_quick": {
+      "c1": {
+        "count": 2,
+        "min": "223ms",
+        "p50": "228ms",
+        "p90": "233ms",
+        "p99": "n/a",
+        "max": "233ms",
+        "mean": "228ms",
+        "system": {
+          "cpu_percent": 2.2,
+          "ram_used_gb": 15.3,
+          "ram_avail_gb": 110.4,
+          "load_1m": 1.72
+        }
+      },
+      "c2": {
+        "count": 4,
+        "min": "256ms",
+        "p50": "272ms",
+        "p90": "314ms",
+        "p99": "n/a",
+        "max": "314ms",
+        "mean": "278ms",
+        "system": {
+          "cpu_percent": 8.0,
+          "ram_used_gb": 15.3,
+          "ram_avail_gb": 110.4,
+          "load_1m": 1.72
+        }
+      },
+      "c3": {
+        "count": 6,
+        "min": "254ms",
+        "p50": "316ms",
+        "p90": "493ms",
+        "p99": "n/a",
+        "max": "493ms",
+        "mean": "352ms",
+        "system": {
+          "cpu_percent": 4.5,
+          "ram_used_gb": 15.3,
+          "ram_avail_gb": 110.4,
+          "load_1m": 1.66
+        }
+      },
+      "c4": {
+        "count": 8,
+        "min": "242ms",
+        "p50": "397ms",
+        "p90": "550ms",
+        "p99": "n/a",
+        "max": "550ms",
+        "mean": "395ms",
+        "system": {
+          "cpu_percent": 2.3,
+          "ram_used_gb": 15.2,
+          "ram_avail_gb": 110.5,
+          "load_1m": 1.66
+        }
+      }
+    },
+    "4_mixed_workload": {
+      "snippet_batches": {
+        "count": 6,
+        "min": "481ms",
+        "p50": "696ms",
+        "p90": "1021ms",
+        "p99": "n/a",
+        "max": "1021ms",
+        "mean": "732ms"
+      },
+      "quick_scores": {
+        "count": 6,
+        "min": "654ms",
+        "p50": "1089ms",
+        "p90": "1163ms",
+        "p99": "n/a",
+        "max": "1163ms",
+        "mean": "968ms"
+      },
+      "system": {
+        "cpu_percent": 5.7,
+        "ram_used_gb": 15.3,
+        "ram_avail_gb": 110.4,
+        "load_1m": 2.41
+      }
+    },
+    "5_backpressure": {
+      "total_requests": 4,
+      "http_200": 4,
+      "http_429": 0,
+      "other_statuses": [],
+      "backpressure_working": false,
+      "system": {
+        "cpu_percent": 7.5,
+        "ram_used_gb": 15.4,
+        "ram_avail_gb": 110.4,
+        "load_1m": 2.41
+      }
+    }
+  },
+  "server_health": {
+    "status": "healthy",
+    "database": {
+      "status": "healthy",
+      "total_reports": 115,
+      "completed_reports": 115,
+      "database_path": "/root/sloptotal/data/sloptotal.db"
+    },
+    "engines": 21
+  },
+  "system_after": {
+    "cpu_percent": 5.4,
+    "ram_used_gb": 15.3,
+    "ram_avail_gb": 110.4,
+    "load_1m": 2.41
+  }
+}

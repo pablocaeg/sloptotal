@@ -1,0 +1,43 @@
+<section class="score-section" aria-labelledby="score-heading">
+    <div class="section-header">
+        <h2 id="score-heading">Reading Your Score</h2>
+    </div>
+    <p class="score-desc">The overall score represents the probability that the text was AI-generated, calibrated across all engines.</p>
+    <div class="score-guide">
+        <div class="sg-item sg-clean">
+            <div class="sg-range">0&ndash;25</div>
+            <div class="sg-info">
+                <strong>Likely Human</strong>
+                <span>Low AI signals across engines. The text shows patterns consistent with human authorship.</span>
+            </div>
+        </div>
+        <div class="sg-item sg-low">
+            <div class="sg-range">25&ndash;50</div>
+            <div class="sg-info">
+                <strong>Probably Human</strong>
+                <span>Minor signals detected. Could be formal writing, AI-assisted editing, or a false positive on polished text.</span>
+            </div>
+        </div>
+        <div class="sg-item sg-warn">
+            <div class="sg-range">50&ndash;65</div>
+            <div class="sg-info">
+                <strong>Mixed / Uncertain</strong>
+                <span>Engines disagree. May be AI-assisted, heavily edited AI output, or formal human writing that triggers classifiers.</span>
+            </div>
+        </div>
+        <div class="sg-item sg-danger">
+            <div class="sg-range">65&ndash;80</div>
+            <div class="sg-info">
+                <strong>Likely AI</strong>
+                <span>Strong signals from multiple engines. High probability of substantial AI generation with limited human editing.</span>
+            </div>
+        </div>
+        <div class="sg-item sg-slop">
+            <div class="sg-range">80&ndash;100</div>
+            <div class="sg-info">
+                <strong>Almost Certainly AI</strong>
+                <span>Broad consensus across engines. The text has clear statistical and linguistic markers of unedited AI output.</span>
+            </div>
+        </div>
+    </div>
+</section>

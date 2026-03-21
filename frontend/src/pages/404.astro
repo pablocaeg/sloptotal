@@ -1,0 +1,37 @@
+---
+import '../styles/global.css';
+import '../styles/header.css';
+import '../styles/footer.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 — SlopTotal</title>
+    <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Instrument+Serif:ital@0;1&family=Lexend:wght@300;400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Instrument+Serif:ital@0;1&family=Lexend:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Instrument+Serif:ital@0;1&family=Lexend:wght@300;400;500;600;700&display=swap" /></noscript>
+</head>
+<body>
+    <Header />
+    <main>
+        <section style="text-align:center; padding:80px 20px;">
+            <p style="font-family:var(--f-mono); font-size:64px; color:var(--dim); font-weight:300; margin-bottom:8px;">404</p>
+            <h1 style="font-family:var(--f-display); font-size:28px; font-weight:400; color:var(--ink); margin-bottom:12px;">Page not found</h1>
+            <p style="color:var(--dim); font-size:15px; margin-bottom:32px;">
+                The page you're looking for doesn't exist or has been moved.
+            </p>
+            <a href="/" class="btn btn-ghost">Back to SlopTotal</a>
+        </section>
+    </main>
+    <Footer />
+</body>
+</html>

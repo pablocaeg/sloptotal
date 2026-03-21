@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import ReportView from '../components/ReportView';
+import '../styles/report.css';
+---
+
+<Base
+  title="Analysis Report — SlopTotal"
+  description="AI detection report analysed with 23 independent engines."
+  noindex={true}
+>
+    <ReportView client:load />
+</Base>

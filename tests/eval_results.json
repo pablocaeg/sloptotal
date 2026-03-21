@@ -1,0 +1,91 @@
+{
+  "timestamp": "2026-02-07 20:59:10",
+  "sample_size": 200,
+  "quick_score_metrics": {
+    "endpoint": "/api/quick-score",
+    "n_samples": 440,
+    "best_threshold": 0.3,
+    "best_f1": 0.9979,
+    "engine_metrics": {
+      "classifier_bert_raid": {
+        "accuracy": 0.9955,
+        "precision": 1.0,
+        "recall": 0.9917,
+        "f1": 0.9958,
+        "avg_human_score": 0.0739,
+        "avg_ai_score": 0.9576,
+        "tp": 238,
+        "fp": 0,
+        "fn": 2,
+        "tn": 200
+      },
+      "classifier_e5": {
+        "accuracy": 0.8386,
+        "precision": 0.7752,
+        "recall": 0.9917,
+        "f1": 0.8702,
+        "avg_human_score": 0.4268,
+        "avg_ai_score": 0.9373,
+        "tp": 238,
+        "fp": 69,
+        "fn": 2,
+        "tn": 131
+      },
+      "classifier_fakespot": {
+        "accuracy": 0.9977,
+        "precision": 0.9959,
+        "recall": 1.0,
+        "f1": 0.9979,
+        "avg_human_score": 0.0084,
+        "avg_ai_score": 0.9977,
+        "tp": 240,
+        "fp": 1,
+        "fn": 0,
+        "tn": 199
+      },
+      "classifier_tmr": {
+        "accuracy": 0.9977,
+        "precision": 0.9959,
+        "recall": 1.0,
+        "f1": 0.9979,
+        "avg_human_score": 0.0189,
+        "avg_ai_score": 0.9863,
+        "tp": 240,
+        "fp": 1,
+        "fn": 0,
+        "tn": 199
+      },
+      "formulaic": {
+        "accuracy": 0.4591,
+        "precision": 1.0,
+        "recall": 0.0083,
+        "f1": 0.0165,
+        "avg_human_score": 0.0085,
+        "avg_ai_score": 0.03,
+        "tp": 2,
+        "fp": 0,
+        "fn": 238,
+        "tn": 200
+      },
+      "linguistic": {
+        "accuracy": 0.5318,
+        "precision": 0.6574,
+        "recall": 0.2958,
+        "f1": 0.408,
+        "avg_human_score": 0.2283,
+        "avg_ai_score": 0.3074,
+        "tp": 71,
+        "fp": 37,
+        "fn": 169,
+        "tn": 163
+      }
+    }
+  },
+  "snippet_metrics": {
+    "endpoint": "/api/scan/snippets",
+    "n_samples": 440,
+    "best_threshold": 0.3,
+    "best_f1": 1.0,
+    "engine_metrics": {}
+  }
+}

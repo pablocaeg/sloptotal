@@ -1,0 +1,39 @@
+name: New Detection Engine
+description: Propose a new AI detection engine
+labels: ["engine", "enhancement"]
+body:
+  - type: input
+    id: model
+    attributes:
+      label: Model / Method Name
+      placeholder: "e.g., RoBERTa-base fine-tuned on XYZ"
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source
+      placeholder: "HuggingFace URL, paper link, or GitHub repo"
+    validations:
+      required: true
+  - type: dropdown
+    id: type
+    attributes:
+      label: Engine Type
+      options:
+        - Neural classifier
+        - Statistical method
+        - Linguistic heuristic
+        - Other
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Why This Engine?
+      description: What signal does it detect that the existing 23 engines miss?
+    validations:
+      required: true
+  - type: textarea
+    id: benchmarks
+    attributes:
+      label: Known Benchmarks
+      description: Any accuracy numbers, paper results, or comparisons?

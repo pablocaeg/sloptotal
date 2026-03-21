@@ -1,0 +1,200 @@
+{
+  "test_time": "2026-02-06 13:10:22",
+  "capacity_finding": "UX degraded at 20 users: snippets p95=1377ms, quick-score p95=1301ms",
+  "scenarios": [
+    {
+      "users": 5,
+      "total_requests": 26,
+      "errors": 0,
+      "requests_per_second": 0.86,
+      "endpoints": {
+        "snippets": {
+          "count": 14,
+          "min_ms": 640,
+          "mean_ms": 769,
+          "p50_ms": 680,
+          "p90_ms": 1033,
+          "p95_ms": 1102,
+          "p99_ms": 1102,
+          "max_ms": 1102
+        },
+        "quick-score": {
+          "count": 11,
+          "min_ms": 164,
+          "mean_ms": 225,
+          "p50_ms": 205,
+          "p90_ms": 249,
+          "p95_ms": 372,
+          "p99_ms": 372,
+          "max_ms": 372
+        },
+        "full-analyze": {
+          "count": 1,
+          "min_ms": 2377,
+          "mean_ms": 2377,
+          "p50_ms": 2377,
+          "p90_ms": 2377,
+          "p95_ms": 2377,
+          "p99_ms": 2377,
+          "max_ms": 2377
+        }
+      },
+      "status_codes": {
+        "snippets": {
+          "200": 14
+        },
+        "quick-score": {
+          "200": 11
+        },
+        "full-analyze": {
+          "200": 1
+        }
+      },
+      "ux_verdict": {
+        "snippets_p95_ms": 1102,
+        "snippets_ok": true,
+        "quick_score_p95_ms": 372,
+        "quick_score_ok": true
+      },
+      "system_before": {
+        "cpu_percent": 2.9,
+        "ram_used_gb": 16.0,
+        "ram_avail_gb": 109.8,
+        "load_1m": 1.53
+      },
+      "system_after": {
+        "cpu_percent": 5.3,
+        "ram_used_gb": 16.4,
+        "ram_avail_gb": 109.3,
+        "load_1m": 1.68
+      }
+    },
+    {
+      "users": 10,
+      "total_requests": 43,
+      "errors": 0,
+      "requests_per_second": 1.52,
+      "endpoints": {
+        "snippets": {
+          "count": 24,
+          "min_ms": 622,
+          "mean_ms": 803,
+          "p50_ms": 844,
+          "p90_ms": 864,
+          "p95_ms": 869,
+          "p99_ms": 872,
+          "max_ms": 872
+        },
+        "quick-score": {
+          "count": 19,
+          "min_ms": 133,
+          "mean_ms": 186,
+          "p50_ms": 182,
+          "p90_ms": 233,
+          "p95_ms": 242,
+          "p99_ms": 242,
+          "max_ms": 242
+        }
+      },
+      "status_codes": {
+        "snippets": {
+          "200": 24
+        },
+        "quick-score": {
+          "200": 19
+        }
+      },
+      "ux_verdict": {
+        "snippets_p95_ms": 869,
+        "snippets_ok": true,
+        "quick_score_p95_ms": 242,
+        "quick_score_ok": true
+      },
+      "system_before": {
+        "cpu_percent": 3.2,
+        "ram_used_gb": 16.3,
+        "ram_avail_gb": 109.4,
+        "load_1m": 1.57
+      },
+      "system_after": {
+        "cpu_percent": 9.4,
+        "ram_used_gb": 16.3,
+        "ram_avail_gb": 109.5,
+        "load_1m": 1.82
+      }
+    },
+    {
+      "users": 20,
+      "total_requests": 88,
+      "errors": 0,
+      "requests_per_second": 2.94,
+      "endpoints": {
+        "snippets": {
+          "count": 46,
+          "min_ms": 631,
+          "mean_ms": 892,
+          "p50_ms": 863,
+          "p90_ms": 1055,
+          "p95_ms": 1377,
+          "p99_ms": 1880,
+          "max_ms": 1880
+        },
+        "quick-score": {
+          "count": 39,
+          "min_ms": 166,
+          "mean_ms": 395,
+          "p50_ms": 259,
+          "p90_ms": 1014,
+          "p95_ms": 1301,
+          "p99_ms": 1455,
+          "max_ms": 1455
+        },
+        "full-analyze": {
+          "count": 3,
+          "min_ms": 2159,
+          "mean_ms": 2421,
+          "p50_ms": 2378,
+          "p90_ms": 2725,
+          "p95_ms": 2725,
+          "p99_ms": 2725,
+          "max_ms": 2725
+        }
+      },
+      "status_codes": {
+        "snippets": {
+          "200": 46
+        },
+        "quick-score": {
+          "200": 39
+        },
+        "full-analyze": {
+          "200": 3
+        }
+      },
+      "ux_verdict": {
+        "snippets_p95_ms": 1377,
+        "snippets_ok": true,
+        "quick_score_p95_ms": 1301,
+        "quick_score_ok": false
+      },
+      "system_before": {
+        "cpu_percent": 3.5,
+        "ram_used_gb": 16.2,
+        "ram_avail_gb": 109.5,
+        "load_1m": 1.75
+      },
+      "system_after": {
+        "cpu_percent": 9.5,
+        "ram_used_gb": 16.6,
+        "ram_avail_gb": 109.1,
+        "load_1m": 2.66
+      }
+    }
+  ],
+  "system_final": {
+    "cpu_percent": 5.4,
+    "ram_used_gb": 16.6,
+    "ram_avail_gb": 109.1,
+    "load_1m": 2.66
+  }
+}

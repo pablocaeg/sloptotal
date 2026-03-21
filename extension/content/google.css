@@ -1,0 +1,381 @@
+/* SlopTotal Google Search Badge Styles */
+/* Badge is a block element inserted between title and snippet — immune to Google's flex */
+
+.sloptotal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  margin: 5px 0;
+  width: fit-content;
+  direction: ltr !important;
+  unicode-bidi: isolate;
+  user-select: none;
+  animation: sloptotal-fadeIn 0.25s ease-out;
+  transition: opacity 0.15s, box-shadow 0.15s;
+}
+
+.sloptotal-badge:hover {
+  opacity: 0.88;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Dot */
+.sloptotal-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Label */
+.sloptotal-label {
+  font-weight: 500;
+  font-size: 11px;
+}
+
+/* Inline score bar */
+.sloptotal-bar {
+  width: 32px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.sloptotal-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+/* Score */
+.sloptotal-score {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+/* Page type tag */
+.sloptotal-type {
+  font-size: 8.5px;
+  font-weight: 600;
+  opacity: 0.55;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: currentColor;
+  filter: contrast(0.4) brightness(1.5);
+}
+
+/* Source tag (legacy compat) */
+.sloptotal-source {
+  font-size: 9px;
+  font-weight: 500;
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Expand arrow */
+.sloptotal-expand {
+  font-size: 7px;
+  opacity: 0.4;
+  margin-left: -2px;
+  transition: transform 0.15s;
+}
+
+/* --- Color variants --- */
+
+/* High AI (red) */
+.sloptotal-high {
+  background: #fce8e9;
+  color: #6b1a1d;
+  border: 1px solid #e8a3a6;
+}
+.sloptotal-high .sloptotal-dot { background: #b5282e; }
+.sloptotal-high .sloptotal-bar-fill { background: #b5282e; }
+
+/* Medium (amber) */
+.sloptotal-medium {
+  background: #fdf4e0;
+  color: #5a3e08;
+  border: 1px solid #e4c87a;
+}
+.sloptotal-medium .sloptotal-dot { background: #c98b1d; }
+.sloptotal-medium .sloptotal-bar-fill { background: #c98b1d; }
+
+/* Low (light green) */
+.sloptotal-low {
+  background: #eaf5ec;
+  color: #1e4a28;
+  border: 1px solid #a8d5b0;
+}
+.sloptotal-low .sloptotal-dot { background: #5a9e3e; }
+.sloptotal-low .sloptotal-bar-fill { background: #5a9e3e; }
+
+/* Safe (green) */
+.sloptotal-safe {
+  background: #e6f4eb;
+  color: #1a3a24;
+  border: 1px solid #93cca0;
+}
+.sloptotal-safe .sloptotal-dot { background: #2d8a4e; }
+.sloptotal-safe .sloptotal-bar-fill { background: #2d8a4e; }
+
+/* Info (grey — non-scoreable pages) */
+.sloptotal-info {
+  background: #f5f5f0;
+  color: #555;
+  border: 1px solid #ddd;
+}
+.sloptotal-info .sloptotal-dot { background: #999; }
+.sloptotal-info .sloptotal-bar { display: none; }
+.sloptotal-info .sloptotal-score { display: none; }
+
+/* Loading (shimmer) */
+.sloptotal-loading {
+  background: #f0ebe1;
+  color: #7a756b;
+  border: 1px solid #cdc6b8;
+  cursor: default;
+  overflow: hidden;
+  position: relative;
+}
+.sloptotal-loading .sloptotal-dot {
+  background: #a09a8e;
+  animation: sloptotal-pulse 1.2s ease-in-out infinite;
+}
+.sloptotal-loading::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+  animation: sloptotal-shimmer 1.5s ease-in-out infinite;
+}
+
+/* --- Expanded detail panel --- */
+
+.sloptotal-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0 0 6px 0;
+  padding: 8px 10px;
+  border-radius: 0 0 6px 6px;
+  font-size: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  width: fit-content;
+  min-width: 200px;
+  animation: sloptotal-slideDown 0.15s ease-out;
+  direction: ltr !important;
+  unicode-bidi: isolate;
+}
+
+.sloptotal-details.sloptotal-high {
+  background: #f9dadc;
+  border: 1px solid #e8a3a6;
+  border-top: none;
+}
+.sloptotal-details.sloptotal-medium {
+  background: #faedc7;
+  border: 1px solid #e4c87a;
+  border-top: none;
+}
+.sloptotal-details.sloptotal-low {
+  background: #ddeee1;
+  border: 1px solid #a8d5b0;
+  border-top: none;
+}
+.sloptotal-details.sloptotal-safe {
+  background: #d6ede0;
+  border: 1px solid #93cca0;
+  border-top: none;
+}
+.sloptotal-details.sloptotal-info {
+  background: #eeeeea;
+  border: 1px solid #ddd;
+  border-top: none;
+}
+
+.sloptotal-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sloptotal-detail-engine {
+  font-weight: 600;
+  width: 48px;
+  flex-shrink: 0;
+  font-size: 10px;
+}
+
+.sloptotal-detail-bar {
+  flex: 1;
+  height: 5px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.sloptotal-detail-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: currentColor;
+  opacity: 0.55;
+  transition: width 0.3s ease;
+}
+
+.sloptotal-detail-val {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+  font-size: 10px;
+}
+
+.sloptotal-detail-meta {
+  font-size: 9px;
+  opacity: 0.6;
+  margin-top: 1px;
+}
+
+/* --- Structural analysis section --- */
+
+.sloptotal-detail-divider {
+  height: 1px;
+  background: currentColor;
+  opacity: 0.15;
+  margin: 4px 0 2px;
+}
+
+.sloptotal-detail-section-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.55;
+  margin-bottom: 2px;
+}
+
+.sloptotal-detail-signal {
+  font-size: 9px;
+  opacity: 0.7;
+  padding-left: 4px;
+  line-height: 1.3;
+  white-space: normal;
+  max-width: 280px;
+}
+
+.sloptotal-detail-blend {
+  font-size: 9px;
+  opacity: 0.65;
+  margin-top: 3px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.sloptotal-detail-guard {
+  display: inline-block;
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: currentColor;
+  color: inherit;
+  opacity: 0.5;
+  margin-right: 2px;
+  filter: contrast(0.6) brightness(1.3);
+}
+
+/* --- Animations --- */
+
+@keyframes sloptotal-fadeIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sloptotal-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.6); }
+}
+
+@keyframes sloptotal-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes sloptotal-slideDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Google Dark Mode --- */
+html[data-darkmode="true"] .sloptotal-high,
+.dark .sloptotal-high {
+  background: #3d1517;
+  color: #f5b3b6;
+  border-color: #6b2226;
+}
+html[data-darkmode="true"] .sloptotal-medium,
+.dark .sloptotal-medium {
+  background: #3d3010;
+  color: #f0d68a;
+  border-color: #6b5520;
+}
+html[data-darkmode="true"] .sloptotal-low,
+.dark .sloptotal-low {
+  background: #1a3320;
+  color: #a8d5b0;
+  border-color: #2d5a38;
+}
+html[data-darkmode="true"] .sloptotal-safe,
+.dark .sloptotal-safe {
+  background: #15302a;
+  color: #93cca0;
+  border-color: #255a40;
+}
+html[data-darkmode="true"] .sloptotal-info,
+.dark .sloptotal-info {
+  background: #2a2a25;
+  color: #aaa;
+  border-color: #444;
+}
+html[data-darkmode="true"] .sloptotal-loading,
+.dark .sloptotal-loading {
+  background: #2a2826;
+  color: #7a756b;
+  border-color: #3d3b37;
+}
+
+/* Detect Google's dark bg */
+@media (prefers-color-scheme: dark) {
+  .sloptotal-high { background: #3d1517; color: #f5b3b6; border-color: #6b2226; }
+  .sloptotal-medium { background: #3d3010; color: #f0d68a; border-color: #6b5520; }
+  .sloptotal-low { background: #1a3320; color: #a8d5b0; border-color: #2d5a38; }
+  .sloptotal-safe { background: #15302a; color: #93cca0; border-color: #255a40; }
+  .sloptotal-info { background: #2a2a25; color: #aaa; border-color: #444; }
+  .sloptotal-loading { background: #2a2826; color: #7a756b; border-color: #3d3b37; }
+  .sloptotal-bar { background: rgba(255, 255, 255, 0.1); }
+  .sloptotal-detail-bar { background: rgba(255, 255, 255, 0.08); }
+  .sloptotal-detail-blend { background: rgba(255, 255, 255, 0.06); }
+  .sloptotal-details.sloptotal-high { background: #301012; border-color: #6b2226; }
+  .sloptotal-details.sloptotal-medium { background: #302808; border-color: #6b5520; }
+  .sloptotal-details.sloptotal-low { background: #142a1a; border-color: #2d5a38; }
+  .sloptotal-details.sloptotal-safe { background: #102820; border-color: #255a40; }
+  .sloptotal-details.sloptotal-info { background: #22221e; border-color: #444; }
+}

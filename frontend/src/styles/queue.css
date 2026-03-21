@@ -1,0 +1,118 @@
+/* ============ QUEUE OVERLAY ============ */
+.queue-overlay {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+    animation: fadeUp 0.4s var(--ease-out);
+}
+.queue-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: #fff;
+    border: 2px solid var(--ink);
+    border-radius: 10px;
+    padding: 20px 24px;
+    width: 100%;
+    box-shadow:
+        0 2px 4px rgba(0,0,0,0.06),
+        0 8px 32px rgba(0,0,0,0.08);
+    position: relative;
+}
+.queue-spinner-ring {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+}
+.queue-ring {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+.queue-ring-track {
+    fill: none;
+    stroke: var(--rule);
+    stroke-width: 5;
+}
+.queue-ring-fill {
+    fill: none;
+    stroke: var(--c-accent);
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-dasharray: 60 214;
+    animation: queue-spin 1.4s ease-in-out infinite;
+}
+@keyframes queue-spin {
+    0% { stroke-dashoffset: 0; }
+    50% { stroke-dashoffset: -120; }
+    100% { stroke-dashoffset: -214; }
+}
+.queue-position {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--f-display);
+    font-size: 22px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink);
+    line-height: 1;
+}
+.queue-info {
+    flex: 1;
+    min-width: 0;
+}
+.queue-title {
+    font-family: var(--f-display);
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 4px;
+}
+.queue-desc {
+    font-size: 13px;
+    color: var(--dim);
+    font-weight: 300;
+    margin-bottom: 6px;
+}
+.queue-meta {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+.queue-wait {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+}
+.queue-cancel {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: color 0.2s, background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.queue-cancel:hover {
+    color: var(--c-accent);
+    background: var(--c-slop-bg);
+}
+
+@media (max-width: 700px) {
+    .queue-card { flex-direction: column; text-align: center; gap: 12px; padding: 16px; }
+    .queue-spinner-ring { width: 52px; height: 52px; }
+    .queue-position { font-size: 18px; }
+    .queue-title { font-size: 18px; }
+    .queue-meta { justify-content: center; }
+}

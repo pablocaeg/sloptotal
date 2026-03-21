@@ -1,0 +1,48 @@
+# Node
+node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Data & database
+data/
+*.db
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Claude (keep .claude/agents/ for project-level AI agents)
+.claude/**
+!.claude/agents/
+!.claude/agents/**
+
+# Models cache (downloaded on first run)
+models/
+*.bin
+*.safetensors
+
+# Lighthouse reports
+**/lighthouse-report*
+
+# OS
+.DS_Store
+Thumbs.db

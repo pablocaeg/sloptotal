@@ -1,0 +1,181 @@
+/* ============================================================
+   SlopTotal — Forensic Lab / Evidence Board Aesthetic
+   Instrument Serif + DM Mono + Lexend
+   Dark masthead, warm paper, red-stamp verdicts
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    /* Palette */
+    --ink: #1a1a18;
+    --paper: #f5f0e8;
+    --paper-warm: #ede7db;
+    --paper-deep: #e4ddd0;
+    --cream: #faf6ee;
+    --slate: #3d3b37;
+    --dim: #686358;
+    --muted: #65605a;
+    --rule: #cdc6b8;
+    --rule-light: #ddd7cb;
+
+    /* Semantic */
+    --c-clean: #2d8a4e;
+    --c-clean-bg: #e6f4eb;
+    --c-low: #5a9e3e;
+    --c-warn: #c98b1d;
+    --c-warn-bg: #fdf4e0;
+    --c-danger: #c45d1a;
+    --c-danger-bg: #fceee4;
+    --c-slop: #b5282e;
+    --c-slop-bg: #fce8e9;
+    --c-accent: #b5282e;
+    --c-accent-muted: #d4878a;
+
+    /* Fonts */
+    --f-display: "Instrument Serif", Georgia, "Times New Roman", serif;
+    --f-body: "Lexend", system-ui, -apple-system, sans-serif;
+    --f-mono: "DM Mono", "Consolas", "Courier New", monospace;
+
+    /* Sizes */
+    --max-w: 820px;
+    --radius: 6px;
+
+    /* Transitions */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ---- Reset & Base ---- */
+html { scroll-behavior: smooth; }
+body {
+    font-family: var(--f-body);
+    background: var(--paper);
+    color: var(--slate);
+    line-height: 1.6;
+    font-size: 14px;
+    font-weight: 400;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+        radial-gradient(ellipse at 20% 0%, rgba(181,40,46,0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, rgba(45,138,78,0.03) 0%, transparent 50%);
+}
+
+a { color: var(--c-accent); text-decoration: none; transition: color 0.2s; }
+a:hover { color: var(--slate); }
+
+/* ---- Focus styles ---- */
+:focus-visible {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 2px;
+}
+
+.sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* ---- Noise overlay ---- */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+}
+
+/* ---- Main ---- */
+main {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 0 20px 40px;
+}
+
+/* ---- Shared Animations ---- */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+@keyframes cardFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ---- Shared Elements ---- */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+.section-header h2 {
+    font-family: var(--f-display);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+}
+
+/* ---- Error Banner ---- */
+.error-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--c-slop-bg);
+    border: 1px solid var(--c-accent-muted);
+    border-left: 3px solid var(--c-accent);
+    border-radius: var(--radius);
+    color: var(--c-slop);
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    animation: fadeUp 0.4s var(--ease-out);
+}
+
+/* ---- Buttons ---- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: var(--f-body);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s var(--ease-out);
+    border: 1px solid transparent;
+    text-decoration: none !important;
+}
+.btn-ghost {
+    background: var(--cream);
+    border-color: var(--rule);
+    color: var(--slate);
+}
+.btn-ghost:hover {
+    background: #fff;
+    border-color: var(--c-accent-muted);
+    color: var(--c-accent);
+}
+.btn-ghost:active {
+    background: var(--paper-warm);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 480px) {
+    main { padding: 0 12px 32px; }
+}

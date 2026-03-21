@@ -1,0 +1,186 @@
+/* ============ HEADER ============ */
+header {
+    background: var(--ink);
+    border-bottom: 3px solid var(--c-accent);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.header-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.logo {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    text-decoration: none !important;
+}
+.logo-slop {
+    font-family: var(--f-display);
+    font-size: 26px;
+    color: #fff;
+    letter-spacing: 0.02em;
+    font-style: italic;
+}
+.logo-total {
+    font-family: var(--f-mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--c-accent-muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    position: relative;
+    top: -1px;
+}
+
+.header-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: #999;
+    font-family: var(--f-mono);
+    font-weight: 300;
+}
+.header-nav strong { color: #ccc; font-weight: 500; }
+.nav-divider {
+    width: 1px;
+    height: 12px;
+    background: #444;
+}
+
+/* ============ TICKER ============ */
+.ticker {
+    background: var(--ink);
+    border-bottom: 1px solid #2a2a28;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    position: sticky;
+    top: 51px;
+    z-index: 99;
+    animation: tickerSlideDown 0.4s var(--ease-out);
+}
+
+@keyframes tickerSlideDown {
+    from { opacity: 0; transform: translateY(-100%); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.ticker-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-family: var(--f-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #888;
+    white-space: nowrap;
+    flex-shrink: 0;
+    border-right: 1px solid #2a2a28;
+}
+.ticker-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--c-accent);
+    animation: pulse 2s ease infinite;
+    flex-shrink: 0;
+}
+
+.ticker-track {
+    flex: 1;
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent, black 40px, black calc(100% - 40px), transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 40px, black calc(100% - 40px), transparent);
+}
+.ticker-scroll {
+    display: flex;
+    gap: 0;
+    animation: tickerMarquee 30s linear infinite;
+    width: max-content;
+}
+.ticker-scroll:hover {
+    animation-play-state: paused;
+}
+
+@keyframes tickerMarquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+.ticker-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 16px;
+    text-decoration: none !important;
+    white-space: nowrap;
+    border-right: 1px solid #2a2a28;
+    transition: background 0.2s;
+}
+.ticker-item:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+.ti-score {
+    font-family: var(--f-display);
+    font-style: italic;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1;
+    min-width: 28px;
+    text-align: right;
+}
+.ti-clean { color: #5dbe7a; }
+.ti-low { color: #7ec86a; }
+.ti-warn { color: #e8b93e; }
+.ti-danger { color: #e8803a; }
+.ti-slop { color: #e85555; }
+
+.ti-source {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    font-weight: 300;
+    color: #777;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ti-verdict {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    font-weight: 400;
+    color: #555;
+    letter-spacing: 0.03em;
+}
+.ti-time {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    color: #444;
+    font-weight: 300;
+}
+
+@media (max-width: 700px) {
+    .header-inner { padding: 12px 16px; }
+    .header-nav { font-size: 11px; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .logo-slop { font-size: 22px; }
+    .logo-total { font-size: 11px; }
+    .ticker { position: relative; top: auto; }
+    .ticker-label { display: none; }
+}
+
+@media (max-width: 420px) {
+    .header-nav { display: none; }
+}

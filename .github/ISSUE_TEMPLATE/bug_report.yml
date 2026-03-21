@@ -1,0 +1,33 @@
+name: Bug Report
+description: Report a bug in SlopTotal
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened? What did you expect to happen?
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Backend (Python/FastAPI)
+        - Frontend (Website)
+        - Chrome Extension
+        - API
+        - Docker/Deployment
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this bug?
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: "OS, Python version, browser, hardware profile (lite/standard/performance), etc."

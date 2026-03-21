@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+{% block title %}SlopTotal — Free AI Content Detector | 23 Detection Engines{% endblock %}
+{% block meta_description %}Detect AI-generated text with 23 independent engines. Paste text or a URL for instant forensic analysis. Free, private, runs locally. No data sent to third parties.{% endblock %}
+{% block content %}
+<section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-badge">AI Content Forensics</div>
+    <h1 id="hero-heading">
+        <span class="hero-line-1">Analyse suspicious text</span>
+        <span class="hero-line-2">with <em>23 detection engines.</em></span>
+    </h1>
+    <p class="hero-sub">
+        Paste a URL or text. Get a detailed forensic report from 23 independent AI detectors
+        &mdash; statistical, neural, and linguistic &mdash; all running locally.
+    </p>
+</section>
+
+{% if error %}
+<div class="error-banner" role="alert">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.5v4M8 10.5v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    {{ error }}
+</div>
+{% endif %}
+
+<div id="queue-overlay" class="queue-overlay" style="display:none;" role="status" aria-live="polite">
+    <div class="queue-card">
+        <div class="queue-spinner-ring">
+            <svg class="queue-ring" viewBox="0 0 80 80">
+                <circle class="queue-ring-track" cx="40" cy="40" r="34" />
+                <circle class="queue-ring-fill" cx="40" cy="40" r="34" />
+            </svg>
+            <span class="queue-position" id="queue-position">1</span>
+        </div>
+        <div class="queue-info">
+            <h3 class="queue-title" id="queue-title">In the queue</h3>
+            <p class="queue-desc" id="queue-desc">Your analysis will start shortly.</p>
+            <div class="queue-meta">
+                <span class="queue-wait" id="queue-wait"></span>
+            </div>
+        </div>
+        <button type="button" class="queue-cancel" id="queue-cancel" title="Cancel">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+    </div>
+</div>
+
+<div class="input-card input-card--hero">
+    <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="url-tab" role="tab" aria-selected="true" aria-controls="url-tab" id="tab-url">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6.5 11.5L3.7 11.5a3.2 3.2 0 010-6.4h2.8M9.5 4.5h2.8a3.2 3.2 0 010 6.4H9.5M5.3 8h5.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            URL
+        </button>
+        <button class="tab" data-tab="text-tab" role="tab" aria-selected="false" aria-controls="text-tab" id="tab-text">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M3 7h10M3 10h7M3 13h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Text
+        </button>
+        <div class="tab-indicator"></div>
+    </div>
+
+    <form id="analyze-form" method="post" action="/analyze">
+        <div id="url-tab" class="tab-content active" role="tabpanel" aria-labelledby="tab-url">
+            <label for="url-input" class="sr-only">URL to analyse</label>
+            <input type="url" name="url" id="url-input" placeholder="https://example.com/article"
+                   autocomplete="off" />
+        </div>
+        <div id="text-tab" class="tab-content" role="tabpanel" aria-labelledby="tab-text">
+            <label for="text-input" class="sr-only">Text to analyse</label>
+            <textarea name="text" id="text-input" rows="6"
+                      placeholder="Paste the text you want to analyse..."></textarea>
+        </div>
+        <div class="form-bottom">
+            <button type="submit" id="submit-btn">
+                <span class="btn-text">
+                    Run Analysis
+                    <svg class="btn-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <span class="btn-loading" style="display:none;">
+                    <span class="spinner"></span>
+                    Submitting&hellip;
+                </span>
+            </button>
+            <span class="form-hint">Free &amp; private. All analysis runs locally on our servers.</span>
+        </div>
+    </form>
+</div>
+
+<section class="engines-section" aria-labelledby="engines-heading">
+    <div class="section-header">
+        <h2 id="engines-heading">Detection Engines</h2>
+        <span class="engine-count">{{ engines|length }}</span>
+    </div>
+    <p class="engines-desc">Each engine uses a different methodology. Results are weighted and combined into a single forensic score.</p>
+    <div class="engine-grid">
+        {% for eng in engines %}
+        {% if eng.url %}
+        <a href="{{ eng.url }}" target="_blank" rel="noopener" class="engine-card" style="--i:{{ loop.index0 }}">
+            <span class="ec-code">{{ eng.code }}</span>
+            <span class="ec-name">{{ eng.name }}</span>
+            <span class="ec-type">{{ eng.engine_type }}</span>
+            <span class="ec-link" aria-hidden="true">&nearr;</span>
+        </a>
+        {% else %}
+        <div class="engine-card" style="--i:{{ loop.index0 }}">
+            <span class="ec-code">{{ eng.code }}</span>
+            <span class="ec-name">{{ eng.name }}</span>
+            <span class="ec-type">{{ eng.engine_type }}</span>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</section>
+
+<section class="how-section" aria-labelledby="how-heading">
+    <h2 id="how-heading">How It Works</h2>
+    <div class="how-steps">
+        <div class="how-step">
+            <div class="step-num">01</div>
+            <h3>Submit</h3>
+            <p>Paste text directly or provide a URL. We extract the article content automatically.</p>
+        </div>
+        <div class="how-step">
+            <div class="step-num">02</div>
+            <h3>Analyse</h3>
+            <p>23 engines run in parallel &mdash; neural classifiers, statistical tests, and linguistic heuristics.</p>
+        </div>
+        <div class="how-step">
+            <div class="step-num">03</div>
+            <h3>Report</h3>
+            <p>Results stream in real-time. Each engine votes independently. A calibrated, weighted score produces the final verdict.</p>
+        </div>
+    </div>
+</section>
+
+<section class="slop-section" aria-labelledby="slop-heading">
+    <div class="slop-header">
+        <div class="slop-label">Reference</div>
+        <h2 id="slop-heading">What is <em>&ldquo;slop&rdquo;</em>?</h2>
+    </div>
+    <div class="slop-content">
+        <div class="slop-main">
+            <p>
+                <strong>Slop</strong> is internet shorthand for low-effort, AI-generated content
+                published at scale &mdash; articles, comments, reviews, and social posts churned out
+                by language models with little or no human editing.
+            </p>
+            <p>
+                The term emerged in 2024 as LLM-generated text began flooding search results,
+                product reviews, LinkedIn feeds, and news sites. Unlike thoughtful AI-assisted
+                writing, slop is characterised by its formulaic structure, hollow confidence,
+                and lack of genuine insight.
+            </p>
+            <p>
+                SlopTotal doesn&rsquo;t judge <em>all</em> AI use. Humans editing AI drafts,
+                using AI for brainstorming, or collaborating with AI tools is not slop.
+                What we detect is the telltale fingerprint of text that was generated wholesale
+                and published without meaningful human involvement.
+            </p>
+        </div>
+        <div class="slop-signals">
+            <h3>Common slop signals</h3>
+            <ul>
+                <li>
+                    <span class="signal-icon signal-icon--phrase"></span>
+                    <div>
+                        <strong>Formulaic phrases</strong>
+                        <span>&ldquo;In today&rsquo;s rapidly evolving landscape&rdquo;, &ldquo;It&rsquo;s important to note&rdquo;, &ldquo;delve into&rdquo;</span>
+                    </div>
+                </li>
+                <li>
+                    <span class="signal-icon signal-icon--structure"></span>
+                    <div>
+                        <strong>Rigid structure</strong>
+                        <span>Numbered lists, &ldquo;Firstly / Secondly / Moreover&rdquo; stacking, five-paragraph essay format</span>
+                    </div>
+                </li>
+                <li>
+                    <span class="signal-icon signal-icon--tone"></span>
+                    <div>
+                        <strong>Hedging &amp; filler</strong>
+                        <span>Excessive qualifiers, hollow conclusions, saying a lot while conveying little</span>
+                    </div>
+                </li>
+                <li>
+                    <span class="signal-icon signal-icon--stats"></span>
+                    <div>
+                        <strong>Statistical fingerprints</strong>
+                        <span>Low perplexity, uniform burstiness, predictable token distributions</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="score-section" aria-labelledby="score-heading">
+    <div class="section-header">
+        <h2 id="score-heading">Reading Your Score</h2>
+    </div>
+    <p class="score-desc">The overall score represents the probability that the text was AI-generated, calibrated across all engines.</p>
+    <div class="score-guide">
+        <div class="sg-item sg-clean">
+            <div class="sg-range">0&ndash;25</div>
+            <div class="sg-info">
+                <strong>Likely Human</strong>
+                <span>Low AI signals across engines. The text shows patterns consistent with human authorship.</span>
+            </div>
+        </div>
+        <div class="sg-item sg-low">
+            <div class="sg-range">25&ndash;50</div>
+            <div class="sg-info">
+                <strong>Probably Human</strong>
+                <span>Minor signals detected. Could be formal writing, AI-assisted editing, or a false positive on polished text.</span>
+            </div>
+        </div>
+        <div class="sg-item sg-warn">
+            <div class="sg-range">50&ndash;65</div>
+            <div class="sg-info">
+                <strong>Mixed / Uncertain</strong>
+                <span>Engines disagree. May be AI-assisted, heavily edited AI output, or formal human writing that triggers classifiers.</span>
+            </div>
+        </div>
+        <div class="sg-item sg-danger">
+            <div class="sg-range">65&ndash;80</div>
+            <div class="sg-info">
+                <strong>Likely AI</strong>
+                <span>Strong signals from multiple engines. High probability of substantial AI generation with limited human editing.</span>
+            </div>
+        </div>
+        <div class="sg-item sg-slop">
+            <div class="sg-range">80&ndash;100</div>
+            <div class="sg-info">
+                <strong>Almost Certainly AI</strong>
+                <span>Broad consensus across engines. The text has clear statistical and linguistic markers of unedited AI output.</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

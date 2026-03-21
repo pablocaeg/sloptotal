@@ -1,0 +1,35 @@
+services:
+  sloptotal:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persist downloaded models across container restarts
+      - sloptotal-models:/app/models
+      - sloptotal-data:/app/data
+    environment:
+      - HF_HOME=/app/models
+    restart: unless-stopped
+
+  # Uncomment for NVIDIA GPU support:
+  # sloptotal-gpu:
+  #   build: .
+  #   ports:
+  #     - "8000:8000"
+  #   volumes:
+  #     - sloptotal-models:/app/models
+  #     - sloptotal-data:/app/data
+  #   environment:
+  #     - HF_HOME=/app/models
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1
+  #             capabilities: [gpu]
+  #   restart: unless-stopped
+
+volumes:
+  sloptotal-models:
+  sloptotal-data:

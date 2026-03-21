@@ -1,0 +1,330 @@
+/* SlopTotal LinkedIn Badge Styles */
+
+.sloptotal-li-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 8px;
+  margin: 6px 0;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  width: fit-content;
+  user-select: none;
+  animation: sloptotal-li-fadeIn 0.25s ease-out;
+  transition: opacity 0.15s, box-shadow 0.15s;
+}
+
+.sloptotal-li-badge:hover {
+  opacity: 0.88;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.sloptotal-li-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.sloptotal-li-label {
+  font-weight: 500;
+  font-size: 11px;
+}
+
+/* Inline score bar */
+.sloptotal-li-bar {
+  width: 32px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.sloptotal-li-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.sloptotal-li-score {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.sloptotal-li-expand {
+  font-size: 7px;
+  opacity: 0.4;
+  margin-left: -2px;
+  transition: transform 0.15s;
+}
+
+/* --- Color variants --- */
+
+/* High (red) */
+.sloptotal-li-high {
+  background: #fce8e9;
+  color: #6b1a1d;
+  border: 1px solid #e8a3a6;
+}
+.sloptotal-li-high .sloptotal-li-dot { background: #b5282e; }
+.sloptotal-li-high .sloptotal-li-bar-fill { background: #b5282e; }
+
+/* Medium (amber) */
+.sloptotal-li-medium {
+  background: #fdf4e0;
+  color: #5a3e08;
+  border: 1px solid #e4c87a;
+}
+.sloptotal-li-medium .sloptotal-li-dot { background: #c98b1d; }
+.sloptotal-li-medium .sloptotal-li-bar-fill { background: #c98b1d; }
+
+/* Low (light green) */
+.sloptotal-li-low {
+  background: #eaf5ec;
+  color: #1e4a28;
+  border: 1px solid #a8d5b0;
+}
+.sloptotal-li-low .sloptotal-li-dot { background: #5a9e3e; }
+.sloptotal-li-low .sloptotal-li-bar-fill { background: #5a9e3e; }
+
+/* Safe (green) */
+.sloptotal-li-safe {
+  background: #e6f4eb;
+  color: #1a3a24;
+  border: 1px solid #93cca0;
+}
+.sloptotal-li-safe .sloptotal-li-dot { background: #2d8a4e; }
+.sloptotal-li-safe .sloptotal-li-bar-fill { background: #2d8a4e; }
+
+/* Loading state */
+.sloptotal-li-loading {
+  cursor: default;
+  background: #f0ebe1;
+  color: #7a756b;
+  border: 1px solid #cdc6b8;
+  overflow: hidden;
+  position: relative;
+}
+.sloptotal-li-loading .sloptotal-li-dot {
+  background: #a09a8e;
+  animation: sloptotal-li-pulse 1.2s ease-in-out infinite;
+}
+.sloptotal-li-loading::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+  animation: sloptotal-li-shimmer 1.5s ease-in-out infinite;
+}
+
+/* --- Click-to-expand detail panel --- */
+
+.sloptotal-li-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0 0 6px 0;
+  padding: 8px 10px;
+  border-radius: 0 0 6px 6px;
+  font-size: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  width: fit-content;
+  min-width: 200px;
+  animation: sloptotal-li-slideDown 0.15s ease-out;
+}
+
+.sloptotal-li-details.sloptotal-li-high {
+  background: #f9dadc;
+  border: 1px solid #e8a3a6;
+  border-top: none;
+}
+.sloptotal-li-details.sloptotal-li-medium {
+  background: #faedc7;
+  border: 1px solid #e4c87a;
+  border-top: none;
+}
+.sloptotal-li-details.sloptotal-li-low {
+  background: #ddeee1;
+  border: 1px solid #a8d5b0;
+  border-top: none;
+}
+.sloptotal-li-details.sloptotal-li-safe {
+  background: #d6ede0;
+  border: 1px solid #93cca0;
+  border-top: none;
+}
+
+.sloptotal-li-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sloptotal-li-detail-engine {
+  font-weight: 600;
+  width: 48px;
+  flex-shrink: 0;
+  font-size: 10px;
+}
+
+.sloptotal-li-detail-bar {
+  flex: 1;
+  height: 5px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.sloptotal-li-detail-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: currentColor;
+  opacity: 0.55;
+  transition: width 0.3s ease;
+}
+
+.sloptotal-li-detail-val {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+  font-size: 10px;
+}
+
+.sloptotal-li-detail-meta {
+  font-size: 9px;
+  opacity: 0.6;
+  margin-top: 1px;
+}
+
+/* --- Structural analysis section --- */
+
+.sloptotal-li-detail-divider {
+  height: 1px;
+  background: currentColor;
+  opacity: 0.15;
+  margin: 4px 0 2px;
+}
+
+.sloptotal-li-detail-section-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.55;
+  margin-bottom: 2px;
+}
+
+.sloptotal-li-detail-signal {
+  font-size: 9px;
+  opacity: 0.7;
+  padding-left: 4px;
+  line-height: 1.3;
+  white-space: normal;
+  max-width: 280px;
+}
+
+.sloptotal-li-detail-blend {
+  font-size: 9px;
+  opacity: 0.65;
+  margin-top: 3px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* --- Animations --- */
+
+@keyframes sloptotal-li-fadeIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sloptotal-li-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.6); }
+}
+
+@keyframes sloptotal-li-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes sloptotal-li-slideDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- LinkedIn Dark Mode --- */
+/* LinkedIn uses .theme--dark on body or data-theme="dark" */
+body.theme--dark .sloptotal-li-high,
+[data-theme="dark"] .sloptotal-li-high {
+  background: #3d1517; color: #f5b3b6; border-color: #6b2226;
+}
+body.theme--dark .sloptotal-li-medium,
+[data-theme="dark"] .sloptotal-li-medium {
+  background: #3d3010; color: #f0d68a; border-color: #6b5520;
+}
+body.theme--dark .sloptotal-li-low,
+[data-theme="dark"] .sloptotal-li-low {
+  background: #1a3320; color: #a8d5b0; border-color: #2d5a38;
+}
+body.theme--dark .sloptotal-li-safe,
+[data-theme="dark"] .sloptotal-li-safe {
+  background: #15302a; color: #93cca0; border-color: #255a40;
+}
+body.theme--dark .sloptotal-li-loading,
+[data-theme="dark"] .sloptotal-li-loading {
+  background: #2a2826; color: #7a756b; border-color: #3d3b37;
+}
+body.theme--dark .sloptotal-li-details.sloptotal-li-high,
+[data-theme="dark"] .sloptotal-li-details.sloptotal-li-high {
+  background: #301012; border-color: #6b2226;
+}
+body.theme--dark .sloptotal-li-details.sloptotal-li-medium,
+[data-theme="dark"] .sloptotal-li-details.sloptotal-li-medium {
+  background: #302808; border-color: #6b5520;
+}
+body.theme--dark .sloptotal-li-details.sloptotal-li-low,
+[data-theme="dark"] .sloptotal-li-details.sloptotal-li-low {
+  background: #142a1a; border-color: #2d5a38;
+}
+body.theme--dark .sloptotal-li-details.sloptotal-li-safe,
+[data-theme="dark"] .sloptotal-li-details.sloptotal-li-safe {
+  background: #102820; border-color: #255a40;
+}
+body.theme--dark .sloptotal-li-bar,
+[data-theme="dark"] .sloptotal-li-bar {
+  background: rgba(255, 255, 255, 0.1);
+}
+body.theme--dark .sloptotal-li-detail-bar,
+[data-theme="dark"] .sloptotal-li-detail-bar {
+  background: rgba(255, 255, 255, 0.08);
+}
+body.theme--dark .sloptotal-li-detail-blend,
+[data-theme="dark"] .sloptotal-li-detail-blend {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  .sloptotal-li-high { background: #3d1517; color: #f5b3b6; border-color: #6b2226; }
+  .sloptotal-li-medium { background: #3d3010; color: #f0d68a; border-color: #6b5520; }
+  .sloptotal-li-low { background: #1a3320; color: #a8d5b0; border-color: #2d5a38; }
+  .sloptotal-li-safe { background: #15302a; color: #93cca0; border-color: #255a40; }
+  .sloptotal-li-loading { background: #2a2826; color: #7a756b; border-color: #3d3b37; }
+  .sloptotal-li-bar { background: rgba(255, 255, 255, 0.1); }
+  .sloptotal-li-detail-bar { background: rgba(255, 255, 255, 0.08); }
+  .sloptotal-li-detail-blend { background: rgba(255, 255, 255, 0.06); }
+  .sloptotal-li-details.sloptotal-li-high { background: #301012; border-color: #6b2226; }
+  .sloptotal-li-details.sloptotal-li-medium { background: #302808; border-color: #6b5520; }
+  .sloptotal-li-details.sloptotal-li-low { background: #142a1a; border-color: #2d5a38; }
+  .sloptotal-li-details.sloptotal-li-safe { background: #102820; border-color: #255a40; }
+}

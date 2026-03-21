@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SlopTotal{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Free AI content detector. Analyse any text or URL with 23 independent detection engines running locally. No data sent to third parties.{% endblock %}">
+    <meta name="theme-color" content="#1a1a18">
+    <link rel="canonical" href="{% block canonical %}https://sloptotal.com{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}SlopTotal — AI Content Forensics{% endblock %}">
+    <meta property="og:description" content="Scan suspicious text with 23 detection engines. Free, local, private.">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Instrument+Serif:ital@0;1&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="/" class="logo" aria-label="SlopTotal home">
+                <span class="logo-slop">SLOP</span><span class="logo-total">TOTAL</span>
+            </a>
+            <nav class="header-nav" aria-label="Main">
+                <span class="nav-stat"><strong>23</strong> engines</span>
+                <span class="nav-divider"></span>
+                <span class="nav-stat">local analysis</span>
+                <span class="nav-divider"></span>
+                <span class="nav-stat">free &amp; private</span>
+            </nav>
+        </div>
+    </header>
+    <div class="ticker" id="ticker" aria-label="Recent scans" style="display:none;">
+        <div class="ticker-label">
+            <span class="ticker-dot"></span>
+            Recent
+        </div>
+        <div class="ticker-track">
+            <div class="ticker-scroll" id="ticker-scroll"></div>
+        </div>
+    </div>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <div class="footer-inner">
+            <span class="footer-brand">SlopTotal</span>
+            <span class="footer-sep">&mdash;</span>
+            <span>23 independent detection engines</span>
+            <span class="footer-sep">&mdash;</span>
+            <span>all analysis runs locally on our servers</span>
+            <span class="footer-sep">&mdash;</span>
+            <span>&copy; 2025&ndash;2026</span>
+        </div>
+    </footer>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

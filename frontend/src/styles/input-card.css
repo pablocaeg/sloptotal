@@ -1,0 +1,228 @@
+/* ============ INPUT CARD ============ */
+.input-card {
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 48px;
+    box-shadow:
+        0 1px 2px rgba(0,0,0,0.04),
+        0 4px 16px rgba(0,0,0,0.04);
+    animation: fadeUp 0.6s var(--ease-out) 0.3s both;
+}
+
+/* Hero variant */
+.input-card--hero {
+    background: #fff;
+    border: 2px solid var(--ink);
+    border-radius: 10px;
+    box-shadow:
+        0 2px 4px rgba(0,0,0,0.06),
+        0 8px 32px rgba(0,0,0,0.08),
+        0 0 0 1px rgba(0,0,0,0.02);
+    margin-bottom: 56px;
+}
+.input-card--hero .tabs {
+    background: var(--ink);
+    border-bottom: none;
+    padding: 0 8px;
+}
+.input-card--hero .tab {
+    color: rgba(255,255,255,0.5);
+    padding: 14px 22px;
+    font-size: 14px;
+}
+.input-card--hero .tab svg { stroke: currentColor; }
+.input-card--hero .tab:hover { color: rgba(255,255,255,0.85); }
+.input-card--hero .tab.active { color: #fff; }
+.input-card--hero .tab.active::after {
+    background: var(--c-accent);
+    bottom: 0;
+    height: 3px;
+    left: 8px;
+    right: 8px;
+    border-radius: 3px 3px 0 0;
+}
+.input-card--hero form {
+    padding: 24px 24px 28px;
+}
+.input-card--hero input[type="url"],
+.input-card--hero textarea {
+    font-size: 16px;
+    padding: 16px 18px;
+    border: 2px solid var(--rule);
+    border-radius: 6px;
+    background: var(--cream);
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.input-card--hero input[type="url"]:focus,
+.input-card--hero textarea:focus {
+    border-color: var(--ink);
+    box-shadow: 0 0 0 3px rgba(26,26,24,0.08);
+    background: #fff;
+}
+.input-card--hero textarea {
+    min-height: 150px;
+}
+.input-card--hero #submit-btn,
+.input-card--hero .submit-btn {
+    padding: 14px 32px;
+    font-size: 15px;
+    border-radius: 6px;
+}
+.input-card--hero .form-bottom {
+    margin-top: 18px;
+}
+
+/* ---- Tabs ---- */
+.tabs {
+    display: flex;
+    position: relative;
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper-warm);
+    padding: 0 4px;
+}
+.tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: var(--f-body);
+    transition: color 0.25s;
+    position: relative;
+    z-index: 1;
+}
+.tab svg { opacity: 0.5; transition: opacity 0.25s; }
+.tab:hover { color: var(--slate); }
+.tab:hover svg { opacity: 0.8; }
+.tab.active { color: var(--ink); }
+.tab.active svg { opacity: 1; }
+.tab.active::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 12px;
+    right: 12px;
+    height: 2px;
+    background: var(--c-accent);
+    border-radius: 2px 2px 0 0;
+    animation: tabSlide 0.3s var(--ease-out);
+}
+
+@keyframes tabSlide {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.input-card form { padding: 16px 20px 20px; }
+
+input[type="url"], textarea {
+    width: 100%;
+    padding: 12px 14px;
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    color: var(--ink);
+    font-size: 14px;
+    font-family: var(--f-mono);
+    font-weight: 400;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+input[type="url"]:focus, textarea:focus {
+    border-color: var(--c-accent-muted);
+    box-shadow: 0 0 0 3px rgba(181,40,46,0.08);
+}
+input[type="url"]::placeholder, textarea::placeholder {
+    color: var(--muted);
+    font-weight: 300;
+}
+textarea { resize: vertical; min-height: 120px; font-family: var(--f-body); }
+
+.form-bottom {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+}
+.form-hint {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 300;
+}
+
+button[type="submit"], .submit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: var(--ink);
+    border: 1px solid var(--ink);
+    border-radius: 4px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: var(--f-body);
+    transition: all 0.25s var(--ease-out);
+    white-space: nowrap;
+}
+button[type="submit"]:hover, .submit-btn:hover {
+    background: var(--c-accent);
+    border-color: var(--c-accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(181,40,46,0.2);
+}
+button[type="submit"]:active, .submit-btn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+button[type="submit"]:disabled, .submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-text { display: inline-flex; align-items: center; gap: 6px; }
+.btn-arrow { transition: transform 0.25s var(--ease-out); }
+.submit-btn:hover .btn-arrow { transform: translateX(3px); }
+
+.spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    vertical-align: middle;
+}
+
+/* ---- Mobile ---- */
+@media (max-width: 700px) {
+    .input-card--hero { margin-bottom: 36px; }
+    .input-card--hero .tab { padding: 16px 20px; min-height: 48px; }
+}
+
+@media (max-width: 480px) {
+    .input-card--hero form { padding: 16px 14px 20px; }
+    .input-card--hero textarea { min-height: 120px; }
+    .input-card--hero input[type="url"],
+    .input-card--hero textarea { padding: 12px 14px; }
+    .input-card--hero .submit-btn,
+    .input-card--hero #submit-btn { width: 100%; justify-content: center; padding: 14px; font-size: 14px; }
+    .form-bottom { flex-direction: column; align-items: stretch; gap: 10px; }
+    .form-hint { text-align: center; }
+    .input-card--hero .tab { padding: 14px 16px; flex: 1; justify-content: center; }
+}

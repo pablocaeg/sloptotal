@@ -1,0 +1,23 @@
+{
+  "mage": {
+    "n": 200,
+    "best_f1": 0.7407,
+    "best_threshold": 0.4,
+    "human_mean_score": 39.6,
+    "ai_mean_score": 51.9
+  },
+  "edge_cases": {
+    "n": 23,
+    "best_f1": 0.7059,
+    "best_threshold": 0.6,
+    "human_mean_score": 46.5,
+    "ai_mean_score": 65.7
+  },
+  "combined": {
+    "n": 223,
+    "best_f1": 0.7286,
+    "best_threshold": 0.4,
+    "human_mean_score": 40.5,
+    "ai_mean_score": 52.9
+  }
+}

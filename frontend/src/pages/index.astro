@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import EngineGrid from '../components/EngineGrid.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import WhatIsSlop from '../components/WhatIsSlop.astro';
+import ScoreGuide from '../components/ScoreGuide.astro';
+import AnalyzeForm from '../components/AnalyzeForm';
+import TickerClient from '../components/TickerClient';
+import '../styles/input-card.css';
+import '../styles/queue.css';
+---
+
+<Base title="SlopTotal — Free AI Content Detector | 23 Detection Engines">
+    <TickerClient client:idle slot="ticker" />
+    <Hero />
+    <AnalyzeForm client:load />
+    <EngineGrid />
+    <HowItWorks />
+    <WhatIsSlop />
+    <ScoreGuide />
+</Base>

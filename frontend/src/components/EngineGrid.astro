@@ -1,0 +1,30 @@
+---
+import '../styles/engines.css';
+import { engines } from '../lib/engines';
+---
+
+<section class="engines-section" aria-labelledby="engines-heading">
+    <div class="section-header">
+        <h2 id="engines-heading">Detection Engines</h2>
+        <span class="engine-count">23</span>
+    </div>
+    <p class="engines-desc">Each engine uses a different methodology. Results are weighted and combined into a single forensic score.</p>
+    <div class="engine-grid">
+        {engines.map((engine, i) => (
+            engine.url ? (
+                <a href={engine.url} target="_blank" rel="noopener" class="engine-card" style={`--i:${i}`}>
+                    <span class="ec-code">{engine.code}</span>
+                    <span class="ec-name">{engine.name}</span>
+                    <span class="ec-type">{engine.type}</span>
+                    <span class="ec-link" aria-hidden="true">&nearr;</span>
+                </a>
+            ) : (
+                <div class="engine-card" style={`--i:${i}`}>
+                    <span class="ec-code">{engine.code}</span>
+                    <span class="ec-name">{engine.name}</span>
+                    <span class="ec-type">{engine.type}</span>
+                </div>
+            )
+        ))}
+    </div>
+</section>

@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+import '../styles/hero.css';
+---
+
+<Base title="Privacy Policy — SlopTotal" description="How SlopTotal handles your data. No tracking, no third-party sharing, local analysis." canonical="https://sloptotal.com/privacy">
+    <section class="legal-page">
+        <h1>Privacy Policy</h1>
+        <p class="legal-updated">Last updated: February 2026</p>
+
+        <h2>What we collect</h2>
+        <p>
+            When you submit text or a URL for analysis, we process it on our servers using local AI
+            detection engines. We do <strong>not</strong> send your submitted content to any third-party
+            services — all 23 engines run locally on our infrastructure.
+        </p>
+
+        <h2>Data retention</h2>
+        <p>
+            Analysis reports are stored temporarily so they can be viewed and shared via their unique
+            report URL. Reports are automatically deleted after <strong>30 days</strong>. We do not
+            keep copies of the original submitted text beyond what is shown in the report excerpt.
+        </p>
+
+        <h2>Cookies &amp; tracking</h2>
+        <p>
+            SlopTotal does not use cookies, analytics trackers, or fingerprinting. We do not run
+            Google Analytics, Facebook Pixel, or any equivalent. The site uses no third-party
+            JavaScript except Google Fonts for typography.
+        </p>
+
+        <h2>Chrome extension</h2>
+        <p>
+            The SlopTotal Chrome extension communicates only with the API server you configure
+            (defaults to your own local instance). It does not transmit data to any other endpoint.
+            The extension stores your preferences (toggle states, API URL) in local browser storage
+            only.
+        </p>
+
+        <h2>Rate limiting</h2>
+        <p>
+            We apply rate limiting to prevent abuse. Your IP address may be processed
+            for this purpose. The website is hosted on GitHub Pages.</p>
+
+        <h2>Contact</h2>
+        <p>
+            For privacy questions, open an issue on the project's GitHub repository or email the
+            maintainer at the address listed there.
+        </p>
+    </section>
+</Base>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <svg class="brand-icon" viewBox="0 0 20 20" width="18" height="18">
+          <circle cx="10" cy="10" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="10" cy="10" r="4" fill="currentColor" opacity="0.3"/>
+          <circle cx="10" cy="10" r="2" fill="currentColor"/>
+        </svg>
+        <span class="brand-slop">SLOP</span><span class="brand-total">TOTAL</span>
+      </div>
+      <div class="header-right">
+        <span class="conn-label" id="conn-label">offline</span>
+        <span class="conn" id="conn-dot" title="Checking..."></span>
+      </div>
+    </header>
+
+    <!-- Page score ring -->
+    <div class="score-ring-card" id="status-card">
+      <div class="score-ring">
+        <svg viewBox="0 0 60 60" class="ring-svg">
+          <circle cx="30" cy="30" r="26" class="ring-bg"/>
+          <circle cx="30" cy="30" r="26" class="ring-fill" id="ring-fill"
+            stroke-dasharray="163.36" stroke-dashoffset="163.36"/>
+        </svg>
+        <span class="score-ring-num" id="status-count">--</span>
+      </div>
+      <div class="score-ring-info">
+        <span class="score-ring-title" id="status-text">checking page...</span>
+        <span class="score-ring-sub">AI-flagged items detected on this page</span>
+      </div>
+    </div>
+
+    <!-- Scan button -->
+    <button id="scan-btn" class="scan-btn">
+      <svg viewBox="0 0 16 16" width="14" height="14" class="scan-icon">
+        <path d="M1 3V1h3M13 1h2v2M15 13v2h-2M3 15H1v-2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="4" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      Scan Selected Text
+    </button>
+    <div class="scan-status" id="scan-status"></div>
+
+    <!-- Results -->
+    <div class="results" id="results" style="display:none">
+      <div class="results-header">
+        <span class="results-verdict" id="verdict"></span>
+        <span class="results-score" id="score-display"></span>
+      </div>
+      <div class="results-bar">
+        <div class="results-fill" id="results-fill"></div>
+      </div>
+      <div class="engine-rows" id="engine-rows"></div>
+    </div>
+
+    <!-- Settings -->
+    <div class="settings">
+      <button class="settings-toggle" id="settings-toggle">
+        <svg viewBox="0 0 16 16" width="12" height="12">
+          <circle cx="8" cy="3" r="1.5" fill="currentColor"/>
+          <circle cx="8" cy="8" r="1.5" fill="currentColor"/>
+          <circle cx="8" cy="13" r="1.5" fill="currentColor"/>
+        </svg>
+        Settings
+        <span class="settings-chevron" id="settings-chevron">&#9660;</span>
+      </button>
+      <div class="settings-panel" id="settings-panel" style="display:none">
+        <label class="toggle-row" title="Scan Google search results">
+          <div class="toggle-info">
+            <span class="toggle-label">Google Search</span>
+            <span class="toggle-desc">Scan search result snippets</span>
+          </div>
+          <input type="checkbox" id="t-google" class="toggle-switch" checked>
+        </label>
+        <label class="toggle-row" title="Scan LinkedIn feed posts">
+          <div class="toggle-info">
+            <span class="toggle-label">LinkedIn</span>
+            <span class="toggle-desc">Scan feed &amp; search posts</span>
+          </div>
+          <input type="checkbox" id="t-linkedin" class="toggle-switch" checked>
+        </label>
+        <label class="toggle-row" title="Hide sponsored/promoted posts on LinkedIn">
+          <div class="toggle-info">
+            <span class="toggle-label">Hide Sponsored</span>
+            <span class="toggle-desc">Remove promoted LinkedIn posts</span>
+          </div>
+          <input type="checkbox" id="t-sponsored" class="toggle-switch" checked>
+        </label>
+        <label class="toggle-row" title="Auto-analyze every page you visit with all 23 engines">
+          <div class="toggle-info">
+            <span class="toggle-label">Auto-Analyze Pages</span>
+            <span class="toggle-desc">Full 23-engine scan on page load</span>
+          </div>
+          <input type="checkbox" id="t-autoanalyze" class="toggle-switch" checked>
+        </label>
+        <div class="server-row">
+          <input type="text" id="api-url" placeholder="http://localhost:8000" spellcheck="false">
+          <button id="save-btn">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

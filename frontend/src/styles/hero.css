@@ -1,0 +1,363 @@
+/* ============ HERO ============ */
+.hero {
+    padding: 56px 0 40px;
+    text-align: center;
+}
+.hero-badge {
+    display: inline-block;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--c-accent);
+    border: 1px solid var(--c-accent-muted);
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    animation: fadeUp 0.6s var(--ease-out) both;
+}
+.hero h1 {
+    font-family: var(--f-display);
+    font-weight: 400;
+    font-size: clamp(32px, 5.5vw, 52px);
+    line-height: 1.15;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    animation: fadeUp 0.6s var(--ease-out) 0.1s both;
+}
+.hero-line-1, .hero-line-2 { display: block; }
+.hero h1 em {
+    font-style: italic;
+    color: var(--c-accent);
+}
+.hero-sub {
+    margin-top: 16px;
+    font-size: 15px;
+    color: var(--dim);
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.65;
+    font-weight: 300;
+    animation: fadeUp 0.6s var(--ease-out) 0.2s both;
+}
+
+/* ============ HOW IT WORKS ============ */
+.how-section {
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s var(--ease-out) 0.5s both;
+}
+.how-section h2 {
+    font-family: var(--f-display);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 20px;
+}
+.how-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+.how-step {
+    background: var(--cream);
+    padding: 24px 20px;
+}
+.step-num {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--c-accent);
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+}
+.how-step h3 {
+    font-family: var(--f-display);
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 6px;
+}
+.how-step p {
+    font-size: 13px;
+    color: var(--dim);
+    line-height: 1.6;
+    font-weight: 300;
+}
+
+/* ============ WHAT IS SLOP ============ */
+.slop-section {
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s var(--ease-out) 0.6s both;
+}
+.slop-header {
+    margin-bottom: 16px;
+}
+.slop-label {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--c-accent);
+    margin-bottom: 6px;
+}
+.slop-header h2 {
+    font-family: var(--f-display);
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+}
+.slop-header h2 em {
+    font-style: italic;
+    color: var(--c-accent);
+}
+.slop-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+.slop-main {
+    background: var(--cream);
+    padding: 24px;
+}
+.slop-main p {
+    font-size: 14px;
+    color: var(--slate);
+    line-height: 1.7;
+    font-weight: 300;
+    margin-bottom: 14px;
+}
+.slop-main p:last-child { margin-bottom: 0; }
+.slop-main strong {
+    color: var(--ink);
+    font-weight: 600;
+}
+.slop-main em {
+    font-style: italic;
+    color: var(--dim);
+}
+.slop-signals {
+    background: #fff;
+    padding: 24px;
+}
+.slop-signals h3 {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 16px;
+}
+.slop-signals ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.slop-signals li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+.signal-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    position: relative;
+    margin-top: 1px;
+}
+.signal-icon::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 13px;
+    line-height: 1;
+}
+.signal-icon--phrase { background: var(--c-slop-bg); }
+.signal-icon--phrase::after {
+    content: "\201C";
+    color: var(--c-slop);
+    font-family: var(--f-display);
+    font-size: 18px;
+    font-style: italic;
+}
+.signal-icon--structure { background: var(--c-danger-bg); }
+.signal-icon--structure::after {
+    content: "#";
+    color: var(--c-danger);
+    font-family: var(--f-mono);
+    font-weight: 500;
+    font-size: 13px;
+}
+.signal-icon--tone { background: var(--c-warn-bg); }
+.signal-icon--tone::after {
+    content: "~";
+    color: var(--c-warn);
+    font-family: var(--f-mono);
+    font-weight: 500;
+    font-size: 15px;
+}
+.signal-icon--stats { background: var(--c-clean-bg); }
+.signal-icon--stats::after {
+    content: "\03C3";
+    color: var(--c-clean);
+    font-size: 14px;
+}
+.slop-signals li strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 2px;
+}
+.slop-signals li span {
+    font-size: 12px;
+    color: var(--dim);
+    font-weight: 300;
+    line-height: 1.5;
+}
+
+/* ============ SCORE GUIDE ============ */
+.score-section {
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s var(--ease-out) 0.7s both;
+}
+.score-desc {
+    font-size: 13px;
+    color: var(--dim);
+    margin-bottom: 16px;
+    font-weight: 300;
+}
+.score-guide {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+.sg-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 18px;
+    background: var(--cream);
+    transition: background 0.2s;
+}
+.sg-item:hover { background: #fff; }
+.sg-range {
+    font-family: var(--f-display);
+    font-style: italic;
+    font-size: 20px;
+    font-weight: 400;
+    min-width: 64px;
+    text-align: center;
+    line-height: 1;
+    flex-shrink: 0;
+    padding: 6px 0;
+}
+.sg-info {
+    flex: 1;
+    min-width: 0;
+}
+.sg-info strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 2px;
+}
+.sg-info span {
+    font-size: 12px;
+    color: var(--dim);
+    font-weight: 300;
+    line-height: 1.5;
+}
+.sg-clean .sg-range { color: #24713c; }
+.sg-clean { border-left: 3px solid var(--c-clean); }
+.sg-low .sg-range { color: #3e7a2c; }
+.sg-low { border-left: 3px solid var(--c-low); }
+.sg-warn .sg-range { color: #8c6310; }
+.sg-warn { border-left: 3px solid var(--c-warn); }
+.sg-danger .sg-range { color: #a14d14; }
+.sg-danger { border-left: 3px solid var(--c-danger); }
+.sg-slop .sg-range { color: var(--c-slop); }
+.sg-slop { border-left: 3px solid var(--c-slop); }
+
+/* ============ LEGAL PAGES ============ */
+.legal-page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 48px 0 40px;
+}
+.legal-page h1 {
+    font-family: var(--f-display);
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 4px;
+}
+.legal-updated {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 32px;
+}
+.legal-page h2 {
+    font-family: var(--f-body);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-top: 28px;
+    margin-bottom: 8px;
+}
+.legal-page p {
+    font-size: 14px;
+    color: var(--slate);
+    line-height: 1.7;
+    font-weight: 300;
+    margin-bottom: 12px;
+}
+.legal-page ul {
+    padding-left: 20px;
+    margin-bottom: 12px;
+}
+.legal-page li {
+    font-size: 14px;
+    color: var(--slate);
+    line-height: 1.7;
+    font-weight: 300;
+    margin-bottom: 4px;
+}
+.legal-page strong {
+    font-weight: 600;
+    color: var(--ink);
+}
+.legal-page a {
+    color: var(--c-accent);
+}
+
+@media (max-width: 700px) {
+    .hero { padding: 36px 0 28px; }
+    .hero h1 { font-size: 28px; }
+    .hero-sub { font-size: 14px; }
+    .how-steps { grid-template-columns: 1fr; }
+    .slop-content { grid-template-columns: 1fr; }
+    .sg-range { min-width: 52px; font-size: 18px; }
+    .legal-page { padding: 32px 0 28px; }
+    .legal-page h1 { font-size: 26px; }
+}
