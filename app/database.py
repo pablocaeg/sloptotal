@@ -133,6 +133,23 @@ async def init_database() -> None:
         log.info("Database initialized successfully")
 
 
+async def purge_invalid_cached_reports() -> int:
+    """Delete reports whose engine results contain load/runtime failures."""
+    async with get_db() as db:
+        cursor = await db.execute(
+            """
+            SELECT DISTINCT report_id FROM engine_results
+            WHERE lower(details) LIKE '%model loading failed%'
+               OR lower(details) LIKE '%engine error:%'
+            """
+        )
+        report_ids = [row[0] for row in await cursor.fetchall()]
+        for report_id in report_ids:
+            await db.execute("DELETE FROM reports WHERE id = ?", (report_id,))
+        await db.commit()
+        return len(report_ids)
+
+
 async def check_database_health() -> dict[str, Any]:
     """Check database health for monitoring."""
     try:

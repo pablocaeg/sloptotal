@@ -12,7 +12,7 @@ from app.schemas import (
     score_to_engine_verdict,
 )
 from app.config import ENGINE_WEIGHTS, CACHE_ENABLED
-from app.cache import compute_text_hash
+from app.cache import compute_text_hash, is_cacheable_report
 from app.database import (
     create_report,
     get_report as db_get_report,
@@ -210,7 +210,7 @@ async def start_analysis(
     # Check cache first
     if CACHE_ENABLED:
         cached_report = await get_report_by_hash(text_hash)
-        if cached_report:
+        if cached_report and is_cacheable_report(cached_report):
             log.debug(f"Cache hit for hash {text_hash[:16]}...")
             return cached_report.id, True
 
@@ -420,7 +420,7 @@ async def _analyze_text_inner(
     # Check cache first
     if CACHE_ENABLED:
         cached_report = await get_report_by_hash(text_hash)
-        if cached_report:
+        if cached_report and is_cacheable_report(cached_report):
             log.debug(f"Cache hit for API request (hash {text_hash[:16]}...)")
             return cached_report
 
