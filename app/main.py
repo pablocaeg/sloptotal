@@ -19,7 +19,11 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from app.config import TEMPLATES_DIR, STATIC_DIR
-from app.database import init_database, check_database_health, purge_invalid_cached_reports
+from app.database import (
+    init_database,
+    check_database_health,
+    purge_invalid_cached_reports,
+)
 from app.analyzer import get_engine_list, shutdown_analyzer, _max_full, _max_snippet
 from app.queue_manager import QueueManager
 
