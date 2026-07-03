@@ -19,7 +19,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from app.config import TEMPLATES_DIR, STATIC_DIR
-from app.database import init_database, check_database_health
+from app.database import init_database, check_database_health, purge_invalid_cached_reports
 from app.analyzer import get_engine_list, shutdown_analyzer, _max_full, _max_snippet
 from app.queue_manager import QueueManager
 
@@ -42,6 +42,9 @@ async def lifespan(app: FastAPI):
     print(format_banner(_hw, _profile, _config))
     log.info(f"Starting SlopTotal (profile={_profile}, device={get_device()})...")
     await init_database()
+    purged = await purge_invalid_cached_reports()
+    if purged:
+        log.info(f"Purged {purged} stale cached report(s) with engine load failures")
     _preload_models()
 
     queue_manager = QueueManager(

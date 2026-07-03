@@ -14,12 +14,27 @@ SlopTotal runs 23 AI detection engines in parallel -- neural classifiers, statis
 
 ## Quick Start
 
+### Requirements
+
+- **Python 3.10+** (3.11 recommended — macOS ships 3.9, which is too old)
+- **4 GB RAM** minimum (lite profile); **8 GB** standard; **16 GB+** for best CPU throughput
+- **No GPU required** — all engines run on CPU; CUDA optional for faster inference
+- ~2 GB disk for HuggingFace model cache on first run
+
+### Install
+
 ```bash
 # Clone and install
 git clone https://github.com/pablocaeg/sloptotal.git
 cd sloptotal
-python -m venv venv && source venv/bin/activate
+
+# Use Python 3.10+ explicitly (example: Homebrew on macOS)
+python3.11 -m venv venv && source venv/bin/activate
+pip install --upgrade pip
 pip install -r requirements.txt
+
+# Optional: copy env template
+cp .env.example .env
 
 # Start (auto-detects hardware, downloads models on first run)
 ./start.sh
@@ -28,6 +43,8 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
 Open `http://localhost:8000` in your browser.
+
+> **Re-scanning the same URL?** Results are cached by content hash. After upgrading dependencies, stale failure reports are purged automatically on startup. Run a fresh scan if you previously saw "Model loading failed".
 
 ### Docker
 
@@ -147,11 +164,29 @@ The final score is **calibrated**, not a simple average. Key principles:
 
 ## Hardware Requirements
 
+SlopTotal auto-detects CPU, RAM, and GPU on startup and picks a profile (`lite`, `standard`, or `performance`).
+
 | Profile | RAM | CPU | GPU | Notes |
 |---------|-----|-----|-----|-------|
-| Lite | 4GB | 2 cores | None | Runs all engines, slower |
-| Standard | 8GB | 4 cores | None | Recommended |
-| Performance | 16GB+ | 6+ cores | CUDA | Fastest, GPU-accelerated |
+| Lite | 4 GB | 2 cores | None | All engines, slower |
+| Standard | 8 GB | 4 cores | None | Default for most laptops |
+| Performance | 16 GB+ | 6+ cores | CUDA optional | Pool replicas, max throughput |
+
+**High-RAM CPU servers (e.g. 64 GB, no GPU):** you automatically get the `performance` profile. With no CUDA, all inference stays on CPU but you can run more concurrent workers and model pool replicas:
+
+```bash
+# Tune for a 64 GB CPU-only server
+export SLOPTOTAL_PROFILE=performance
+export SLOPTOTAL_TORCH_THREADS=8
+export SLOPTOTAL_FULL_WORKERS=8
+export SLOPTOTAL_SNIPPET_WORKERS=6
+export SLOPTOTAL_MAX_CONCURRENT_FULL=4
+export SLOPTOTAL_POOL_FAKESPOT=2
+export SLOPTOTAL_POOL_TMR=2
+./start.sh
+```
+
+First full scan downloads ~2 GB of models and may take 1–2 minutes while weights load; subsequent scans are much faster.
 
 Hardware is auto-detected on startup. Override with environment variables:
 
@@ -161,6 +196,42 @@ SLOPTOTAL_FULL_WORKERS=6
 SLOPTOTAL_SNIPPET_WORKERS=4
 SLOPTOTAL_MAX_CONCURRENT_FULL=3
 ```
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `TypeError: unsupported operand type(s) for \|` on startup | Python 3.9 or older | Use Python 3.10+ (`python3.11 -m venv venv`) |
+| `ModuleNotFoundError: No module named 'bs4'` | Missing dependency | `pip install -r requirements.txt` (includes `beautifulsoup4`) |
+| `Model loading failed` / tokenizer enum errors | Outdated `tokenizers` (<0.19) | `pip install -U 'transformers>=4.46' 'tokenizers>=0.21'` and restart |
+| Old scans still show engine failures | Cached report from before fix | Restart server (auto-purges stale cache) and run a **new** scan |
+| Engines stuck on "PENDING" in UI | Viewing an old report URL | Go to `/` and submit a fresh analysis |
+
+Verify all engines loaded:
+
+```bash
+curl -s http://localhost:8000/health | python3 -m json.tool
+# Expect: "status": "healthy", "engines": 23
+```
+
+## Roadmap
+
+See [TODO.md](TODO.md) for planned engines — including **Qwen** and **Gemma** classifiers and perplexity models optimized for high-RAM CPU servers.
+
+## Related Projects & Reading
+
+**Similar tools**
+- [distil-labs/distil-ai-slop-detector](https://github.com/distil-labs/distil-ai-slop-detector) — 270M Gemma model, runs in the browser
+- [Flamehaven01/AI-SLOP-Detector](https://github.com/Flamehaven01/AI-SLOP-Detector) — static analyzer for AI-generated *code* (complementary to text detection)
+- [GLTR](http://gltr.io/) — visual token-rank inspection (inspiration for our GLTR engine)
+
+**Papers & benchmarks**
+- [RAID benchmark](https://arxiv.org/abs/2405.07940) (ACL 2024) — adversarial AI text detection dataset; several SlopTotal engines are RAID-trained
+- [Detecting the Machine (2026)](https://arxiv.org/pdf/2603.17522) — cross-architecture detector benchmark; ensemble methods outperform single detectors
+- [EditLens / Greyscope](https://arxiv.org/abs/2510.03154) — human vs. AI-edited vs. AI-generated classification (candidate Qwen engine)
+
+**Guides**
+- [Detecting AI Slop: Techniques & Red Flags](https://www.glukhov.org/post/2025/12/ai-slop-detection/) — perplexity, classifiers, and ensemble approaches
 
 ## Chrome Extension
 

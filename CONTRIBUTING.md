@@ -28,17 +28,20 @@ Adding new AI detection engines is the most impactful contribution. See [How to 
 
 ### Backend
 
+**Requires Python 3.10+** (3.11 recommended).
+
 ```bash
 git clone https://github.com/pablocaeg/sloptotal.git
 cd sloptotal
-python -m venv venv && source venv/bin/activate
+python3.11 -m venv venv && source venv/bin/activate
+pip install --upgrade pip
 pip install -r requirements.txt
 
 # Start with auto-reload
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-Models (~2GB) download automatically on first run. Use `SLOPTOTAL_PROFILE=lite` for low-resource machines.
+Models (~2 GB) download automatically on first run. Use `SLOPTOTAL_PROFILE=lite` for low-resource machines, or `SLOPTOTAL_PROFILE=performance` with extra workers on high-RAM CPU servers (see README).
 
 ### Frontend
 
