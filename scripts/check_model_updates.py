@@ -154,7 +154,14 @@ def main() -> int:
                 "After updating, re-run the corpora and check the numbers in\n"
                 "tests/eval/FINDINGS.md still hold."
             )
-        elif not args.quiet:
+        elif args.quiet:
+            # Always emit one line in quiet mode. If "no drift" printed nothing,
+            # a silent log would be indistinguishable from the cron job not
+            # having run at all, which is the failure we most want to notice.
+            unreachable = sum(1 for r in rows if r["state"] == "unreachable")
+            note = f", {unreachable} unreachable" if unreachable else ""
+            print(f"OK: {len(rows) - unreachable}/{len(rows)} models current{note}")
+        else:
             print("\nAll models match their upstream main branch.")
 
     return 1 if drift else 0
