@@ -60,13 +60,24 @@ class BinocularsEngine(BaseEngine):
         ppl_observer = math.exp(ce_observer)
         ratio = ce_observer / ce_performer
 
-        # GPT-2 Medium + DistilGPT-2: AI ratio ~1.05-1.15, human ~1.20-1.35+
-        if ratio <= 1.08:
-            ratio_score = 1.0
-        elif ratio >= 1.30:
-            ratio_score = 0.0
-        else:
-            ratio_score = 1.0 - ((ratio - 1.08) / 0.22)
+        # Calibrated on 108 RAID samples (72 AI spanning gpt4, chatgpt,
+        # llama-chat, mistral-chat, cohere-chat and gpt3; 36 human), 2026-07-25:
+        #
+        #             p10     median    p90
+        #   AI       1.187    1.276    1.368
+        #   human    1.150    1.200    1.240
+        #
+        # A HIGHER observer/performer CE ratio indicates AI: the weak observer
+        # (DistilGPT-2) is disproportionately worse than the strong performer
+        # (GPT-2 Medium) on machine-generated text.
+        #
+        # The previous thresholds asserted the opposite ("AI ratio ~1.05-1.15,
+        # human ~1.20-1.35") AND ramped downwards, so this engine was
+        # anti-correlated with ground truth: AUC 0.160 over the corpus above. It
+        # was actively pushing AI text toward "human" and human text toward
+        # "AI". Ramping upward over the measured crossover gives AUC ~0.84.
+        LOW, HIGH = 1.17, 1.35
+        ratio_score = (ratio - LOW) / (HIGH - LOW)
 
         score = min(max(ratio_score, 0.0), 1.0)
 

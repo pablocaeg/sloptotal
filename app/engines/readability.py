@@ -83,15 +83,26 @@ class ReadabilityEngine(BaseEngine):
         stdev_fk = statistics.stdev(fk_scores)
         cv = stdev_fk / abs(mean_fk) if mean_fk != 0 else 0
 
-        # Low variance in readability = AI-like
-        # AI text CV typically 0.02-0.10, human text 0.10-0.40+
-        # Use stricter threshold to avoid flagging consistent human writing
-        if cv <= 0.05:
-            uniformity_score = 1.0
-        elif cv >= 0.20:
-            uniformity_score = 0.0
-        else:
-            uniformity_score = 1.0 - ((cv - 0.05) / 0.15)
+        # Calibrated on 108 RAID samples (72 AI, 36 human), 2026-07-25:
+        #
+        #              p10     median    p90
+        #   AI        0.289    0.713    2.254
+        #   human     0.182    0.548    1.269
+        #
+        # As with DivEye, both the direction and the range were wrong:
+        #
+        # 1. The premise -- AI keeps readability "unnaturally consistent", so a
+        #    LOW CV means AI -- is not what the data shows. AI text measured a
+        #    *higher* cross-paragraph Flesch CV than human text.
+        # 2. The old band (0.05-0.20) sat far below both distributions, so
+        #    virtually every input clamped to 0.0.
+        #
+        # Result was AUC 0.453, i.e. no usable signal. Separation remains weak
+        # after the fix, partly because short single-paragraph inputs fall into
+        # the arbitrary word-chunk fallback above, which is noisy -- hence the
+        # very wide AI p90. This engine keeps a correspondingly small weight.
+        CV_LOW, CV_HIGH = 0.35, 1.30
+        uniformity_score = (cv - CV_LOW) / (CV_HIGH - CV_LOW)
 
         final_score = min(max(uniformity_score, 0.0), 1.0)
 

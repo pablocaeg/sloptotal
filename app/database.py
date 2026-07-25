@@ -1,6 +1,7 @@
 """Database connection management and CRUD operations for SQLite."""
 
 import logging
+import os
 import threading
 import sqlite3
 from contextlib import asynccontextmanager
@@ -13,6 +14,10 @@ from app.config import DATABASE_PATH, DATA_DIR, DB_TIMEOUT, DB_BUSY_TIMEOUT
 from app.schemas import AnalysisReport, EngineResult, Verdict
 
 log = logging.getLogger("sloptotal.database")
+
+# Retention window for stored reports, in days. /privacy promises 30 days; set
+# SLOPTOTAL_RETENTION_DAYS=0 to disable purging (self-hosters who want history).
+REPORT_RETENTION_DAYS = int(os.getenv("SLOPTOTAL_RETENTION_DAYS", "30"))
 
 # Thread-local storage for sync connections (used in ThreadPoolExecutor callbacks)
 _thread_local = threading.local()
@@ -131,6 +136,32 @@ async def init_database() -> None:
 
         await db.commit()
         log.info("Database initialized successfully")
+
+
+async def purge_expired_reports(retention_days: int | None = None) -> int:
+    """Delete reports past the published retention window.
+
+    /privacy and the localised landing pages state that reports are
+    automatically deleted after 30 days. Nothing implemented that: the only
+    purge in the codebase removed reports whose engines had failed to load, so
+    reports were in fact retained forever and the published policy was untrue.
+
+    `created_at` is written by SQLite's CURRENT_TIMESTAMP (UTC) and
+    datetime('now', ...) is also UTC, so no timezone conversion is needed.
+    engine_results rows follow the report via ON DELETE CASCADE, which is
+    effective because get_db() sets PRAGMA foreign_keys=ON.
+    """
+    days = REPORT_RETENTION_DAYS if retention_days is None else int(retention_days)
+    if days <= 0:
+        return 0
+
+    async with get_db() as db:
+        cursor = await db.execute(
+            "DELETE FROM reports WHERE created_at < datetime('now', ?)",
+            (f"-{days} days",),
+        )
+        await db.commit()
+        return cursor.rowcount or 0
 
 
 async def purge_invalid_cached_reports() -> int:

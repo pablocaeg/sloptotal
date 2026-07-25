@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import os
 from contextlib import asynccontextmanager
@@ -23,6 +24,8 @@ from app.database import (
     init_database,
     check_database_health,
     purge_invalid_cached_reports,
+    purge_expired_reports,
+    REPORT_RETENTION_DAYS,
 )
 from app.analyzer import get_engine_list, shutdown_analyzer, _max_full, _max_snippet
 from app.queue_manager import QueueManager
@@ -49,6 +52,13 @@ async def lifespan(app: FastAPI):
     purged = await purge_invalid_cached_reports()
     if purged:
         log.info(f"Purged {purged} stale cached report(s) with engine load failures")
+
+    # Enforce the retention window promised on /privacy, at boot and then daily.
+    expired = await purge_expired_reports()
+    if expired:
+        log.info(f"Purged {expired} report(s) older than {REPORT_RETENTION_DAYS} days")
+    retention_task = asyncio.create_task(_retention_loop())
+
     _preload_models()
 
     queue_manager = QueueManager(
@@ -62,6 +72,7 @@ async def lifespan(app: FastAPI):
     log.info("SlopTotal started")
     yield
     log.info("Shutting down SlopTotal...")
+    retention_task.cancel()
     await queue_manager.stop()
     shutdown_analyzer()
     log.info("SlopTotal shutdown complete")
@@ -88,6 +99,27 @@ app.state.queue_manager = None  # set in lifespan
 app.include_router(web_router)
 app.include_router(api_router)
 app.include_router(queue_router)
+
+
+async def _retention_loop():
+    """Re-run the retention purge once a day for as long as the app is up.
+
+    A cron entry on the host would not survive a container rebuild, and this
+    process is already long-lived, so the schedule lives here. Errors are logged
+    and swallowed: a failed purge must never take the API down.
+    """
+    while True:
+        try:
+            await asyncio.sleep(24 * 60 * 60)
+            expired = await purge_expired_reports()
+            if expired:
+                log.info(
+                    f"Purged {expired} report(s) older than {REPORT_RETENTION_DAYS} days"
+                )
+        except asyncio.CancelledError:
+            raise
+        except Exception as e:
+            log.warning(f"Retention purge failed: {e}")
 
 
 def _preload_models():

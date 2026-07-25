@@ -468,13 +468,25 @@ async def api_analyze(request: Request, req: AnalyzeRequest):
 
 @router.get("/recent")
 async def api_recent():
-    """Return recent completed reports for the ticker."""
+    """Return anonymous activity for the homepage ticker.
+
+    This endpoint is unauthenticated and world-readable, so it deliberately
+    exposes NO submitted content and NO report ids.
+
+    It previously returned `id` alongside `source[:80]`, which let any visitor
+    poll it to harvest the first 80 characters of every scan run by anyone else
+    *and* collect valid report ids. Those ids feed /api/report/{id} -- also
+    unauthenticated -- which returns the full ~800 character excerpt plus every
+    engine result. People paste private drafts and student essays into this
+    tool, so the pair published user content to the world.
+
+    Report URLs remain shareable by whoever created them; they are simply no
+    longer enumerable from here.
+    """
     try:
         reports = await get_recent_reports(limit=10)
         return [
             {
-                "id": r.id,
-                "source": r.source[:80],
                 "source_type": r.source_type,
                 "overall_score": r.overall_score,
                 "overall_verdict": r.overall_verdict,
