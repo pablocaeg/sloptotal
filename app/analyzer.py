@@ -832,30 +832,54 @@ def _calculate_full_calibrated_score(
 
     score = calibrated
 
-    # Step 4: Unanimous-high skepticism
+    # Step 4: Unanimous-high skepticism — gated on the text actually looking human.
+    #
+    # This existed to stop formal human prose being confidently misread as AI.
+    # Measured on 2026-07-25 (tests/eval/), it did the opposite. The branch fired
+    # on 69 of 70 RAID AI samples and on 0 of 66 human samples (40 RAID human +
+    # 26 pre-1920 literary). Classifier agreement above 0.85 is not a symptom of
+    # a false positive; on this evidence it is the ensemble being right. Crushing
+    # those scores toward 0.45 is why overall sensitivity at the "Likely AI"
+    # threshold was only 47%, with news at 4/20.
+    #
+    # So the damping now additionally requires human writing markers in the text
+    # itself — contractions, first-person voice, slang — via _human_signal_score,
+    # which is negative when such markers are present. When four independent
+    # classifiers all say AI and the prose carries no human tells, we trust them.
+    #
+    # This cannot regress the literary false positives: those samples never
+    # reached this branch at all (0/26), so gating it leaves them untouched.
+    human_signal = _human_signal_score(text) if text else 0.0
+    looks_human = human_signal < -0.03
+
     ml_scores = [fakespot, tmr, bert, e5]
     min_ml = min(ml_scores)
     max_ml = max(ml_scores)
     spread = max_ml - min_ml
 
-    if min_ml > 0.85 and spread < 0.15:
-        if heuristic_signal > 0.3:
-            score = score * 0.55 + 0.50 * 0.45
-            confidence = "low"
-        else:
-            score = score * 0.25 + 0.45 * 0.75
-            confidence = "low"
-    elif min_ml > 0.75 and spread < 0.25:
-        if heuristic_signal > 0.3:
-            score = score * 0.75 + 0.50 * 0.25
-            confidence = "low"
-        else:
-            score = score * 0.55 + 0.45 * 0.45
-            confidence = "low"
+    if looks_human:
+        if min_ml > 0.85 and spread < 0.15:
+            if heuristic_signal > 0.3:
+                score = score * 0.55 + 0.50 * 0.45
+                confidence = "low"
+            else:
+                score = score * 0.25 + 0.45 * 0.75
+                confidence = "low"
+        elif min_ml > 0.75 and spread < 0.25:
+            if heuristic_signal > 0.3:
+                score = score * 0.75 + 0.50 * 0.25
+                confidence = "low"
+            else:
+                score = score * 0.55 + 0.45 * 0.45
+                confidence = "low"
 
-    # Step 4b: "No markers" penalty
+    # Step 4b: "No markers" penalty.
+    # Softened from 0.35 to 0.15. AI text does not have to contain stock phrases
+    # like "delve into" to be AI -- the plain-explainer style carries none -- and
+    # at 0.35 this was a second broad tax on correct detections stacked on top of
+    # Step 4. It is kept, weaker, as a genuine tiebreaker.
     if score > 0.55 and heuristic_signal < 0.05:
-        penalty = (score - 0.55) * 0.35
+        penalty = (score - 0.55) * 0.15
         score = score - penalty
         if confidence == "high":
             confidence = "medium"
