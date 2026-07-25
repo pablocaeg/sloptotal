@@ -103,6 +103,47 @@ of rank-based AUC alone.
 4. Only then lower the verdict threshold, targeting ≥90% sensitivity with
    ≤1/26 classics flagged.
 
+## Applied: unanimous-high skepticism was destroying sensitivity
+
+Separately from the weights, the largest single cause of missed detections was
+Step 4 of `_calculate_full_calibrated_score`. It existed to stop formal human
+prose being confidently misread as AI. Measured, it did the reverse — it fired on
+**69 of 70** RAID AI samples and **0 of 66** human samples (40 RAID human + 26
+literary). Four classifiers agreeing above 0.85 is not a false-positive symptom;
+on this evidence it is the ensemble being right. Pulling those scores toward 0.45
+compressed all AI output into roughly 45–59.
+
+It now additionally requires human writing markers in the text itself
+(contractions, first-person, slang) via `_human_signal_score`. The stacked
+"no markers" penalty was also softened from 0.35 to 0.15.
+
+Re-measured on both full corpora (110 and 26, no partial runs):
+
+| | AI mean | human mean | classics mean | sens @60 | spec @60 | classics ≥60 |
+|---|---|---|---|---|---|---|
+| before | 58.2 | 10.7 | 38.1 | 47% | 100% | 2/26 |
+| after | **67.5** | 10.7 | 38.2 | **61%** | 100% | 3/26 |
+
+Sensitivity at other cut points: @65 36%→51%, @70 16%→43%. Human and classics
+means are unchanged, as predicted — those samples never reached the branch, so
+gating it could not move them.
+
+**Threshold left at 60 deliberately.** The remaining options are all bad until
+Fakespot is dealt with: 55 gives 63% sensitivity but flags 8/26 classics, and 65
+gives 0 classics but only 51% sensitivity. Fixing Fakespot's literary bias is
+what unblocks lowering the threshold, so do that first, in the order above.
+
+Raw results: `results-*-20260725.json` (before) and
+`results-*-20260725-postcalibration.json` (after).
+
+### Measurement hazard
+
+Pushing to `master` auto-deploys and restarts the API container, which returns
+502s from nginx mid-run. An early version of the runner had no retries and
+silently completed with 23 of 110 rows, producing a plausible but wrong mean.
+`run_any.py` retries and exits non-zero on an incomplete run — use it, and do not
+push while measuring.
+
 ## Code detection is not supported
 
 `use-cases/code-detection` sells AI-code detection to "engineering leads". Both
