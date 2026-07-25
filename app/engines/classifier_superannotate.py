@@ -1,29 +1,71 @@
 import threading
 import torch
+import torch.nn as nn
 from transformers import (
-    RobertaTokenizer,
-    RobertaForSequenceClassification,
-    RobertaConfig,
+    AutoTokenizer,
+    AutoConfig,
+    AutoModel,
+    PreTrainedModel,
 )
 from app.engines.base import BaseEngine
 from app.schemas import EngineResult, score_to_engine_verdict
 
 _MODEL_NAME = "SuperAnnotate/ai-detector-low-fpr"
+_BASE_NAME = "FacebookAI/roberta-large"
 _model = None
 _tokenizer = None
 _lock = threading.Lock()
 
 
+class _SuperAnnotateDetector(PreTrainedModel):
+    """Matches the checkpoint's real layout: RoBERTa-large + a `dense` head.
+
+    The 391 tensors are `roberta.*` (389) plus `dense.weight` (1, 1024) and
+    `dense.bias` — a single-logit classifier over the <s> token, named `dense`
+    at the top level.
+
+    This must NOT be loaded with RobertaForSequenceClassification, which is what
+    this engine did. That class looks for `classifier.dense.*` and
+    `classifier.out_proj.*`, so the checkpoint's trained head was silently
+    discarded as UNEXPECTED and a fresh head randomly initialised in its place.
+
+    The consequence was worse than noise. Measured on 110 RAID samples across
+    news/books/poetry/abstracts, the engine scored AUC 0.037 -- almost perfectly
+    *inverted*, rating human text above AI -- while holding 6% of the ensemble
+    weight and being described as "optimized for low false-positive rate".
+
+    An abstracts-only corpus had shown AUC 1.000 for this engine, which is how
+    the fault stayed hidden; a random projection can rank one narrow domain well
+    by luck. Always evaluate across domains.
+
+    Loaded correctly it is one of the strongest engines, and it carries no bias
+    against archaic prose: AI slop 0.9995, Austen (1813) 0.0009,
+    Melville (1851) 0.0029.
+    """
+
+    config_class = AutoConfig
+
+    def __init__(self, config):
+        super().__init__(config)
+        # No pooler: the head reads the <s> hidden state directly.
+        self.roberta = AutoModel.from_config(config, add_pooling_layer=False)
+        self.dense = nn.Linear(config.hidden_size, 1)
+        self.post_init()
+
+    def forward(self, input_ids, attention_mask=None, **kwargs):
+        outputs = self.roberta(input_ids=input_ids, attention_mask=attention_mask)
+        cls = outputs.last_hidden_state[:, 0]  # <s>, RoBERTa's sequence summary
+        return self.dense(cls)
+
+
 def _load_model():
     global _model, _tokenizer
     if _model is None:
-        # Model config is missing model_type — use roberta-large config with num_labels=1
-        config = RobertaConfig.from_pretrained("FacebookAI/roberta-large", num_labels=1)
-        _tokenizer = RobertaTokenizer.from_pretrained("FacebookAI/roberta-large")
-        _model = RobertaForSequenceClassification.from_pretrained(
-            _MODEL_NAME,
-            config=config,
-        )
+        # The repo's config.json has no model_type, so the architecture cannot be
+        # inferred from it; take the base config and load the weights over it.
+        config = AutoConfig.from_pretrained(_BASE_NAME)
+        _tokenizer = AutoTokenizer.from_pretrained(_BASE_NAME)
+        _model = _SuperAnnotateDetector.from_pretrained(_MODEL_NAME, config=config)
         _model.eval()
     return _model, _tokenizer
 
@@ -31,8 +73,11 @@ def _load_model():
 def _score_chunk(text: str, model, tokenizer) -> float:
     inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=512)
     with torch.no_grad():
-        logits = model(**inputs).logits
-    # num_labels=1, label 0="GENERATED" — sigmoid = probability of AI-generated
+        logits = model(
+            input_ids=inputs["input_ids"],
+            attention_mask=inputs["attention_mask"],
+        )
+    # Single logit; config id2label is {0: "GENERATED"}, so sigmoid is P(AI).
     return torch.sigmoid(logits[0, 0]).item()
 
 

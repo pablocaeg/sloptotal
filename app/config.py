@@ -29,39 +29,66 @@ SCORE_SUSPICIOUS = 60
 SCORE_LIKELY_AI = 80
 
 # Engine weights for overall score (must sum to 1.0)
-# Weights based on MAGE + RAID empirical evaluation:
-#   Fakespot: best discriminator (human/AI gap=32%)
-#   E5/BERT-RAID: good but over-trigger on formal text (gap=7-10%)
-#   TMR: almost no discrimination (gap=1%)
-#   Linguistic/Formulaic: independent signal, catches AI phrases ML models miss
+#
+# Derived from measurement, not judgement — see tests/eval/FINDINGS.md.
+# Corpora: 110 RAID samples across news/books/poetry/abstracts (70 AI from
+# gpt4/chatgpt/llama-chat/mistral-chat, 40 human) plus 26 Project Gutenberg
+# chunks published 1532-1915, where any high score is a false positive by
+# construction. Measured 2026-07-25.
+#
+# weight is proportional to Somers' D (2*AUC - 1), multiplied by
+# (1 - literary_bias) where literary_bias is mean(classics) - mean(modern
+# human). TMR and BERT-tiny RAID are additionally damped 0.65x because they are
+# RAID-trained and the corpus is RAID, so their AUC is optimistic.
+#
+# What changed, and why the old table was wrong:
+#
+#   fakespot     0.13 -> 0.033  AUC 0.999 but literary bias +0.533: it scored
+#                               pre-1920 prose 0.645 vs 0.112 for modern human
+#                               text. It also anchored the whole calibration, so
+#                               that bias was amplified rather than averaged
+#                               out. It is now one voice among many.
+#   burstiness   0.09 -> 0.011  AUC 0.578, yet was joint-largest weight.
+#   linguistic   0.08 -> 0.030  AUC 0.713.
+#   log_rank     0.02 -> 0.059  AUC 0.909, zero literary bias.
+#   gltr         0.03 -> 0.058  AUC 0.904, zero literary bias.
+#   perplexity   0.02 -> 0.058  AUC 0.901, zero literary bias.
+#
+# The GPT-2 perplexity family was assumed to be what flags classics, the
+# intuition being that GPT-2 has memorised the canon so it reads as maximally
+# predictable. The data says the opposite: those engines score classics *lower*
+# than modern human text and are among the most dependable in the ensemble.
+#
+# superannotate is weighted top tier on its post-fix measurement (near-perfect
+# separation, no literary bias). Before its loading bug was fixed it measured
+# AUC 0.037 — inverted — while carrying 6% of the weight.
 ENGINE_WEIGHTS = {
-    # Tier A — Highest accuracy engines
-    "burstiness": 0.09,
-    "classifier_remodetect": 0.08,
-    "classifier_fakespot": 0.13,  # Best discriminator, gap=32%
-    "classifier_desklib": 0.08,  # DeBERTa-v3, trained on GPT-4/Claude
-    "classifier_openai": 0.06,
-    "linguistic": 0.08,  # Independent AI phrase signal
-    "formulaic": 0.07,  # Independent structural signal
-    # Tier B — Good accuracy
-    "classifier_superannotate": 0.06,  # RoBERTa-large, low FPR optimized
-    "fast_detectgpt": 0.04,
-    "cross_perplexity": 0.04,
-    "classifier_e5": 0.05,
-    "classifier_bert_raid": 0.04,
-    "gltr": 0.03,
-    # Tier C — Moderate accuracy, some false positives
-    "classifier_tmr": 0.02,  # Gap=1%, almost useless
-    "classifier_chatgpt": 0.03,
-    "perplexity": 0.02,
-    "log_rank": 0.02,
-    # Tier D — Low accuracy, kept for breadth
-    "binoculars": 0.02,
-    "diveye": 0.01,
-    "structural": 0.01,
-    "vocabulary": 0.01,
-    "readability": 0.005,
-    "sentiment": 0.005,
+    # Neural classifiers — strongest separation, no bias against archaic prose
+    "classifier_desklib": 0.0725,
+    "classifier_e5": 0.0722,
+    "classifier_superannotate": 0.0699,
+    "classifier_remodetect": 0.0639,
+    "classifier_chatgpt": 0.0476,
+    "classifier_tmr": 0.0470,  # damped: RAID-trained, RAID corpus
+    "classifier_bert_raid": 0.0410,  # damped: RAID-trained, RAID corpus
+    "classifier_openai": 0.0392,
+    "classifier_fakespot": 0.0326,  # capable, but biased against literary prose
+    # Statistical — consistently strong and, notably, no literary bias
+    "log_rank": 0.0592,
+    "gltr": 0.0584,
+    "perplexity": 0.0581,
+    "cross_perplexity": 0.0566,
+    "fast_detectgpt": 0.0557,
+    "binoculars": 0.0486,
+    "diveye": 0.0332,
+    # Linguistic heuristics — weak alone, kept for independent signal
+    "structural": 0.0486,
+    "linguistic": 0.0303,
+    "formulaic": 0.0283,
+    "vocabulary": 0.0117,
+    "readability": 0.0117,
+    "burstiness": 0.0105,
+    "sentiment": 0.0032,
 }
 
 # Minimum text length for analysis

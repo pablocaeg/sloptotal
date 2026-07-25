@@ -665,16 +665,24 @@ def _calculate_calibrated_score(
     results: dict[str, float], text: str = ""
 ) -> tuple[float, str]:
     """
-    Calculate calibrated score using Fakespot as primary anchor.
+    Calibrated score for the fast 4-classifier path (/api/quick-score).
 
-    Empirical engine accuracy (MAGE hard eval):
-      Fakespot: human=48%, AI=80% (gap=32%) — best discriminator
-      E5:       human=79%, AI=89% (gap=10%) — over-triggers on formal text
-      BERT:     human=77%, AI=84% (gap=7%)  — over-triggers on formal text
-      TMR:      human=80%, AI=81% (gap=1%)  — almost no discrimination
+    Measured on 110 RAID samples across news/books/poetry/abstracts plus 26
+    Project Gutenberg chunks from 1532-1915 (tests/eval/FINDINGS.md, 2026-07-25):
 
-    Strategy: Fakespot-dominant weighted average, then pull toward
-    uncertain when all engines agree on high scores (formal text problem).
+      engine     AUC      literary bias
+      E5         0.999     0.000
+      Fakespot   0.999    +0.533   <- worst literary bias of any engine
+      TMR        1.000*    0.000   (* RAID-trained on a RAID corpus: optimistic)
+      BERT-RAID  1.000*   +0.128   (* same caveat)
+
+    This supersedes the earlier MAGE-based ordering, which treated Fakespot as
+    the only reliable engine and TMR as near-useless. On this corpus all four
+    separate modern AI well; what distinguishes them is bias against archaic
+    prose. So Fakespot is one voice here, not the anchor.
+
+    Strategy: weighted consensus, then skepticism only when the text itself
+    carries human writing markers.
 
     Returns: (score 0-100, confidence: high/medium/low)
     """
@@ -683,32 +691,42 @@ def _calculate_calibrated_score(
     bert = results.get("classifier_bert_raid", 0.5)
     e5 = results.get("classifier_e5", 0.5)
 
-    others = [tmr, bert, e5]
-    others_avg = sum(others) / len(others) if others else 0.5
+    # ── Step 1: Weighted consensus of the four quick classifiers ──
+    #
+    # Previously Fakespot alone supplied 50-80% of this score, and when the other
+    # engines disagreed with a low Fakespot reading the result was hard-capped at
+    # 0.40 on the assumption that disagreement meant "formal human writing".
+    #
+    # Measurement (tests/eval/FINDINGS.md, 110 RAID + 26 Gutenberg samples) does
+    # not support that hierarchy. Fakespot is excellent on modern text
+    # (AUC 0.999) but has by far the worst bias against pre-1920 prose (+0.533,
+    # scoring literary text 0.645 vs 0.112 for modern human text). E5 matches it
+    # on accuracy (AUC 0.999) with no measurable literary bias at all.
+    #
+    # The full pipeline now anchors on the unbiased classifiers; this quick path
+    # only has these four available, so instead of restructuring it, Fakespot is
+    # demoted from anchor to equal-largest voice alongside E5. Weights mirror
+    # ENGINE_WEIGHTS: E5 highest, TMR and BERT-RAID damped for being RAID-trained
+    # and evaluated on RAID, Fakespot reduced for its literary bias.
+    weights = {"e5": 0.32, "fakespot": 0.28, "tmr": 0.22, "bert": 0.18}
+    score = (
+        e5 * weights["e5"]
+        + fakespot * weights["fakespot"]
+        + tmr * weights["tmr"]
+        + bert * weights["bert"]
+    )
 
-    # ── Step 1: Fakespot-dominant weighted score ──
-    if fakespot < 0.35:
-        # Fakespot confident human
-        if others_avg < 0.50:
-            score = fakespot * 0.50 + others_avg * 0.50
-            confidence = "high"
-        else:
-            # Others disagree — formal writing pattern, trust Fakespot
-            score = fakespot * 0.80 + others_avg * 0.20
-            score = min(score, 0.40)
-            confidence = "low"
-    elif fakespot > 0.75:
-        # Fakespot confident AI
-        if others_avg > 0.60:
-            score = fakespot * 0.50 + others_avg * 0.50
-            confidence = "high"
-        else:
-            score = fakespot * 0.60 + others_avg * 0.40
-            confidence = "medium"
+    # Confidence from agreement, not from one engine's certainty.
+    quick_scores = [fakespot, tmr, bert, e5]
+    quick_spread = max(quick_scores) - min(quick_scores)
+    if quick_spread < 0.20:
+        confidence = "high"
+    elif quick_spread < 0.45:
+        confidence = "medium"
     else:
-        # Fakespot uncertain (0.35-0.75)
-        score = fakespot * 0.60 + others_avg * 0.40
         confidence = "low"
+
+    others_avg = (tmr + bert + e5) / 3  # retained for the steps below
 
     # ── Step 2: Linguistic/formulaic signal ──
     # These detect AI-specific phrases ("delve", "multifaceted") and structural
@@ -717,40 +735,46 @@ def _calculate_calibrated_score(
     form_score = results.get("formulaic", 0.0)
     heuristic_signal = max(ling_score, form_score)  # 0.0-1.0
 
-    # ── Step 3: Agreement-based correction ──
-    # When ALL engines give very high scores (>0.85), this is suspicious
-    # of the formal-text false positive pattern. Apply skepticism.
+    # ── Step 3: Agreement-based correction, gated on the text looking human ──
+    #
+    # Same fault as the full pipeline: unanimous high classifier scores were
+    # treated as evidence of a formal-text false positive. Measured across 110
+    # RAID samples that pattern occurred on 69 of 70 AI samples and 0 of 66 human
+    # samples, so damping it only ever suppressed correct detections.
+    #
+    # The correction now also requires human writing markers in the text itself
+    # (contractions, first-person, slang) via _human_signal_score, which returns
+    # negative when present.
     all_scores = [fakespot, tmr, bert, e5]
     min_score = min(all_scores)
     max_score = max(all_scores)
     spread = max_score - min_score
 
-    if min_score > 0.85 and spread < 0.15:
-        # Suspiciously unanimous high scores — formal text pattern
-        # Use linguistic/formulaic to differentiate: real AI text has markers
-        if heuristic_signal > 0.3:
-            # Has AI linguistic markers — probably actually AI
-            score = score * 0.55 + 0.50 * 0.45
-            confidence = "low"
-        else:
-            # No AI markers — likely formal human text
-            score = score * 0.25 + 0.45 * 0.75
-            confidence = "low"
-    elif min_score > 0.75 and spread < 0.25:
-        if heuristic_signal > 0.3:
-            score = score * 0.75 + 0.50 * 0.25
-            confidence = "low"
-        else:
-            score = score * 0.55 + 0.45 * 0.45
-            confidence = "low"
+    looks_human = (_human_signal_score(text) < -0.03) if text else False
+
+    if looks_human:
+        if min_score > 0.85 and spread < 0.15:
+            # Unanimous high scores on text that reads human — be skeptical
+            if heuristic_signal > 0.3:
+                score = score * 0.55 + 0.50 * 0.45
+                confidence = "low"
+            else:
+                score = score * 0.25 + 0.45 * 0.75
+                confidence = "low"
+        elif min_score > 0.75 and spread < 0.25:
+            if heuristic_signal > 0.3:
+                score = score * 0.75 + 0.50 * 0.25
+                confidence = "low"
+            else:
+                score = score * 0.55 + 0.45 * 0.45
+                confidence = "low"
 
     # ── Step 3b: "No markers" penalty ──
-    # When score is high but NO AI markers detected, the ML classifiers
-    # are likely wrong. This catches cases where 3/4 classifiers trigger
-    # but the text has no linguistic/formulaic AI signal.
+    # Softened 0.35 -> 0.15, matching the full pipeline. AI text does not need to
+    # contain stock phrases to be AI, and stacking this on Step 3 taxed correct
+    # detections twice.
     if score > 0.55 and heuristic_signal < 0.05:
-        # High ML score but zero AI markers — penalize proportionally
-        penalty = (score - 0.55) * 0.35  # Reduce excess above 55% by 35%
+        penalty = (score - 0.55) * 0.15
         score = score - penalty
         if confidence == "high":
             confidence = "medium"
@@ -785,52 +809,68 @@ def _calculate_full_calibrated_score(
 
     baseline = (weighted_sum / weight_total) if weight_total > 0 else 0.5
 
-    # Step 2: Extract 4 hot classifier scores for calibration
-    fakespot = (
-        result_map["classifier_fakespot"].score
-        if "classifier_fakespot" in result_map
-        else 0.5
-    )
-    tmr = result_map["classifier_tmr"].score if "classifier_tmr" in result_map else 0.5
-    bert = (
-        result_map["classifier_bert_raid"].score
-        if "classifier_bert_raid" in result_map
-        else 0.5
-    )
-    e5 = result_map["classifier_e5"].score if "classifier_e5" in result_map else 0.5
+    # Step 2: Extract the classifiers used for calibration.
+    def _score_of(key: str, default: float = 0.5) -> float:
+        return result_map[key].score if key in result_map else default
 
     # Get linguistic/formulaic signal
     ling_score = result_map["linguistic"].score if "linguistic" in result_map else 0.0
     form_score = result_map["formulaic"].score if "formulaic" in result_map else 0.0
     heuristic_signal = max(ling_score, form_score)
 
-    # Step 3: Fakespot-dominant correction
-    # Blend between baseline (all 21 engines) and Fakespot-anchored calibration
-    others_avg = (tmr + bert + e5) / 3
+    # Step 3: Consensus of the classifiers that measured both accurate AND
+    # unbiased against archaic prose.
+    #
+    # This replaces a Fakespot-anchored blend, in which Fakespot alone supplied
+    # 35-60% of the pre-adjustment score. Fakespot separates modern AI almost
+    # perfectly (AUC 0.999) but carries a large bias against pre-1920 prose: it
+    # scored 26 Gutenberg chunks at 0.645 against 0.112 for modern human text,
+    # a bias of +0.533, the largest of any engine by a wide margin. Anchoring on
+    # it amplified that bias instead of averaging it away, which is why
+    # Machiavelli (1532) scored 62.5 and Kafka 62.4 — the single biggest
+    # credibility problem in the product.
+    #
+    # The anchor set is now the four classifiers with high AUC and no measurable
+    # literary bias. Fakespot still contributes through `baseline` via
+    # ENGINE_WEIGHTS, where its share is 0.033 rather than 0.13.
+    #
+    #   engine         AUC     literary bias
+    #   desklib        1.000    0.000
+    #   superannotate  1.000*   0.000     (* after its loading bug was fixed)
+    #   e5             0.999    0.000
+    #   remodetect     0.941    0.000
+    #
+    # See tests/eval/FINDINGS.md.
+    anchor_scores = [
+        _score_of("classifier_desklib"),
+        _score_of("classifier_superannotate"),
+        _score_of("classifier_e5"),
+        _score_of("classifier_remodetect"),
+    ]
+    anchor = sum(anchor_scores) / len(anchor_scores)
+    anchor_spread = max(anchor_scores) - min(anchor_scores)
 
-    if fakespot < 0.35:
-        # Fakespot confident human — trust it
-        if others_avg < 0.50:
-            calibrated = fakespot * 0.40 + others_avg * 0.30 + baseline * 0.30
-            confidence = "high"
-        else:
-            calibrated = fakespot * 0.60 + others_avg * 0.15 + baseline * 0.25
-            calibrated = min(calibrated, 0.40)
-            confidence = "low"
-    elif fakespot > 0.75:
-        # Fakespot confident AI
-        if others_avg > 0.60:
-            calibrated = fakespot * 0.35 + others_avg * 0.30 + baseline * 0.35
-            confidence = "high"
-        else:
-            calibrated = fakespot * 0.45 + others_avg * 0.25 + baseline * 0.30
-            confidence = "medium"
+    # Confidence follows agreement among the anchors rather than one engine's
+    # certainty; a tight cluster is far more trustworthy than a lone opinion.
+    if anchor_spread < 0.20:
+        confidence = "high"
+    elif anchor_spread < 0.45:
+        confidence = "medium"
     else:
-        # Fakespot uncertain
-        calibrated = fakespot * 0.40 + others_avg * 0.25 + baseline * 0.35
         confidence = "low"
 
+    # The anchors and the full weighted baseline are both informative; weight the
+    # anchors slightly higher because the baseline still includes the weak
+    # linguistic heuristics (AUC 0.52-0.71).
+    calibrated = anchor * 0.60 + baseline * 0.40
+
     score = calibrated
+
+    # Retained for the steps below, which reference the hot classifiers directly.
+    fakespot = _score_of("classifier_fakespot")
+    tmr = _score_of("classifier_tmr")
+    bert = _score_of("classifier_bert_raid")
+    e5 = _score_of("classifier_e5")
 
     # Step 4: Unanimous-high skepticism — gated on the text actually looking human.
     #
