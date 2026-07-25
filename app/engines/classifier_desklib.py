@@ -1,6 +1,7 @@
 import threading
 import torch
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+import torch.nn as nn
+from transformers import AutoTokenizer, AutoConfig, AutoModel, PreTrainedModel
 from app.engines.base import BaseEngine
 from app.schemas import EngineResult, score_to_engine_verdict
 
@@ -10,42 +11,56 @@ _tokenizer = None
 _lock = threading.Lock()
 
 
-_num_labels = None
+class _DesklibAIDetectionModel(PreTrainedModel):
+    """Reimplementation of the checkpoint's own `DesklibAIDetectionModel`.
+
+    The published weights are a DeBERTa-v3-large backbone stored under `model.*`
+    plus a single-logit `classifier` of shape (1, 1024) applied to the
+    mean-pooled last hidden state.
+
+    This must NOT be loaded with AutoModelForSequenceClassification, which is
+    what this engine did before. That class expects the backbone under
+    `deberta.*` and a 2-way head, so all 392 tensors mismatch: transformers
+    reports every one MISSING and randomly initialises the whole network. The
+    engine then returned sigmoid(~0) -- roughly 0.5 for any input, AI or human
+    -- while carrying 8% of the ensemble weight as a "Tier A" engine.
+    """
+
+    config_class = AutoConfig
+
+    def __init__(self, config):
+        super().__init__(config)
+        self.model = AutoModel.from_config(config)
+        self.classifier = nn.Linear(config.hidden_size, 1)
+        self.post_init()
+
+    def forward(self, input_ids, attention_mask=None, **kwargs):
+        outputs = self.model(input_ids=input_ids, attention_mask=attention_mask)
+        last_hidden = outputs.last_hidden_state
+        # Mean-pool over real tokens only; padding must not drag the mean down.
+        mask = attention_mask.unsqueeze(-1).to(last_hidden.dtype)
+        pooled = (last_hidden * mask).sum(1) / mask.sum(1).clamp(min=1e-9)
+        return self.classifier(pooled)
 
 
 def _load_model():
-    global _model, _tokenizer, _num_labels
+    global _model, _tokenizer
     if _model is None:
         _tokenizer = AutoTokenizer.from_pretrained(_MODEL_NAME)
-        # Checkpoint has a 1-output classifier head — load with num_labels=1
-        _model = AutoModelForSequenceClassification.from_pretrained(
-            _MODEL_NAME,
-            num_labels=1,
-        )
+        config = AutoConfig.from_pretrained(_MODEL_NAME)
+        _model = _DesklibAIDetectionModel.from_pretrained(_MODEL_NAME, config=config)
         _model.eval()
-        _num_labels = 1
     return _model, _tokenizer
 
 
 def _score_chunk(text: str, model, tokenizer) -> float:
     inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=512)
     with torch.no_grad():
-        logits = model(**inputs).logits
-
-    if _num_labels == 1 or logits.shape[-1] == 1:
-        return torch.sigmoid(logits[0, 0]).item()
-    else:
-        probs = torch.softmax(logits, dim=-1)[0]
-        id2label = getattr(model.config, "id2label", {})
-        ai_idx = 1
-        for idx, label in id2label.items():
-            if any(
-                kw in str(label).lower()
-                for kw in ("ai", "fake", "generated", "machine")
-            ):
-                ai_idx = int(idx)
-                break
-        return probs[ai_idx].item()
+        logits = model(
+            input_ids=inputs["input_ids"],
+            attention_mask=inputs["attention_mask"],
+        )
+    return torch.sigmoid(logits[0, 0]).item()
 
 
 class ClassifierDesklibEngine(BaseEngine):
