@@ -22,10 +22,36 @@ DB_BUSY_TIMEOUT = int(os.getenv("SLOPTOTAL_DB_BUSY_TIMEOUT", "5000"))  # millise
 # GPT-2 model name for perplexity engines
 GPT2_MODEL = "gpt2-medium"
 
-# Scoring thresholds
-SCORE_CLEAN = 20
-SCORE_LOW_RISK = 40
-SCORE_SUSPICIOUS = 60
+# Verdict band boundaries, set from the measured score distributions rather than
+# round numbers. See tests/eval/FINDINGS.md (2026-07-25).
+#
+# These constants were previously dead: score_to_verdict_str() in schemas.py had
+# its own hardcoded copy (20/40/60/80) and nothing imported these. schemas.py now
+# reads them, so there is one source of truth.
+#
+# Observed distributions after the reweighting, n=70 AI / 40 modern human /
+# 26 literary human:
+#
+#                        p50    p75    p90    p95    max
+#   modern human        19.7   25.5   36.6   49.2   59.9
+#   literary 1532-1915   9.8   13.0   16.0   18.8   24.5
+#   AI                  65.8   85.2   90.8   91.7   96.6
+#
+# Chosen so that:
+#   - 90% of human text (both corpora) reads Clean:      < 30
+#   - 90% of AI text reaches Suspicious or above:       >= 45
+#   - "Likely AI-generated" is reserved for high confidence: >= 55
+#     which measures 63% sensitivity at 98% specificity, with 0 of 26 literary
+#     samples flagged at any threshold.
+#
+# Youden's J peaks at 40 (100% sensitivity, 94% specificity), but a false
+# accusation costs a student or job applicant far more than a missed detection
+# costs the checker, so the "Likely AI" line sits deliberately above the
+# J-optimal point. The Suspicious band carries the difference: it alerts without
+# asserting.
+SCORE_CLEAN = 30
+SCORE_LOW_RISK = 45
+SCORE_SUSPICIOUS = 55
 SCORE_LIKELY_AI = 80
 
 # Engine weights for overall score (must sum to 1.0)

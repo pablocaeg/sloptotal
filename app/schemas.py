@@ -38,13 +38,31 @@ class AnalysisReport(BaseModel):
 
 
 def score_to_verdict_str(score: float) -> str:
-    if score <= 20:
+    """Map a 0-100 score to its verdict band.
+
+    Boundaries live in config.py and are derived from measured score
+    distributions. This function used to hardcode its own copy (20/40/60/80)
+    while config.SCORE_* went entirely unread, so the two could drift apart
+    without anything failing.
+
+    Imported inside the function because config imports nothing from schemas but
+    analyzer imports both; a module-level import here would make the dependency
+    direction between them harder to reason about.
+    """
+    from app.config import (
+        SCORE_CLEAN,
+        SCORE_LOW_RISK,
+        SCORE_SUSPICIOUS,
+        SCORE_LIKELY_AI,
+    )
+
+    if score <= SCORE_CLEAN:
         return "Clean — likely human-written"
-    elif score <= 40:
+    elif score <= SCORE_LOW_RISK:
         return "Low risk"
-    elif score <= 60:
+    elif score <= SCORE_SUSPICIOUS:
         return "Suspicious"
-    elif score <= 80:
+    elif score <= SCORE_LIKELY_AI:
         return "Likely AI-generated"
     else:
         return "Slop detected"

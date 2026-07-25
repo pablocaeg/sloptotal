@@ -168,3 +168,72 @@ context is worse than a false positive.
   exact percentages are not precise.
 - Everything was measured on `attack='none'` rows. Adversarially perturbed AI
   text is untested.
+
+## Applied: Fakespot demoted, weights re-derived, thresholds set from data
+
+Three changes measured together (v3), on the same full corpora:
+
+1. **SuperAnnotate was a second randomly-initialised head.** Its trained head is
+   named `dense` at top level; `RobertaForSequenceClassification` looks for
+   `classifier.*`, so the real head was discarded and a random one used. It
+   measured **AUC 0.037** across the multidomain corpus — almost perfectly
+   inverted — while holding 6% weight as the "low false-positive rate" engine.
+   The abstracts-only corpus had reported 1.000 for it, which is how it hid: a
+   random projection can rank one narrow domain well by luck. Loaded correctly:
+   AI slop 0.9995, Austen 0.0009, Melville 0.0029.
+2. **Fakespot is no longer the anchor**, in either the full or quick path, and
+   its weight drops 0.13 → 0.033.
+3. **All weights re-derived** from Somers' D scaled by (1 − literary bias).
+
+| | AI mean | human mean | AUC | classics mean | classics max |
+|---|---|---|---|---|---|
+| v1 original | 58.2 | 10.7 | 0.985 | 38.1 | 62.5 |
+| v2 skepticism gated | 67.5 | 10.7 | 0.987 | 38.2 | 62.3 |
+| **v3 this change** | 67.8 | 20.2 | 0.974 | **10.2** | **24.5** |
+
+**The literary false positives are gone.** 0 of 26 classics are flagged at *any*
+threshold, against 13 of 26 at threshold 40 before. Machiavelli went 62.5 → below
+25. The cost is a modest rise in modern-human mean (10.7 → 20.2) and 0.013 of
+AUC; worth it, because the failure it removes was the product's worst
+credibility problem.
+
+### Thresholds, finally movable
+
+Distributions (n = 70 AI / 40 modern human / 26 literary):
+
+| | p50 | p75 | p90 | p95 | max |
+|---|---|---|---|---|---|
+| modern human | 19.7 | 25.5 | 36.6 | 49.2 | 59.9 |
+| literary 1532-1915 | 9.8 | 13.0 | 16.0 | 18.8 | 24.5 |
+| AI | 65.8 | 85.2 | 90.8 | 91.7 | 96.6 |
+
+Bands moved from 20/40/60/80 to **30/45/55/80**. Youden's J peaks at 40 (100%
+sensitivity, 94% specificity), but the "Likely AI" line sits above it on purpose:
+a false accusation costs a student or job applicant much more than a missed
+detection costs the checker. The Suspicious band carries the difference — it
+alerts without asserting.
+
+Resulting behaviour:
+
+| | Clean | Low risk | Suspicious | Likely AI | Slop |
+|---|---|---|---|---|---|
+| AI (70) | 0 | 7 | 19 | 16 | 28 |
+| modern human (40) | 33 | 4 | 2 | 1 | 0 |
+| literary human (26) | **26** | 0 | 0 | 0 | 0 |
+
+90% of AI reaches Suspicious or above; 63% reaches Likely AI or worse; 2% of
+human text (1 of 66) is wrongly called Likely AI; every literary sample reads
+Clean.
+
+`config.SCORE_*` were dead constants — `score_to_verdict_str()` in schemas.py
+carried its own hardcoded copy. schemas.py now reads config, so there is one
+source of truth.
+
+### Still open
+
+- Sensitivity at the Likely-AI line is 63%. Raising it further means either
+  accepting more false accusations or finding signal the current 23 engines do
+  not have.
+- TMR and BERT-tiny RAID remain RAID-trained and evaluated on RAID; their
+  contribution is damped 0.65× but a non-RAID corpus would measure them honestly.
+- Adversarially perturbed AI text (`attack != 'none'`) is still untested.
