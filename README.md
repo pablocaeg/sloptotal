@@ -10,7 +10,43 @@
 
 SlopTotal runs 23 AI detection engines in parallel -- neural classifiers, statistical tests, and linguistic heuristics -- and produces a calibrated forensic score. Results stream in real-time as each engine completes.
 
-**Live demo:** [sloptotal.com](https://sloptotal.com)
+**Live demo:** [sloptotal.com](https://sloptotal.com) — or read the [per-engine scores](https://sloptotal.com/engines/) and [what the measurements show](https://sloptotal.com/detect/ai-detector-benchmark/).
+
+## Measured accuracy
+
+Most detectors publish an accuracy figure without saying what it was measured on.
+These numbers, the harness that produced them and the raw per-sample results are
+all in [tests/eval/](tests/eval/).
+
+Two corpora, deliberately:
+
+| Corpus | What | Size |
+|---|---|---|
+| Multi-domain | RAID: news, book prose, poetry, academic abstracts. AI from GPT-4, ChatGPT, Llama, Mistral, Cohere, GPT-3 | 110 (40 human, 70 AI) |
+| Literary control | Project Gutenberg prose published 1532-1915 -- Machiavelli, Austen, Melville, Kafka | 26 (all human) |
+
+The second exists because a high score there cannot be anything but an error: the
+writing predates language models by a century or more. Optimising on the first
+corpus alone produces a threshold that mislabels literature.
+
+| | Result |
+|---|---|
+| Overall AUC | 0.974 |
+| AI reaching "Suspicious" or above | 90% |
+| Human text wrongly called "Likely AI" | 1 of 66 |
+| Literary passages flagged | **0 of 26** |
+
+**What does not work.** Short text is unreliable below roughly 80 words and
+settles from about 200. Hand-edited AI loses fingerprints with every rewriting
+pass. Source code is outside what these engines do: in testing they never falsely
+accused human code, and never caught machine-written code either -- so we do not
+claim they can.
+
+The failures are published too, including three engines found scoring backwards
+and two loading a randomly initialised network while carrying real ensemble
+weight. Read them at
+[sloptotal.com/detect/ai-detector-benchmark/](https://sloptotal.com/detect/ai-detector-benchmark/)
+and [sloptotal.com/detect/ai-detector-false-positives/](https://sloptotal.com/detect/ai-detector-false-positives/).
 
 ## Quick Start
 
@@ -119,48 +155,73 @@ Response:
 
 ## Detection Engines
 
+Every engine links to its page on sloptotal.com, which carries its measured scores against both corpora. AUC below is the probability the engine ranks a random AI passage above a random human one: 1.0 is perfect, 0.5 is a coin flip.
+
 ### Neural Classifiers
-| Engine | Model | Notes |
-|--------|-------|-------|
-| TMR Detector | RoBERTa-base | RAID-trained, 97.3% accuracy |
-| ReMoDetect | DeBERTa | Targets RLHF-aligned LLMs |
-| Fakespot | RoBERTa-base | APOLLO system, best discriminator |
-| BERT-tiny RAID | BERT-tiny (4.4M) | Ultra-fast inference |
-| Desklib DeBERTa | DeBERTa-v3-large | Trained on GPT-4/Claude |
-| SuperAnnotate | RoBERTa-large | Low false-positive optimized |
-| OpenAI Detector | RoBERTa | Original OpenAI detector |
-| ChatGPT Detector | RoBERTa | ChatGPT-specific |
-| E5-Small | E5 + LoRA | 33M params, embedding-based |
+
+| Engine | Model | AUC | Notes |
+|---|---|---|---|
+| [Desklib DeBERTa](https://sloptotal.com/engines/desklib-deberta/) | DeBERTa-v3-large (435M) | 1.000 | Strongest separation in our own tests |
+| [SuperAnnotate](https://sloptotal.com/engines/superannotate/) | RoBERTa-large (355M) | 0.989 | No measurable bias against archaic prose |
+| [E5-Small](https://sloptotal.com/engines/e5-small/) | E5 + LoRA (33M) | 0.999 | Matches far larger models at 33M params |
+| [TMR Detector](https://sloptotal.com/engines/tmr-detector/) | RoBERTa-base (125M) | 1.000 | RAID-trained, so RAID scores flatter it |
+| [BERT-tiny RAID](https://sloptotal.com/engines/bert-tiny-raid/) | BERT-tiny (4.4M) | 1.000 | Answers in milliseconds |
+| [ReMoDetect](https://sloptotal.com/engines/remodetect/) | DeBERTa (184M) | 0.941 | Targets RLHF-aligned LLMs |
+| [ChatGPT Detector](https://sloptotal.com/engines/chatgpt-detector/) | RoBERTa-base (125M) | 0.829 | ChatGPT-specific |
+| [Fakespot](https://sloptotal.com/engines/fakespot/) | RoBERTa-base (125M) | 0.999 | Accurate on modern text, but +0.533 bias on pre-1920 prose |
+| [OpenAI Detector](https://sloptotal.com/engines/openai-detector/) | RoBERTa-base (125M) | 0.771 | The 2019 GPT-2 detector; weaker on modern LLMs |
 
 ### Statistical Methods
-| Engine | Method |
-|--------|--------|
-| Binoculars | Cross-entropy ratio between two LMs |
-| Fast-DetectGPT | Conditional probability curvature |
-| Perplexity | GPT-2 perplexity scoring |
-| Cross-Perplexity | Multi-model perplexity comparison |
-| GLTR | Token rank distribution |
-| Log-Rank | Average log-rank under GPT-2 |
-| DivEye | Surprisal diversity |
+
+| Engine | Method | AUC |
+|---|---|---|
+| [Log-Rank](https://sloptotal.com/engines/log-rank/) | Average log-rank under GPT-2 | 0.909 |
+| [GLTR](https://sloptotal.com/engines/gltr/) | Token rank distribution | 0.904 |
+| [Perplexity](https://sloptotal.com/engines/perplexity/) | GPT-2 perplexity scoring | 0.901 |
+| [Cross-Perplexity](https://sloptotal.com/engines/cross-perplexity/) | Two-model perplexity comparison | 0.891 |
+| [Fast-DetectGPT](https://sloptotal.com/engines/fast-detectgpt/) | Conditional probability curvature | 0.890 |
+| [Binoculars](https://sloptotal.com/engines/binoculars/) | Cross-entropy ratio between two LMs | 0.836 |
+| [DivEye](https://sloptotal.com/engines/diveye/) | Surprisal diversity | 0.730 |
 
 ### Linguistic Heuristics
-| Engine | Signal |
-|--------|--------|
-| Burstiness | Per-sentence perplexity variance |
-| Linguistic Markers | AI-preferred phrases ("delve", "tapestry"...) |
-| Structural | Em-dash usage, sentence uniformity |
-| Vocabulary | Type-token ratio, hapax legomena |
-| Formulaic | Cliche openings/closings |
-| Readability | Cross-paragraph consistency |
-| Sentiment | Hedging & forced balance |
+
+| Engine | Signal | AUC |
+|---|---|---|
+| [Structural Analysis](https://sloptotal.com/engines/structural-analysis/) | Em-dash usage, sentence uniformity | 0.836 |
+| [Linguistic Markers](https://sloptotal.com/engines/linguistic-markers/) | AI-preferred phrases ("delve", "tapestry"...) | 0.713 |
+| [Formulaic Patterns](https://sloptotal.com/engines/formulaic-patterns/) | Cliche openings and closings | 0.698 |
+| [Vocabulary Richness](https://sloptotal.com/engines/vocabulary-richness/) | Type-token ratio, hapax legomena | 0.583 |
+| [Readability Uniformity](https://sloptotal.com/engines/readability-uniformity/) | Cross-paragraph consistency | 0.581 |
+| [Burstiness](https://sloptotal.com/engines/burstiness/) | Per-sentence perplexity variance | 0.582 |
+| [Sentiment & Hedging](https://sloptotal.com/engines/sentiment-and-hedging/) | Hedging and forced balance | 0.522 |
+
+The linguistic heuristics are weak on their own. They are kept because they fail *independently* of the neural classifiers, which is what makes them useful as tiebreakers rather than as evidence.
 
 ## Scoring
 
-The final score is **calibrated**, not a simple average. Key principles:
+The final score is **calibrated**, not a simple average, and every weight is
+derived from measurement rather than intuition. See
+[tests/eval/FINDINGS.md](tests/eval/FINDINGS.md) and
+[sloptotal.com/detect/ai-detector-ensemble/](https://sloptotal.com/detect/ai-detector-ensemble/).
 
-1. **Fakespot-dominant weighting** -- Fakespot has the largest human/AI gap (32%) and anchors the calibration
-2. **Unanimous-high skepticism** -- When all ML classifiers agree on very high scores, linguistic/formulaic engines act as tiebreakers (catches the "formal human text" false positive)
-3. **Human signal adjustment** -- Contractions, slang, first-person voice pull the score down; AI transitions and list patterns push it up
+1. **Anchored on the unbiased classifiers** -- Desklib, SuperAnnotate, E5 and
+   ReMoDetect all score high AUC with no measurable bias against older prose.
+   Their consensus is blended 60/40 with the full weighted set.
+2. **Weights from measurement** -- each engine's share is proportional to
+   Somers' D (2*AUC - 1), scaled down by any bias it shows against archaic
+   writing. RAID-trained engines are damped because our corpus is RAID.
+3. **Confidence from agreement** -- a tight cluster across independent engine
+   families is trustworthy; one confident engine is not.
+4. **Skepticism, but only when earned** -- unanimous high classifier scores are
+   damped *only* when the text itself carries human markers (contractions,
+   first-person, slang). Applied unconditionally it fired on 69 of 70 AI samples
+   and 0 of 66 human ones, suppressing correct detections.
+
+Fakespot was previously the anchor, weighted 0.13. It is accurate on modern text
+(AUC 0.999) but scored pre-1920 human prose at 0.645 against 0.112 for modern
+human writing -- the largest bias of any engine -- and anchoring amplified it.
+Machiavelli scored 62.5. After demotion to 0.033, literary passages average 10.2
+and none is flagged.
 
 ## Hardware Requirements
 
