@@ -151,6 +151,8 @@ curl -X POST http://localhost:8000/api/scan/site \
   -H "Content-Type: application/json" -d '{"url": "example.com"}'
 ```
 
+score is 0–1 per engine and overall_score is 0–100, so your formatting is right. A one-line comment at the top of the file with a usage example (python examples/python_client.py "some text…" https://example.com --base https://api.sloptotal.com) would help people who land on the file directly.
+
 ## API
 
 | Endpoint | Method | What it does | Typical latency (CPU) |
