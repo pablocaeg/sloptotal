@@ -397,9 +397,9 @@ PINNED = "2019-01-01T00:00:00Z"
 CITATION = re.compile(r"\[\s*[\w\s]{0,12}\s*\]")
 
 
-def wiki_api(client: httpx.Client, **params) -> dict:
+def wiki_api(client: httpx.Client, site: str = "en.wikipedia.org", **params) -> dict:
     for attempt in range(8):
-        r = client.get("https://en.wikipedia.org/w/api.php", params={"format": "json", **params})
+        r = client.get(f"https://{site}/w/api.php", params={"format": "json", **params})
         if r.status_code == 200:
             return r.json()
         time.sleep(int(r.headers.get("retry-after", "10")) + 5 * attempt)
@@ -407,9 +407,9 @@ def wiki_api(client: httpx.Client, **params) -> dict:
     return {}
 
 
-def wiki_prose(client: httpx.Client, revid: int) -> str:
+def wiki_prose(client: httpx.Client, revid: int, site: str = "en.wikipedia.org", skip_lead: bool = True) -> str:
     """Paragraphs after the lead section, without citations or tables."""
-    data = wiki_api(client, action="parse", oldid=revid, prop="text", disablelimitreport=1)
+    data = wiki_api(client, site, action="parse", oldid=revid, prop="text", disablelimitreport=1)
     if "parse" not in data:
         return ""
     soup = BeautifulSoup(data["parse"]["text"]["*"], "html.parser")
@@ -424,7 +424,7 @@ def wiki_prose(client: httpx.Client, revid: int) -> str:
         for tag in node.select("sup, .reference, .mw-editsection, style, math"):
             tag.decompose()
         text = " ".join(CITATION.sub("", node.get_text()).split())
-        if past_lead and len(text) > 80:
+        if (past_lead or not skip_lead) and len(text) > 80:
             paragraphs.append(text)
     return "\n\n".join(paragraphs)
 
@@ -465,6 +465,63 @@ def wikipedia(n: int = PER_SOURCE) -> list[dict]:
                     )
                 )
             time.sleep(1)
+    return out
+
+
+WIKINEWS = "en.wikinews.org"
+DATELINE = re.compile(r"^\w+day, \w+ \d{1,2}, \d{4}\s*")
+WIKINEWS_PINNED = "2022-10-31T00:00:00Z"
+MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
+
+def wikinews(n: int = 90) -> list[dict]:
+    """News written after GPT-2's training data was collected (2019) and before
+    ChatGPT: Wikinews articles published March 2020 – October 2022, as they
+    stood on 2022-10-31. Separates "old news a model memorised" from "news"."""
+    rng = random.Random("news-wikinews")
+    out: list[dict] = []
+    with httpx.Client(headers=HEADERS, timeout=30) as client:
+        titles: list[tuple[str, str]] = []
+        for year in (2020, 2021, 2022):
+            for month in MONTHS[2 if year == 2020 else 0 : 10 if year == 2022 else 12]:
+                days = wiki_api(
+                    client, WIKINEWS, action="query", list="categorymembers",
+                    cmtitle=f"Category:{month} {year}", cmtype="subcat", cmlimit=50,
+                )["query"]["categorymembers"]
+                for day in days:
+                    pages = wiki_api(
+                        client, WIKINEWS, action="query", list="categorymembers",
+                        cmtitle=day["title"], cmtype="page", cmnamespace=0, cmlimit=50,
+                    )["query"]["categorymembers"]
+                    titles += [(p["title"], day["title"].removeprefix("Category:")) for p in pages]
+        rng.shuffle(titles)
+        seen: set[str] = set()
+        for title, day in titles:
+            if title in seen or len(out) >= n:
+                continue
+            seen.add(title)
+            revs = wiki_api(
+                client, WIKINEWS, action="query", prop="revisions", titles=title,
+                rvprop="ids|timestamp", rvstart=WIKINEWS_PINNED, rvdir="older", rvlimit=1,
+            )
+            revisions = next(iter(revs["query"]["pages"].values())).get("revisions")
+            if not revisions:
+                continue
+            text = cap(DATELINE.sub("", wiki_prose(client, revisions[0]["revid"], WIKINEWS, skip_lead=False)))
+            if words(text) < 150 or not english_prose(text):
+                continue
+            out.append(
+                sample(
+                    out,
+                    source="news-wikinews",
+                    domain="news",
+                    seed={"headline": title},
+                    date=day,
+                    ref=f"https://{WIKINEWS}/w/index.php?oldid={revisions[0]['revid']}",
+                    license="CC BY 2.5 (Wikinews)",
+                    text=text,
+                )
+            )
     return out
 
 
@@ -557,6 +614,8 @@ def build(name: str) -> list[dict]:
     if name in SOURCES_HF:
         dataset, config, split, fn, min_words, n = SOURCES_HF[name]
         return from_hf(name, dataset, config, split, fn, min_words, n)
+    if name == "news-wikinews":
+        return wikinews()
     if name == "qa-stackexchange":
         return stackexchange()
     if name == "encyclopedia-wikipedia":
@@ -577,7 +636,7 @@ def build(name: str) -> list[dict]:
     raise SystemExit(f"unknown source {name}")
 
 
-ALL = [*SOURCES_HF, "qa-stackexchange", "encyclopedia-wikipedia", "classics-gutenberg", "essay-toefl", "essay-hewlett", "essay-college", "mixed-toefl-polished"]
+ALL = [*SOURCES_HF, "news-wikinews", "qa-stackexchange", "encyclopedia-wikipedia", "classics-gutenberg", "essay-toefl", "essay-hewlett", "essay-college", "mixed-toefl-polished"]
 
 
 def main() -> None:

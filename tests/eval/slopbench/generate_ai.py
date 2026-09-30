@@ -49,6 +49,7 @@ MODELS = [
 
 PROMPTS = {
     "news-ccnews": "Write a news article with the headline “{headline}”. About {words} words.",
+    "news-wikinews": "Write a news article with the headline “{headline}”. About {words} words.",
     "news-bbc": "Write a news report of about {words} words on this story: {summary}",
     "social-reddit": "Write a Reddit comment for r/{subreddit}, about {words} words, making this point: {point}",
     "explanation-eli5": "Answer this r/explainlikeimfive question in about {words} words: {question}",
