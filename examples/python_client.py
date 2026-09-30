@@ -1,6 +1,6 @@
 import argparse
 import json
-
+import time
 import httpx
 
 
@@ -23,6 +23,11 @@ def parse_args() -> argparse.Namespace:
 def analyze_text(client: httpx.Client, text: str) -> dict:
     response = client.post("/api/analyze", json={"text": text})
     response.raise_for_status()
+    
+    while response.status_code == 429:
+        time.sleep(2)
+        response = client.get(f"/api/queue/ticket/{response.json()['ticket_id']}")
+        response.raise_for_status()
     analysis = response.json()
     return {
         "overall_score": analysis["overall_score"],
