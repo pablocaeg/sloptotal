@@ -55,9 +55,19 @@ def test_unknown_report_is_404(client):
 
 
 def test_health(client):
+    from app.engine_status import mark_failed, mark_loaded, reset_status
+
+    reset_status()
+    mark_loaded("perplexity")
+    mark_loaded("classifier_tmr")
+    mark_failed("classifier_superannotate", "test failure")
+
     r = client.get("/health")
+
     assert r.status_code == 200
-    assert r.json()["engines"] == 23
+    assert r.json()["engines"]["total"] == 23
+    assert r.json()["engines"]["loaded"] == 2
+    assert r.json()["engines"]["failed"] == ["classifier_superannotate"]
 
 
 def test_site_scan_requires_url(client):
