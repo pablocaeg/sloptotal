@@ -24,7 +24,7 @@ def analyze_text(client: httpx.Client, text: str) -> dict:
     response = client.post("/api/analyze", json={"text": text})
     response.raise_for_status()
     
-    while response.status_code == 429:
+    while response.status_code == 202:
         time.sleep(2)
         response = client.get(f"/api/queue/ticket/{response.json()['ticket_id']}")
         response.raise_for_status()
