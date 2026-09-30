@@ -119,3 +119,8 @@ ENGINE_WEIGHTS = {
 
 # Minimum text length for analysis
 MIN_TEXT_LENGTH = 50
+
+# Longer submissions are accepted and cut at a word boundary. The classifiers
+# already sample at most MAX_WINDOWS windows, so text beyond this adds cost
+# without changing the classifier scores.
+MAX_ANALYSED_CHARS = 100_000

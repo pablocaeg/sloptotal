@@ -11,7 +11,7 @@ from app.schemas import (
     score_to_verdict_str,
     score_to_engine_verdict,
 )
-from app.config import ENGINE_WEIGHTS, CACHE_ENABLED
+from app.config import ENGINE_WEIGHTS, CACHE_ENABLED, MAX_ANALYSED_CHARS
 from app.cache import compute_text_hash, is_cacheable_report
 from app.database import (
     create_report,
@@ -198,6 +198,14 @@ def get_engine_list_rich() -> list[dict]:
     ]
 
 
+def fit_to_limit(text: str, limit: int = MAX_ANALYSED_CHARS) -> str:
+    """Cut text longer than limit at the last whitespace before it."""
+    if len(text) <= limit:
+        return text
+    cut = text.rfind(" ", 0, limit)
+    return text[: cut if cut > limit // 2 else limit].rstrip()
+
+
 async def start_analysis(
     text: str, source_type: str = "text", source: str = "", _queue_managed: bool = False
 ) -> tuple[str, bool]:
@@ -208,6 +216,8 @@ async def start_analysis(
     """
     global _inflight_full_count
 
+    input_chars = len(text)
+    text = fit_to_limit(text)
     text_hash = compute_text_hash(text)
 
     # Check cache first
@@ -248,9 +258,10 @@ async def start_analysis(
             text_hash=text_hash,
             source_type=source_type,
             source=source if source else text[:100],
-            text_excerpt=text[:2000],
+            text_excerpt=text,
             word_count=word_count,
             engines_total=len(_engines),
+            input_chars=input_chars,
         )
     except Exception as e:
         async with _inflight_full_lock:
@@ -443,6 +454,8 @@ async def analyze_text(
 async def _analyze_text_inner(
     text: str, source_type: str, source: str
 ) -> AnalysisReport:
+    input_chars = len(text)
+    text = fit_to_limit(text)
     text_hash = compute_text_hash(text)
 
     # Check cache first
@@ -490,9 +503,10 @@ async def _analyze_text_inner(
         text_hash=text_hash,
         source_type=source_type,
         source=source if source else text[:100],
-        text_excerpt=text[:2000],
+        text_excerpt=text,
         word_count=word_count,
         engines_total=len(_engines),
+        input_chars=input_chars,
     )
 
     # Insert all engine results

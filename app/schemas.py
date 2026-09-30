@@ -38,6 +38,7 @@ class AnalysisReport(BaseModel):
     overall_verdict: str
     engines_flagged: int
     engines_total: int
+    input_chars: Optional[int] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 

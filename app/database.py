@@ -110,6 +110,11 @@ async def init_database() -> None:
             ("ml_score", "REAL"),
             ("blended", "INTEGER DEFAULT 0"),
         ]
+        try:
+            await db.execute("ALTER TABLE reports ADD COLUMN input_chars INTEGER")
+        except Exception:
+            pass  # Column already exists
+
         for col_name, col_type in _structural_columns:
             try:
                 await db.execute(
@@ -334,14 +339,15 @@ async def create_report(
     text_excerpt: str,
     word_count: int,
     engines_total: int,
+    input_chars: int | None = None,
 ) -> None:
     """Insert a new report into the database."""
     async with get_db() as db:
         try:
             await db.execute(
                 """
-                INSERT INTO reports (id, text_hash, source_type, source, text_excerpt, word_count, engines_total)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO reports (id, text_hash, source_type, source, text_excerpt, word_count, engines_total, input_chars)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     report_id,
@@ -351,6 +357,7 @@ async def create_report(
                     text_excerpt,
                     word_count,
                     engines_total,
+                    input_chars,
                 ),
             )
             await db.commit()
@@ -408,6 +415,7 @@ async def get_report(report_id: str) -> AnalysisReport | None:
             overall_verdict=row["overall_verdict"],
             engines_flagged=row["engines_flagged"],
             engines_total=row["engines_total"],
+            input_chars=row["input_chars"],
             created_at=created_at,
         )
 
