@@ -55,5 +55,5 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
-      - run: pip install "./client[mcp]" pytest
+      - run: pip install ./client pytest
       - run: pytest -q client/tests
