@@ -7,9 +7,9 @@ the hard cases people actually argue about are kept apart from the rest.
 
 | Part | Texts | What |
 |---|---|---|
-| Human | 1,629 | 15 sources, all written before November 2022 |
-| AI | 1,629 | One counterpart per human text, from 14 models |
-| Hard cases | 1,048 | Paraphrased AI, "humanized" AI, human text polished by AI, human text continued by AI |
+| Human | 1,626 | 15 sources, all written before November 2022 |
+| AI | 1,626 | One counterpart per human text, from 14 models |
+| Hard cases | 1,044 | Paraphrased AI, "humanized" AI, human text polished by AI, human text continued by AI |
 | Grey zone | 91 | TOEFL essays polished by GPT-4 (Liang et al. 2023) |
 
 Results and the calibration they drove are in [FINDINGS.md](FINDINGS.md).
@@ -31,7 +31,7 @@ Results and the calibration they drove are in [FINDINGS.md](FINDINGS.md).
 | `essay-toefl` | 91 | 107 | before 2022 | TOEFL essays by non-native writers (Liang et al. 2023) |
 | `essay-hewlett` | 88 | 378 | 2012 | US 8th-grade essays (Hewlett ASAP, via Liang et al.) |
 | `essay-college` | 70 | 612 | before 2022 | US college admission essays (via Liang et al.) |
-| `classics-gutenberg` | 90 | 309 | 1532-1922 | 30 works on Project Gutenberg, three passages each |
+| `classics-gutenberg` | 87 | 309 | 1532-1915 | 29 works on Project Gutenberg, three passages each |
 
 Two kinds of human text are there on purpose. Old web news (`news-ccnews`,
 `news-bbc`) and Wikipedia are the kind of text detectors and language models

@@ -548,7 +548,6 @@ BOOKS = [
     (160, "The Awakening", "Kate Chopin", 1899),
     (43, "The Strange Case of Dr Jekyll and Mr Hyde", "R. L. Stevenson", 1886),
     (219, "Heart of Darkness", "Joseph Conrad", 1899),
-    (4300, "Ulysses", "James Joyce", 1922),
     (3207, "Leviathan", "Thomas Hobbes", 1651),
     (3300, "The Wealth of Nations", "Adam Smith", 1776),
     (1497, "The Republic", "Plato (trans. Jowett)", 1871),
