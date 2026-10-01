@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 from enum import Enum
 from typing import Literal, Optional
 from datetime import datetime
@@ -40,6 +40,22 @@ class AnalysisReport(BaseModel):
     engines_total: int
     input_chars: Optional[int] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
+    @computed_field
+    @property
+    def language(self) -> str:
+        """Detected language of the analysed text, or "other"."""
+        from app.language import detect_language
+
+        return detect_language(self.text_excerpt)
+
+    @computed_field
+    @property
+    def language_support(self) -> str:
+        """supported, experimental or unsupported: how far the score is trusted in this language."""
+        from app.calibration import language_support
+
+        return language_support(self.language)
 
 
 def score_to_verdict_str(score: float) -> str:

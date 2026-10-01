@@ -108,3 +108,26 @@ def test_unreachable_url_is_a_502_not_a_crash(client, monkeypatch, path):
     r = client.post(path, json={"url": "https://unreachable.example"})
     assert r.status_code == 502
     assert r.json()["error"] == "Could not fetch that URL."
+
+
+def test_a_report_says_which_language_it_scored(client):
+    from datetime import datetime
+
+    from app.schemas import AnalysisReport
+
+    report = AnalysisReport(
+        id="abc",
+        source_type="text",
+        source="x",
+        text_excerpt="El ayuntamiento aprobó el plan después de varios meses de debate, y los vecinos dijeron que no se les había consultado.",
+        word_count=20,
+        engine_results=[],
+        overall_score=10.0,
+        overall_verdict="Clean",
+        engines_flagged=0,
+        engines_total=23,
+        created_at=datetime(2026, 10, 1),
+    )
+    dumped = report.model_dump()
+    assert dumped["language"] == "es"
+    assert dumped["language_support"] in {"supported", "experimental", "unsupported"}
