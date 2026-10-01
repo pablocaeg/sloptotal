@@ -34,6 +34,7 @@ from scipy.optimize import minimize
 from sklearn.metrics import roc_auc_score
 
 OUT = Path(__file__).parents[3] / "app" / "calibration.json"
+HELD_OUT = Path(__file__).parent / "scores-held-out.jsonl"
 L2 = 0.02
 FAIRNESS_WEIGHT = 3.0
 FAIRNESS_SOURCES = {
@@ -42,6 +43,7 @@ FAIRNESS_SOURCES = {
 }
 TRAIN_AS_AI = {"ai-paraphrased", "ai-humanized"}
 FLAGGED, CALLED_AI = 45, 55
+BAND_FPR = [(30, 0.15), (45, 0.05), (55, 0.02), (80, 0.005)]
 ENGINE_KEYS = {
     "TMR Detector": "classifier_tmr", "ReMoDetect": "classifier_remodetect", "Binoculars": "binoculars",
     "Fast-DetectGPT": "fast_detectgpt", "Perplexity": "perplexity", "Cross-Perplexity": "cross_perplexity",
@@ -104,10 +106,35 @@ def sample_weights(rows: list[dict]) -> np.ndarray:
     return np.array(weights)
 
 
-def scores(theta: np.ndarray, X: np.ndarray, words: np.ndarray, k: float, neutral: float) -> np.ndarray:
+def z_values(theta: np.ndarray, X: np.ndarray, words: np.ndarray, k: float, neutral: float) -> np.ndarray:
     z = theta[0] + X @ theta[1:]
     r = words / (words + k) if k > 0 else np.ones_like(words)
-    return 100 / (1 + np.exp(-(r * z + (1 - r) * neutral)))
+    return r * z + (1 - r) * neutral
+
+
+def scores(theta: np.ndarray, X: np.ndarray, words: np.ndarray, k: float, neutral: float) -> np.ndarray:
+    return 100 / (1 + np.exp(-z_values(theta, X, words, k, neutral)))
+
+
+def weighted_quantile(values: np.ndarray, weights: np.ndarray, q: float) -> float:
+    order = np.argsort(values)
+    cumulative = np.cumsum(weights[order]) / weights.sum()
+    return float(values[order][np.searchsorted(cumulative, q)])
+
+
+def band_knots(human_z: np.ndarray, human_sources: list[str]) -> list[list[float]]:
+    """(z, score) knots placing each band edge where BAND_FPR of human text begins,
+    every source weighted equally, so a band means a measured false-positive rate."""
+    counts = {s: human_sources.count(s) for s in set(human_sources)}
+    weights = np.array([1.0 / counts[s] for s in human_sources])
+    edges = [(weighted_quantile(human_z, weights, 1 - fpr), score) for score, fpr in BAND_FPR]
+    low, high = edges[0][0] - 6.0, edges[-1][0] + 4.0
+    return [[round(low, 4), 0.0], *[[round(z, 4), float(score)] for z, score in edges], [round(high, 4), 100.0]]
+
+
+def to_score(z: np.ndarray, knots: list[list[float]]) -> np.ndarray:
+    xs, ys = zip(*knots)
+    return np.interp(z, xs, ys)
 
 
 def fit_length(theta, X, y, words, w) -> tuple[float, float]:
@@ -146,12 +173,6 @@ def main() -> None:
     w = sample_weights(full)
     sources = sorted({r["source"] for r in full})
 
-    held_out = np.zeros(len(full))
-    for source in sources:
-        test = np.array([r["source"] == source for r in full])
-        theta = fit_weights(X[~test], y[~test], w[~test])
-        held_out[test] = scores(theta, X[test], words[test], 0, 0)
-
     theta = fit_weights(X, y, w)
     k, neutral = 0.0, 0.0
     if cut:
@@ -159,10 +180,21 @@ def main() -> None:
         wc = sample_weights(cut)
         k, neutral = fit_length(theta, Xc, yc, np.array([r["cut"] for r in cut], float), wc)
 
+    held_z = np.zeros(len(full))
+    for source in sources:
+        test = np.array([r["source"] == source for r in full])
+        fold = fit_weights(X[~test], y[~test], w[~test])
+        held_z[test] = z_values(fold, X[test], words[test], k, neutral)
+    human_rows = [i for i, r in enumerate(full) if r["y"] == 0]
+    knots = band_knots(held_z[human_rows], [full[i]["source"] for i in human_rows])
+    held_out = to_score(held_z, knots)
+
     current = np.array([r["overall"] for r in full])
     print(f"# SlopBench calibration ({date.today().isoformat()})\n")
     print(f"{int((y == 0).sum())} human and {int((y == 1).sum())} AI texts from {len(sources)} sources; "
           f"every new-model number is leave-one-source-out.\n")
+    print("Band edges, set where this share of human text (sources weighted equally) begins: "
+          + ", ".join(f"{score} = top {fpr:.1%}" for score, fpr in BAND_FPR) + ".\n")
     print("| | AUC | AI flagged (>45) | AI called AI (≥55) | Human flagged (>45) | Human called AI (≥55) |")
     print("|---|---|---|---|---|---|")
     for name, s in (("Current ensemble", current), ("Fitted (held out)", held_out)):
@@ -179,7 +211,7 @@ def main() -> None:
 
     if grey:
         Xg = matrix(grey, engines)
-        sg = scores(theta, Xg, np.array([r.get("words", 300) for r in grey], float), k, neutral)
+        sg = to_score(z_values(theta, Xg, np.array([r.get("words", 300) for r in grey], float), k, neutral), knots)
         print("\n## Grey zone (in-sample model)\n")
         print("| Variant | Samples | Median, current | Median, fitted |")
         print("|---|---|---|---|")
@@ -190,7 +222,7 @@ def main() -> None:
             print(f"| {variant} | {len(pairs)} | {np.median([a for a, _ in pairs]):.1f} | {np.median([b for _, b in pairs]):.1f} |")
 
     if cut:
-        sc = scores(theta, matrix(cut, engines), np.array([r["cut"] for r in cut], float), k, neutral)
+        sc = to_score(z_values(theta, matrix(cut, engines), np.array([r["cut"] for r in cut], float), k, neutral), knots)
         yc = np.array([r["y"] for r in cut])
         print(f"\n## Short texts (k = {k:.0f}, neutral = {neutral:.2f})\n")
         print("| Words | Human flagged, current | Human flagged, fitted | AI flagged, current | AI flagged, fitted |")
@@ -200,6 +232,12 @@ def main() -> None:
             cur = np.array([r["overall"] for r in cut])
             print(f"| {n} | {rate(cur[m & (yc == 0)], FLAGGED)} | {rate(sc[m & (yc == 0)], FLAGGED)} "
                   f"| {rate(cur[m & (yc == 1)], FLAGGED)} | {rate(sc[m & (yc == 1)], FLAGGED)} |")
+
+    HELD_OUT.write_text("".join(
+        json.dumps({"id": r["id"], "source": r["source"], "label": r["label"], "model": r.get("model", "human"),
+                    "variant": r.get("variant", ""), "current": r["overall"], "fitted": round(float(s), 1)}) + "\n"
+        for r, s in zip(full, held_out)
+    ))
 
     weights = dict(zip(engines, theta[1:]))
     print("\n## Weights\n")
@@ -213,6 +251,7 @@ def main() -> None:
         "weights": {ENGINE_KEYS[name]: round(float(v), 4) for name, v in weights.items()},
         "length_k": k,
         "length_neutral": round(neutral, 4),
+        "band_knots": knots,
     })
 
 
