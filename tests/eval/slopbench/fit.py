@@ -42,6 +42,16 @@ FAIRNESS_SOURCES = {
 }
 TRAIN_AS_AI = {"ai-paraphrased", "ai-humanized"}
 FLAGGED, CALLED_AI = 45, 55
+ENGINE_KEYS = {
+    "TMR Detector": "classifier_tmr", "ReMoDetect": "classifier_remodetect", "Binoculars": "binoculars",
+    "Fast-DetectGPT": "fast_detectgpt", "Perplexity": "perplexity", "Cross-Perplexity": "cross_perplexity",
+    "Fakespot": "classifier_fakespot", "E5-Small": "classifier_e5", "BERT-tiny RAID": "classifier_bert_raid",
+    "OpenAI Detector": "classifier_openai", "ChatGPT Detector": "classifier_chatgpt",
+    "Desklib DeBERTa": "classifier_desklib", "SuperAnnotate": "classifier_superannotate", "GLTR": "gltr",
+    "Log-Rank": "log_rank", "DivEye": "diveye", "Burstiness": "burstiness", "Linguistic Markers": "linguistic",
+    "Structural Analysis": "structural", "Vocabulary Richness": "vocabulary", "Formulaic Patterns": "formulaic",
+    "Readability Uniformity": "readability", "Sentiment & Hedging": "sentiment",
+}
 
 
 def logit(p: float) -> float:
@@ -198,15 +208,21 @@ def main() -> None:
     for name, value in sorted(weights.items(), key=lambda kv: -kv[1]):
         print(f"| {name} | {value:.3f} |")
 
-    OUT.write_text(json.dumps({
-        "version": date.today().isoformat(),
-        "source": "tests/eval/slopbench (fit.py)",
+    write_section("english", {
         "intercept": round(float(theta[0]), 4),
-        "weights": {name: round(float(v), 4) for name, v in weights.items()},
+        "weights": {ENGINE_KEYS[name]: round(float(v), 4) for name, v in weights.items()},
         "length_k": k,
         "length_neutral": round(neutral, 4),
-    }, indent=2) + "\n")
+    })
 
+
+def write_section(name: str, section: dict) -> None:
+    """Replace one section of app/calibration.json, keeping the others."""
+    data = json.loads(OUT.read_text()) if OUT.exists() else {}
+    data["version"] = date.today().isoformat()
+    data["source"] = "tests/eval/slopbench (fit.py, fit_multilingual.py)"
+    data[name] = section
+    OUT.write_text(json.dumps(data, indent=2) + "\n")
 
 if __name__ == "__main__":
     main()

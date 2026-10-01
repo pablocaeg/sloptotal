@@ -137,13 +137,14 @@ def infer_prompts(client: httpx.Client, source: str) -> None:
 
 
 LEAK = re.compile(
-    r"^(we need to|the user (wants|asks)|let me|okay,|i need to|thinking)|plain prose: no title|no preamble",
+    r"^(we need to|the user (wants|asks)|let me|okay,|i need to|thinking)|plain prose: no title|no preamble"
+    r"|^i('m| am) sorry|(cannot|can't|unable to) (fulfill|comply with|help with) (this|the|that|your) request",
     re.I,
 )
 
 
 def leaked_instructions(text: str) -> bool:
-    """A reasoning model narrating the request instead of answering it."""
+    """A reasoning model narrating the request, or a refusal, instead of an answer."""
     return bool(LEAK.search(text[:300]))
 
 
