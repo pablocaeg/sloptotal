@@ -2,8 +2,11 @@
 
 Each human sample carries the seed it was written for (headline, question,
 prompt, title...). The counterpart is asked for with that seed, in the same
-register and at about the same length, by one of twelve model families chosen
+register and at about the same length, by one of ten models chosen
 by a stable hash of the sample id, so every family covers every domain.
+Four are free models and six are cheap ones (at most $1 per million output
+tokens); reasoning is kept low and out of the reply. ONLY=free or ONLY=cheap
+runs one group, so the free daily quota and the paid budget can be spent apart.
 
 Prompts are what a person would actually type. No instruction tries to evade
 detection; the adversarial variants (paraphrased, "humanized", AI-polished
@@ -21,6 +24,7 @@ import json
 import os
 import sys
 import threading
+import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 from pathlib import Path
@@ -31,21 +35,24 @@ CORPUS = Path(__file__).parent / "corpus"
 API = "https://openrouter.ai/api/v1/chat/completions"
 WORKERS = int(os.environ.get("WORKERS", "8"))
 TEMPERATURE = 0.8
+REASONING_ROOM = 3000
 
-MODELS = [
-    "openai/gpt-6.1-sol",
+FREE_MODELS = [
+    "google/gemma-4-31b-it:free",
+    "nvidia/nemotron-3-super-120b-a12b:free",
+    "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "qwen/qwen3.8-27b:free",
+]
+CHEAP_MODELS = [
     "openai/gpt-6-luna",
-    "anthropic/claude-sonnet-5.5",
-    "anthropic/claude-haiku-4.5",
-    "google/gemini-3.8-flash",
-    "x-ai/grok-4.3",
     "deepseek/deepseek-v4.1-flash",
     "qwen/qwen3.8-flash",
     "meta-llama/llama-4-maverick",
     "mistralai/mistral-small-2603",
-    "moonshotai/kimi-k2.6",
     "z-ai/glm-5.3-flash",
 ]
+MODELS = FREE_MODELS + CHEAP_MODELS
+ONLY = os.environ.get("ONLY", "")
 
 PROMPTS = {
     "news-ccnews": "Write a news article with the headline “{headline}”. About {words} words.",
@@ -65,13 +72,17 @@ PROMPTS = {
 }
 PLAIN = "Reply with the text only, as plain prose: no title, no headings, no preamble."
 
-INFER_MODEL = "deepseek/deepseek-v4.1-flash"
+INFER_MODEL = "qwen/qwen3.8-27b:free" if ONLY == "free" else "deepseek/deepseek-v4.1-flash"
 INFER = (
     "Here is a student essay. Reply with only the essay question or prompt it answers, "
     "as one sentence, in the neutral wording an exam would use.\n\n{text}"
 )
 
 _lock = threading.Lock()
+
+
+class OutOfCredits(RuntimeError):
+    """Every further paid request would fail too; stop the run."""
 
 
 def chat(client: httpx.Client, model: str, prompt: str, max_tokens: int, temperature: float = TEMPERATURE) -> str | None:
@@ -82,12 +93,22 @@ def chat(client: httpx.Client, model: str, prompt: str, max_tokens: int, tempera
                 "model": model,
                 "messages": [{"role": "user", "content": prompt}],
                 "temperature": temperature,
-                "max_tokens": max_tokens,
+                "max_tokens": max_tokens + REASONING_ROOM,
+                "reasoning": {"effort": "low", "exclude": True},
             },
         )
         if r.status_code == 200:
-            return r.json()["choices"][0]["message"]["content"].strip()
-        print(f"  {model}: HTTP {r.status_code} (attempt {attempt + 1})", flush=True)
+            content = (r.json()["choices"][0]["message"].get("content") or "").strip()
+            if content:
+                return content
+            print(f"  {model}: empty reply (attempt {attempt + 1})", flush=True)
+            continue
+        print(f"  {model}: HTTP {r.status_code} {r.text[:160]} (attempt {attempt + 1})", flush=True)
+        if r.status_code == 402:
+            raise OutOfCredits(r.text[:200])
+        if r.status_code == 403 or "per-day" in r.text:
+            return None
+        time.sleep(5 * (attempt + 1))
     return None
 
 
@@ -148,6 +169,10 @@ def run(source: str, client: httpx.Client) -> None:
     out_path = CORPUS / f"ai-{source}.jsonl"
     done = {json.loads(line)["pair"] for line in out_path.read_text().splitlines()} if out_path.exists() else set()
     todo = [s for s in human if s["id"] not in done and s.get("seed")]
+    if ONLY == "free":
+        todo = [s for s in todo if model_for(s["id"]) in FREE_MODELS]
+    elif ONLY == "cheap":
+        todo = [s for s in todo if model_for(s["id"]) in CHEAP_MODELS]
 
     def one(sample: dict) -> None:
         row = generate(client, sample)
@@ -167,7 +192,10 @@ def main() -> None:
     sources = sys.argv[1:] or [p.name[6:-6] for p in sorted(CORPUS.glob("human-*.jsonl")) if p.name[6:-6] in PROMPTS]
     with httpx.Client(headers=headers, timeout=180) as client:
         for source in sources:
-            run(source, client)
+            try:
+                run(source, client)
+            except OutOfCredits as error:
+                raise SystemExit(f"Out of OpenRouter credits, stopping: {error}") from None
 
 
 if __name__ == "__main__":
