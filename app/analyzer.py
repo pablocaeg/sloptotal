@@ -12,7 +12,8 @@ from app.schemas import (
     score_to_verdict_str,
     score_to_engine_verdict,
 )
-from app.config import ENGINE_WEIGHTS, CACHE_ENABLED, MAX_ANALYSED_CHARS
+from app.calibration import calibrated_score
+from app.config import CACHE_ENABLED, MAX_ANALYSED_CHARS
 from app.cache import compute_text_hash, is_cacheable_report
 from app.database import (
     create_report,
@@ -843,147 +844,16 @@ def _calculate_calibrated_score(
 def _calculate_full_calibrated_score(
     result_map: dict[str, "EngineResult"], text: str = ""
 ) -> tuple[float, str]:
+    """Overall 0-100 score and confidence for the full 23-engine pipeline.
+
+    A logistic model over the engine scores whose weights were fitted on
+    SlopBench (tests/eval/slopbench), with a separate fit for non-English
+    text; see app/calibration.py.
     """
-    Calibrated scoring for the full 23-engine pipeline.
-
-    Blends the four unbiased classifiers (anchor) with the ENGINE_WEIGHTS
-    baseline, then applies skepticism gated on human markers, the no-markers
-    tiebreaker and the human-signal adjustment. Every step is derived from the
-    corpora in tests/eval/; see FINDINGS.md before changing any constant.
-    """
-    # Step 1: Compute weighted average baseline
-    weighted_sum = 0.0
-    weight_total = 0.0
-    for key, weight in ENGINE_WEIGHTS.items():
-        if key in result_map:
-            weighted_sum += result_map[key].score * weight
-            weight_total += weight
-
-    baseline = (weighted_sum / weight_total) if weight_total > 0 else 0.5
-
-    # Step 2: Extract the classifiers used for calibration.
-    def _score_of(key: str, default: float = 0.5) -> float:
-        return result_map[key].score if key in result_map else default
-
-    # Get linguistic/formulaic signal
-    ling_score = result_map["linguistic"].score if "linguistic" in result_map else 0.0
-    form_score = result_map["formulaic"].score if "formulaic" in result_map else 0.0
-    heuristic_signal = max(ling_score, form_score)
-
-    # Step 3: Consensus of the classifiers that measured both accurate AND
-    # unbiased against archaic prose.
-    #
-    # This replaces a Fakespot-anchored blend, in which Fakespot alone supplied
-    # 35-60% of the pre-adjustment score. Fakespot separates modern AI almost
-    # perfectly (AUC 0.999) but carries a large bias against pre-1920 prose: it
-    # scored 26 Gutenberg chunks at 0.645 against 0.112 for modern human text,
-    # a bias of +0.533, the largest of any engine by a wide margin. Anchoring on
-    # it amplified that bias instead of averaging it away, which is why
-    # Machiavelli (1532) scored 62.5 and Kafka 62.4 — the single biggest
-    # credibility problem in the product.
-    #
-    # The anchor set is now the four classifiers with high AUC and no measurable
-    # literary bias. Fakespot still contributes through `baseline` via
-    # ENGINE_WEIGHTS, where its share is 0.033 rather than 0.13.
-    #
-    #   engine         AUC     literary bias
-    #   desklib        1.000    0.000
-    #   superannotate  1.000*   0.000     (* after its loading bug was fixed)
-    #   e5             0.999    0.000
-    #   remodetect     0.941    0.000
-    #
-    # See tests/eval/FINDINGS.md.
-    anchor_scores = [
-        _score_of("classifier_desklib"),
-        _score_of("classifier_superannotate"),
-        _score_of("classifier_e5"),
-        _score_of("classifier_remodetect"),
-    ]
-    anchor = sum(anchor_scores) / len(anchor_scores)
-    anchor_spread = max(anchor_scores) - min(anchor_scores)
-
-    # Confidence follows agreement among the anchors rather than one engine's
-    # certainty; a tight cluster is far more trustworthy than a lone opinion.
-    if anchor_spread < 0.20:
-        confidence = "high"
-    elif anchor_spread < 0.45:
-        confidence = "medium"
-    else:
-        confidence = "low"
-
-    # The anchors and the full weighted baseline are both informative; weight the
-    # anchors slightly higher because the baseline still includes the weak
-    # linguistic heuristics (AUC 0.52-0.71).
-    calibrated = anchor * 0.60 + baseline * 0.40
-
-    score = calibrated
-
-    # Retained for the steps below, which reference the hot classifiers directly.
-    fakespot = _score_of("classifier_fakespot")
-    tmr = _score_of("classifier_tmr")
-    bert = _score_of("classifier_bert_raid")
-    e5 = _score_of("classifier_e5")
-
-    # Step 4: Unanimous-high skepticism — gated on the text actually looking human.
-    #
-    # This existed to stop formal human prose being confidently misread as AI.
-    # Measured on 2026-07-25 (tests/eval/), it did the opposite. The branch fired
-    # on 69 of 70 RAID AI samples and on 0 of 66 human samples (40 RAID human +
-    # 26 pre-1920 literary). Classifier agreement above 0.85 is not a symptom of
-    # a false positive; on this evidence it is the ensemble being right. Crushing
-    # those scores toward 0.45 is why overall sensitivity at the "Likely AI"
-    # threshold was only 47%, with news at 4/20.
-    #
-    # So the damping now additionally requires human writing markers in the text
-    # itself — contractions, first-person voice, slang — via _human_signal_score,
-    # which is negative when such markers are present. When four independent
-    # classifiers all say AI and the prose carries no human tells, we trust them.
-    #
-    # This cannot regress the literary false positives: those samples never
-    # reached this branch at all (0/26), so gating it leaves them untouched.
-    human_signal = _human_signal_score(text) if text else 0.0
-    looks_human = human_signal < -0.03
-
-    ml_scores = [fakespot, tmr, bert, e5]
-    min_ml = min(ml_scores)
-    max_ml = max(ml_scores)
-    spread = max_ml - min_ml
-
-    if looks_human:
-        if min_ml > 0.85 and spread < 0.15:
-            if heuristic_signal > 0.3:
-                score = score * 0.55 + 0.50 * 0.45
-                confidence = "low"
-            else:
-                score = score * 0.25 + 0.45 * 0.75
-                confidence = "low"
-        elif min_ml > 0.75 and spread < 0.25:
-            if heuristic_signal > 0.3:
-                score = score * 0.75 + 0.50 * 0.25
-                confidence = "low"
-            else:
-                score = score * 0.55 + 0.45 * 0.45
-                confidence = "low"
-
-    # Step 4b: "No markers" penalty.
-    # Softened from 0.35 to 0.15. AI text does not have to contain stock phrases
-    # like "delve into" to be AI -- the plain-explainer style carries none -- and
-    # at 0.35 this was a second broad tax on correct detections stacked on top of
-    # Step 4. It is kept, weaker, as a genuine tiebreaker.
-    if score > 0.55 and heuristic_signal < 0.05:
-        penalty = (score - 0.55) * 0.15
-        score = score - penalty
-        if confidence == "high":
-            confidence = "medium"
-
-    # Step 5: Human signal adjustment
-    if text:
-        signal = _human_signal_score(text)
-        if signal != 0:
-            score = score + signal
-            score = max(0.0, min(1.0, score))
-
-    return round(min(max(score * 100, 0), 100), 1), confidence
+    score, confidence, _lang = calibrated_score(
+        {key: result.score for key, result in result_map.items()}, text
+    )
+    return score, confidence
 
 
 async def quick_analyze_text(text: str) -> dict:

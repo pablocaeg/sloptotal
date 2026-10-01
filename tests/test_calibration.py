@@ -2,7 +2,8 @@
 contract can be checked without running a single model."""
 
 from app.analyzer import _calculate_full_calibrated_score, _engines
-from app.config import ENGINE_WEIGHTS, SCORE_CLEAN, SCORE_LIKELY_AI
+from app.calibration import _CALIBRATION, calibrated_score, language_support
+from app.config import SCORE_CLEAN, SCORE_LIKELY_AI
 from app.schemas import EngineResult, score_to_engine_verdict
 from tests.samples import AI_TEXT, HUMAN_TEXT
 
@@ -19,9 +20,11 @@ def _results(score: float) -> dict[str, EngineResult]:
     }
 
 
-def test_every_weighted_engine_is_registered():
+def test_the_calibration_weighs_exactly_the_registered_engines():
     registered = {key for key, _ in _engines}
-    assert set(ENGINE_WEIGHTS) <= registered
+    for section in ("english", "multilingual"):
+        assert set(_CALIBRATION[section]["weights"]) == registered
+        assert all(weight >= 0 for weight in _CALIBRATION[section]["weights"].values())
 
 
 def test_unanimous_low_scores_are_clean():
@@ -29,8 +32,10 @@ def test_unanimous_low_scores_are_clean():
     assert score <= SCORE_CLEAN
 
 
-def test_unanimous_high_scores_on_ai_text_are_flagged():
-    score, confidence = _calculate_full_calibrated_score(_results(0.97), AI_TEXT)
+def test_unanimous_high_scores_on_a_full_length_ai_text_are_flagged():
+    score, confidence = _calculate_full_calibrated_score(
+        _results(0.97), " ".join([AI_TEXT] * 6)
+    )
     assert score > SCORE_LIKELY_AI
     assert confidence in {"high", "medium"}
 
@@ -47,3 +52,47 @@ def test_score_stays_in_range():
     for s in (0.0, 1.0):
         score, _ = _calculate_full_calibrated_score(_results(s), HUMAN_TEXT)
         assert 0.0 <= score <= 100.0
+
+
+def _all(score: float) -> dict[str, float]:
+    return {key: score for key, _ in _engines}
+
+
+def test_a_short_text_is_pulled_toward_the_middle():
+    long_score, long_confidence, _ = calibrated_score(
+        _all(0.97), " ".join([AI_TEXT] * 6)
+    )
+    short_score, short_confidence, _ = calibrated_score(
+        _all(0.97), " ".join(AI_TEXT.split()[:30])
+    )
+
+    assert short_score < long_score
+    assert short_confidence == "low"
+    assert long_confidence == "high"
+
+
+def test_engines_that_did_not_run_count_as_undecided():
+    score, _, _ = calibrated_score({}, HUMAN_TEXT)
+    assert 0.0 <= score <= 100.0
+
+
+def test_non_english_text_uses_the_multilingual_fit():
+    spanish = " ".join(
+        [
+            "El ayuntamiento aprobó el plan después de varios meses de debate, y los vecinos dijeron que no se les había consultado."
+        ]
+        * 4
+    )
+    _, _, lang = calibrated_score(_all(0.5), spanish)
+    assert lang == "es"
+    assert language_support("es") in {"supported", "experimental", "unsupported"}
+
+
+def test_an_unknown_language_never_gets_more_than_low_confidence():
+    text = " ".join(
+        ["Lorem ipsum dolor sit amet consectetur adipiscing elit sed eiusmod tempor."]
+        * 8
+    )
+    _, confidence, lang = calibrated_score(_all(0.99), text)
+    assert lang == "other"
+    assert confidence == "low"
