@@ -30,6 +30,18 @@ clean, 45 and up are worth a look, 55 and up read as likely AI. Under about 80
 words, or in a language where detection is only experimental, the output says
 so: a score is evidence, not a verdict.
 
+## GitHub Action
+
+```yaml
+- uses: pablocaeg/sloptotal@master
+  with:
+    files: "docs/**/*.md"
+    fail-above: 55        # optional; without it the job only reports
+```
+
+Each file's score lands in the job summary with a link to its report, and a
+file above `fail-above` fails the job with an annotation on it.
+
 ## MCP server
 
 Lets Claude, Cursor and other agents check text and sites. Add it to your
