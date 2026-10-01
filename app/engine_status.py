@@ -33,17 +33,14 @@ def get_status() -> dict[str, dict[str, str | None]]:
 def get_health_summary() -> dict:
     """Return loaded and failed engine information for /health."""
     with _lock:
-        loaded = sum(
-            1 for state in _status.values() if state["state"] == "loaded"
-        )
-        failed = [
-            key for key, state in _status.items() if state["state"] == "failed"
-        ]
+        loaded = sum(1 for state in _status.values() if state["state"] == "loaded")
+        failed = [key for key, state in _status.items() if state["state"] == "failed"]
 
     return {
         "loaded": loaded,
         "failed": failed,
     }
+
 
 def reset_status() -> None:
     """Clear all recorded engine states."""

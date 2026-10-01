@@ -1,4 +1,3 @@
-from app.engine_status import mark_loaded, mark_failed
 import logging
 import os
 import uuid
@@ -6,6 +5,7 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 from typing import AsyncGenerator
 
+from app.engine_status import mark_failed, mark_loaded
 from app.schemas import (
     AnalysisReport,
     EngineResult,
@@ -177,7 +177,9 @@ def shutdown_analyzer() -> None:
 
 def _run_engine(engine, text: str) -> EngineResult:
     result = engine.analyze(text)
-    engine_key = next(key for key, candidate in _engines if candidate is engine)
+    engine_key = next((key for key, candidate in _engines if candidate is engine), None)
+    if engine_key is None:
+        return result
 
     if result.details and result.details.startswith("Model loading failed:"):
         mark_failed(engine_key, result.details)
