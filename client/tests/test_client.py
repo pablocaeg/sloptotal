@@ -137,3 +137,16 @@ def test_short_text_and_language_caveats_are_printed(fake_api, tmp_path, capsys)
     cli.main(["check", str(essay)])
     out = capsys.readouterr().out
     assert "under 80 words" in out and "(tr) is unsupported" in out
+
+
+def test_version(capsys):
+    with pytest.raises(SystemExit) as exit_info:
+        cli.main(["--version"])
+    assert exit_info.value.code == 0
+    assert capsys.readouterr().out.startswith("sloptotal 0.")
+
+
+def test_check_with_nothing_to_read_explains_instead_of_waiting(monkeypatch, capsys):
+    monkeypatch.setattr("sys.stdin.isatty", lambda: True)
+    assert cli.main(["check"]) == 2
+    assert "Nothing to check" in capsys.readouterr().err

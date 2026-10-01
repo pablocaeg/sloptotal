@@ -2,12 +2,22 @@
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
+from sloptotal import __version__
 from sloptotal.client import Report, SlopTotal, SlopTotalError
 
 SHORT_TEXT_WORDS = 80
+BAND_COLOURS = [(30, "32"), (45, "36"), (55, "33"), (80, "31"), (101, "1;31")]
+
+
+def _colour(text: str, score: float) -> str:
+    if not sys.stdout.isatty() or os.environ.get("NO_COLOR"):
+        return text
+    code = next(code for edge, code in BAND_COLOURS if score < edge)
+    return f"\033[{code}m{text}\033[0m"
 
 
 def _read(source: str) -> str:
@@ -17,9 +27,8 @@ def _read(source: str) -> str:
 
 
 def _summary(name: str, report: Report, top: int) -> str:
-    lines = [
-        f"{name}  {report.score:5.1f}  {report.verdict}  ({report.word_count} words)"
-    ]
+    verdict = _colour(f"{report.score:5.1f}  {report.verdict}", report.score)
+    lines = [f"{name}  {verdict}  ({report.word_count} words)"]
     if report.word_count < SHORT_TEXT_WORDS:
         lines.append("  note: under 80 words the score is a weak signal")
     if report.language_support != "supported":
@@ -42,6 +51,12 @@ def check(args: argparse.Namespace) -> int:
     with SlopTotal(args.server) as api:
         targets = [("url", u) for u in args.url] + [("file", f) for f in args.files]
         if not targets:
+            if sys.stdin.isatty():
+                print(
+                    "Nothing to check: pass files, --url URL, or pipe text in.",
+                    file=sys.stderr,
+                )
+                return 2
             targets = [("file", "-")]
         for kind, target in targets:
             try:
@@ -102,14 +117,8 @@ def site(args: argparse.Namespace) -> int:
 
 
 def mcp(_: argparse.Namespace) -> int:
-    try:
-        from sloptotal.mcp_server import run
-    except ImportError:
-        print(
-            'The MCP server needs the extra: pip install "sloptotal[mcp]"',
-            file=sys.stderr,
-        )
-        return 1
+    from sloptotal.mcp_server import run
+
     run()
     return 0
 
@@ -117,6 +126,9 @@ def mcp(_: argparse.Namespace) -> int:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="sloptotal", description="Detect AI-generated text with 23 engines."
+    )
+    parser.add_argument(
+        "--version", action="version", version=f"sloptotal {__version__}"
     )
     parser.add_argument(
         "--server",

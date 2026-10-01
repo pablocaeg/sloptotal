@@ -1,0 +1,32 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.pablocaeg/sloptotal",
+  "title": "SlopTotal",
+  "description": "Detect AI-generated text in any text, web page or site with 23 calibrated detectors.",
+  "repository": {
+    "url": "https://github.com/pablocaeg/sloptotal",
+    "source": "github",
+    "subfolder": "client"
+  },
+  "websiteUrl": "https://sloptotal.com",
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "sloptotal",
+      "version": "0.1.0",
+      "runtimeHint": "uvx",
+      "transport": { "type": "stdio" },
+      "packageArguments": [{ "type": "positional", "value": "mcp" }],
+      "environmentVariables": [
+        {
+          "name": "SLOPTOTAL_URL",
+          "description": "API of your own SlopTotal server; defaults to the public API at api.sloptotal.com",
+          "isRequired": false,
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}
