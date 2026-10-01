@@ -90,6 +90,31 @@ weight. Read them at
 [sloptotal.com/detect/ai-detector-benchmark/](https://sloptotal.com/detect/ai-detector-benchmark/)
 and [sloptotal.com/detect/ai-detector-false-positives/](https://sloptotal.com/detect/ai-detector-false-positives/).
 
+## Command line and MCP server
+
+No install needed with [uv](https://docs.astral.sh/uv/):
+
+```bash
+uvx --from "git+https://github.com/pablocaeg/sloptotal#subdirectory=client" sloptotal check essay.md
+```
+
+```
+essay.md   72.4  Likely AI-generated  (412 words)
+  top engines: Desklib DeBERTa 0.99, ReMoDetect 0.95, SuperAnnotate 0.93
+  report: https://sloptotal.com/report/?id=3f9c1a7b2d4e
+```
+
+`sloptotal check docs/*.md --fail-above 55` exits 1 when a file reads as AI,
+for CI or a pre-commit hook. `sloptotal mcp` is an MCP server, so Claude,
+Cursor and other agents can check text and sites themselves:
+
+```bash
+claude mcp add sloptotal -- uvx --from "sloptotal[mcp] @ git+https://github.com/pablocaeg/sloptotal#subdirectory=client" sloptotal mcp
+```
+
+It uses the public API at `api.sloptotal.com`; set `SLOPTOTAL_URL` to use your
+own server. More in [client/README.md](client/README.md).
+
 ## Quick start
 
 ### Docker (fastest)
