@@ -1,6 +1,12 @@
+"""Analyse a text and run a site check with the SlopTotal JSON API.
+
+Usage: python examples/python_client.py "some text..." example.com [--base URL]
+"""
+
 import argparse
 import json
 import time
+
 import httpx
 
 
@@ -22,12 +28,16 @@ def parse_args() -> argparse.Namespace:
 
 def analyze_text(client: httpx.Client, text: str) -> dict:
     response = client.post("/api/analyze", json={"text": text})
+    while response.status_code == 429:
+        time.sleep(float(response.json().get("retry_after", 2)))
+        response = client.post("/api/analyze", json={"text": text})
+    if response.status_code == 202:
+        ticket_id = response.json()["ticket_id"]
+        print("The server is busy; waiting in the queue...")
+        while response.status_code == 202:
+            time.sleep(2)
+            response = client.get(f"/api/queue/ticket/{ticket_id}")
     response.raise_for_status()
-    
-    while response.status_code == 202:
-        time.sleep(2)
-        response = client.get(f"/api/queue/ticket/{response.json()['ticket_id']}")
-        response.raise_for_status()
     analysis = response.json()
     return {
         "overall_score": analysis["overall_score"],
