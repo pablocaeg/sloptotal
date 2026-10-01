@@ -12,7 +12,7 @@ from app.schemas import (
     score_to_verdict_str,
     score_to_engine_verdict,
 )
-from app.config import ENGINE_WEIGHTS, CACHE_ENABLED
+from app.config import ENGINE_WEIGHTS, CACHE_ENABLED, MAX_ANALYSED_CHARS
 from app.cache import compute_text_hash, is_cacheable_report
 from app.database import (
     create_report,
@@ -57,6 +57,9 @@ _pending: dict[str, asyncio.Queue] = {}
 
 # Track received results count per report for score calculation
 _result_counts: dict[str, int] = {}
+
+# report_id -> set once every engine has reported (see _finish_analysis)
+_done_events: dict[str, asyncio.Event] = {}
 
 # Lock for pending dict modifications
 _pending_lock = asyncio.Lock()
@@ -204,6 +207,14 @@ def get_engine_list_rich() -> list[dict]:
     ]
 
 
+def fit_to_limit(text: str, limit: int = MAX_ANALYSED_CHARS) -> str:
+    """Cut text longer than limit at the last whitespace before it."""
+    if len(text) <= limit:
+        return text
+    cut = text.rfind(" ", 0, limit)
+    return text[: cut if cut > limit // 2 else limit].rstrip()
+
+
 async def start_analysis(
     text: str, source_type: str = "text", source: str = "", _queue_managed: bool = False
 ) -> tuple[str, bool]:
@@ -214,6 +225,8 @@ async def start_analysis(
     """
     global _inflight_full_count
 
+    input_chars = len(text)
+    text = fit_to_limit(text)
     text_hash = compute_text_hash(text)
 
     # Check cache first
@@ -254,9 +267,10 @@ async def start_analysis(
             text_hash=text_hash,
             source_type=source_type,
             source=source if source else text[:100],
-            text_excerpt=text[:2000],
+            text_excerpt=text,
             word_count=word_count,
             engines_total=len(_engines),
+            input_chars=input_chars,
         )
     except Exception as e:
         async with _inflight_full_lock:
@@ -269,6 +283,7 @@ async def start_analysis(
     async with _pending_lock:
         _pending[report_id] = queue
         _result_counts[report_id] = 0
+        _done_events[report_id] = asyncio.Event()
 
     log.info(f"Starting analysis {report_id} ({word_count} words)")
 
@@ -323,6 +338,54 @@ def _on_engine_done(future, key: str, queue: asyncio.Queue, report_id: str):
         queue.put_nowait((key, result))
     except Exception:
         pass
+
+    if _result_counts[report_id] >= len(_engines):
+        asyncio.ensure_future(_finish_analysis(report_id))
+
+
+async def _finish_analysis(report_id: str) -> None:
+    """Close out an analysis once every engine has reported.
+
+    This used to happen at the end of stream_results, so it only ran while a
+    browser was watching the stream: a visitor who closed the tab left the
+    report incomplete and its in-flight slot held forever.
+    """
+    global _inflight_full_count
+    async with _pending_lock:
+        _pending.pop(report_id, None)
+        _result_counts.pop(report_id, None)
+        done = _done_events.pop(report_id, None)
+
+    async with _inflight_full_lock:
+        _inflight_full_count = max(0, _inflight_full_count - 1)
+
+    try:
+        await mark_report_complete(report_id)
+        log.info(f"Analysis {report_id} complete")
+    except Exception as e:
+        log.error(f"Failed to mark report complete: {e}")
+
+    try:
+        from app.engines.gpt2_cache import clear_caches
+
+        clear_caches()
+    except Exception:
+        pass
+
+    if done is not None:
+        done.set()
+
+
+async def wait_until_done(report_id: str, timeout: float = 900) -> None:
+    """Wait for every engine of an analysis to finish (no-op if it already has)."""
+    async with _pending_lock:
+        done = _done_events.get(report_id)
+    if done is None:
+        return
+    try:
+        await asyncio.wait_for(done.wait(), timeout=timeout)
+    except asyncio.TimeoutError:
+        log.warning(f"Analysis {report_id} still running after {timeout:.0f}s")
 
 
 def _update_report_score_sync(report_id: str):
@@ -387,30 +450,6 @@ async def stream_results(
             log.info(f"Stream cancelled for {report_id}")
             break
 
-    # Cleanup
-    global _inflight_full_count
-    async with _pending_lock:
-        _pending.pop(report_id, None)
-        _result_counts.pop(report_id, None)
-
-    # Release inflight slot
-    async with _inflight_full_lock:
-        _inflight_full_count = max(0, _inflight_full_count - 1)
-
-    # Mark report as complete (enables future cache hits)
-    try:
-        await mark_report_complete(report_id)
-        log.info(f"Analysis {report_id} complete")
-    except Exception as e:
-        log.error(f"Failed to mark report complete: {e}")
-
-    try:
-        from app.engines.gpt2_cache import clear_caches
-
-        clear_caches()
-    except Exception:
-        pass
-
 
 # Keep the old synchronous-style API for /api/analyze (still async underneath)
 async def analyze_text(
@@ -424,6 +463,8 @@ async def analyze_text(
 async def _analyze_text_inner(
     text: str, source_type: str, source: str
 ) -> AnalysisReport:
+    input_chars = len(text)
+    text = fit_to_limit(text)
     text_hash = compute_text_hash(text)
 
     # Check cache first
@@ -471,9 +512,10 @@ async def _analyze_text_inner(
         text_hash=text_hash,
         source_type=source_type,
         source=source if source else text[:100],
-        text_excerpt=text[:2000],
+        text_excerpt=text,
         word_count=word_count,
         engines_total=len(_engines),
+        input_chars=input_chars,
     )
 
     # Insert all engine results

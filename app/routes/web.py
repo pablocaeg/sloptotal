@@ -1,6 +1,8 @@
 import json
 import logging
 
+import httpx
+
 from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from starlette.responses import StreamingResponse
@@ -9,6 +11,7 @@ from app.config import SCORE_CLEAN, SCORE_LIKELY_AI, SCORE_LOW_RISK, SCORE_SUSPI
 from app.schemas import WebAnalyzeRequest
 from app.analyzer import (
     start_analysis,
+    wait_until_done,
     get_report,
     stream_results,
     get_engine_list,
@@ -135,13 +138,15 @@ async def api_web_analyze(request: Request, req: WebAnalyzeRequest):
         text_hash = compute_text_hash(content)
 
         async def _execute(payload):
-            rid, _cached = await start_analysis(
+            rid, cached = await start_analysis(
                 payload["text"],
                 source_type=payload["source_type"],
                 source=payload["source"],
                 _queue_managed=True,
             )
-            return {"report_id": rid}
+            if cached:
+                return {"report_id": rid}
+            return {"report_id": rid, "_hold": wait_until_done(rid)}
 
         resp = await queue_manager.submit(
             "full",
@@ -172,6 +177,9 @@ async def api_web_analyze(request: Request, req: WebAnalyzeRequest):
         if "busy" in str(e).lower():
             return JSONResponse({"error": str(e), "retry_after": 2}, status_code=429)
         return JSONResponse({"error": str(e)}, status_code=400)
+    except httpx.HTTPError as e:
+        log.info(f"Web analyze could not fetch {req.url}: {e!r}")
+        return JSONResponse({"error": "Could not fetch that URL."}, status_code=502)
     except Exception as e:
         log.error(f"Web analyze failed: {e}", exc_info=True)
         return JSONResponse(

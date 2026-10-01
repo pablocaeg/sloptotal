@@ -1,5 +1,6 @@
 """Database connection management and CRUD operations for SQLite."""
 
+import json
 import logging
 import os
 import threading
@@ -109,6 +110,11 @@ async def init_database() -> None:
             ("ml_score", "REAL"),
             ("blended", "INTEGER DEFAULT 0"),
         ]
+        try:
+            await db.execute("ALTER TABLE reports ADD COLUMN input_chars INTEGER")
+        except Exception:
+            pass  # Column already exists
+
         for col_name, col_type in _structural_columns:
             try:
                 await db.execute(
@@ -116,6 +122,23 @@ async def init_database() -> None:
                 )
             except Exception:
                 pass  # Column already exists
+
+        # What visitors say actually wrote the text. Deliberately not a foreign
+        # key to reports: reports (and the text) are purged after the retention
+        # window, while these rows keep only numbers for calibration.
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS report_feedback (
+                report_id TEXT PRIMARY KEY,
+                label TEXT NOT NULL CHECK (label IN ('human', 'ai', 'mixed', 'unsure')),
+                overall_score REAL NOT NULL,
+                overall_verdict TEXT NOT NULL,
+                engine_scores TEXT NOT NULL,
+                word_count INTEGER NOT NULL,
+                source_type TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
 
         # Create indexes
         await db.execute(
@@ -160,8 +183,64 @@ async def purge_expired_reports(retention_days: int | None = None) -> int:
             "DELETE FROM reports WHERE created_at < datetime('now', ?)",
             (f"-{days} days",),
         )
+        # scan_log keeps text excerpts and URLs from snippet and quick scans, so
+        # the same window applies to it.
+        await db.execute(
+            "DELETE FROM scan_log WHERE created_at < datetime('now', ?)",
+            (f"-{days} days",),
+        )
         await db.commit()
         return cursor.rowcount or 0
+
+
+class FeedbackNotReady(Exception):
+    """The report exists but its engines have not all finished."""
+
+
+async def save_report_feedback(report_id: str, label: str) -> bool:
+    """Record what a visitor says wrote a report's text.
+
+    Stores the verdict and every engine's score next to the label, never the
+    text, so the row stays useful for calibration after the report itself is
+    purged. A second answer for the same report replaces the first. Returns
+    False when the report does not exist.
+    """
+    report = await get_report(report_id)
+    if report is None:
+        return False
+    async with get_db() as db:
+        cursor = await db.execute(
+            "SELECT completed_at FROM reports WHERE id = ?", (report_id,)
+        )
+        row = await cursor.fetchone()
+        if row is None or row["completed_at"] is None:
+            raise FeedbackNotReady(report_id)
+        engine_scores = json.dumps(
+            {r.engine_name: round(r.score, 6) for r in report.engine_results},
+            sort_keys=True,
+        )
+        await db.execute(
+            """
+            INSERT INTO report_feedback
+                (report_id, label, overall_score, overall_verdict, engine_scores,
+                 word_count, source_type)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(report_id) DO UPDATE SET
+                label = excluded.label,
+                updated_at = CURRENT_TIMESTAMP
+            """,
+            (
+                report_id,
+                label,
+                report.overall_score,
+                report.overall_verdict,
+                engine_scores,
+                report.word_count,
+                report.source_type,
+            ),
+        )
+        await db.commit()
+    return True
 
 
 async def purge_invalid_cached_reports() -> int:
@@ -260,14 +339,15 @@ async def create_report(
     text_excerpt: str,
     word_count: int,
     engines_total: int,
+    input_chars: int | None = None,
 ) -> None:
     """Insert a new report into the database."""
     async with get_db() as db:
         try:
             await db.execute(
                 """
-                INSERT INTO reports (id, text_hash, source_type, source, text_excerpt, word_count, engines_total)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO reports (id, text_hash, source_type, source, text_excerpt, word_count, engines_total, input_chars)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     report_id,
@@ -277,6 +357,7 @@ async def create_report(
                     text_excerpt,
                     word_count,
                     engines_total,
+                    input_chars,
                 ),
             )
             await db.commit()
@@ -334,6 +415,7 @@ async def get_report(report_id: str) -> AnalysisReport | None:
             overall_verdict=row["overall_verdict"],
             engines_flagged=row["engines_flagged"],
             engines_total=row["engines_total"],
+            input_chars=row["input_chars"],
             created_at=created_at,
         )
 

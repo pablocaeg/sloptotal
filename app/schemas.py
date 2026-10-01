@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from enum import Enum
-from typing import Optional
+from typing import Literal, Optional
 from datetime import datetime
 
 
@@ -16,6 +16,10 @@ class EngineResult(BaseModel):
     verdict: Verdict
     details: str
     description: str = ""
+
+
+class FeedbackRequest(BaseModel):
+    label: Literal["human", "ai", "mixed", "unsure"]
 
 
 class AnalyzeRequest(BaseModel):
@@ -34,6 +38,7 @@ class AnalysisReport(BaseModel):
     overall_verdict: str
     engines_flagged: int
     engines_total: int
+    input_chars: Optional[int] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 

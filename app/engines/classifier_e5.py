@@ -2,7 +2,7 @@ import os
 import threading
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
-from app.engines.base import BaseEngine
+from app.engines.base import BaseEngine, window_starts
 from app.schemas import EngineResult, score_to_engine_verdict
 from app.model_pool import ModelPool
 from app.autoconfig import get_device
@@ -102,7 +102,7 @@ def _run_inference(text: str, model, tokenizer) -> float:
     stride = 256
     window = 510
     chunk_scores = []
-    for start in range(0, len(tokens), stride):
+    for start in window_starts(len(tokens), window, stride):
         chunk_ids = tokens[start : start + window]
         if len(chunk_ids) < 20:
             break

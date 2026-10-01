@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- `POST /api/report/{id}/feedback`: visitors can say who actually wrote a text
+  (human, AI, mixed, not sure). The answer is stored with the overall score and
+  each engine's score, never the text, so it outlives the 30-day report purge.
+  `python -m scripts.feedback_report` summarises it: agreement with the
+  verdict and each engine's AUC against visitor labels.
+
+### Fixed
+- `scan_log`, which keeps text excerpts and URLs from snippet and quick scans,
+  was never purged. It now follows the same retention window as reports.
+
 ### Changed
 - CI runs the unit tests on Python 3.10, 3.11, 3.12 and 3.13, the versions the
   README supports.

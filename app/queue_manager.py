@@ -1,5 +1,10 @@
 """Async queue manager that sits above the semaphore layer.
 
+Each endpoint has a fixed number of slots. A request takes a slot and keeps it
+until its work is finished; for a full analysis that is when every engine has
+reported, not when the report id comes back. Waiting requests are served
+strictly in arrival order, and a new request never jumps ahead of them.
+
 When the server has capacity the request executes immediately (HTTP 200).
 When at capacity the request is queued and the caller gets a ticket (HTTP 202).
 Clients poll /api/queue/ticket/{ticket_id} to retrieve results.
@@ -73,6 +78,18 @@ class QueueManager:
         # text_hash -> ticket_id  (dedup: identical payloads piggyback)
         self._dedup: dict[str, str] = {}
 
+        # One semaphore per endpoint: the real concurrency limit.
+        self._slots: dict[str, asyncio.Semaphore] = {
+            name: asyncio.Semaphore(cap.max_concurrent)
+            for name, cap in self._capacities.items()
+        }
+        # endpoint -> the item a worker has taken off the queue and that is
+        # waiting for a slot; it is next in line.
+        self._next: dict[str, _QueueItem | None] = {
+            name: None for name in self._capacities
+        }
+        # Background tasks holding slots until long-running work finishes.
+        self._holds: set[asyncio.Task] = set()
         # Worker tasks
         self._workers: list[asyncio.Task] = []
         self._cleanup_task: asyncio.Task | None = None
@@ -105,6 +122,8 @@ class QueueManager:
         for q in self._queues.values():
             await q.put((999, None))
         for t in self._workers:
+            t.cancel()
+        for t in list(self._holds):
             t.cancel()
         if self._cleanup_task:
             self._cleanup_task.cancel()
@@ -150,19 +169,20 @@ class QueueManager:
                     "result": self._results[existing_ticket]["result"],
                 }
 
-        # --- Immediate execution if capacity is free ---
-        if cap.has_capacity():
+        # --- Immediate execution if a slot is free and nobody is waiting ---
+        slots = self._slots[endpoint]
+        nobody_waiting = self._queues[endpoint].empty() and self._next[endpoint] is None
+        if nobody_waiting and not slots.locked():
+            await slots.acquire()
             cap.active += 1
             start = time.monotonic()
             try:
                 result = await execute_fn(payload)
             except Exception as e:
+                self._release(endpoint, start)
                 log.error("Queue execute error (%s): %s", endpoint, e)
                 return {"status": "error", "error": str(e)}
-            finally:
-                elapsed = time.monotonic() - start
-                cap.active -= 1
-                cap.record_latency(elapsed)
+            result = self._hold_or_release(endpoint, start, result)
             return {"status": "completed", "result": result}
 
         # --- Enqueue if room ---
@@ -180,11 +200,13 @@ class QueueManager:
             cap.queue_size += 1
             await self._queues[endpoint].put((item.priority, item))
 
-            position = cap.queue_size
+            position = self._position_of(endpoint, ticket_id)
             return {
                 "status": "queued",
                 "ticket_id": ticket_id,
                 "position": position,
+                "ahead": position - 1,
+                "active": cap.active,
                 "estimated_wait_ms": cap.estimated_wait_ms(position),
             }
 
@@ -214,16 +236,16 @@ class QueueManager:
 
         # Check pending tickets
         if ticket_id in self._tickets:
-            # Find which endpoint this belongs to
             for ep_name, cap in self._capacities.items():
                 position = self._position_of(ep_name, ticket_id)
                 if position > 0:
                     return {
                         "status": "queued",
                         "position": position,
+                        "ahead": position - 1,
+                        "active": cap.active,
                         "estimated_wait_ms": cap.estimated_wait_ms(position),
                     }
-            # In tickets dict but not found in any queue — being processed
             return {"status": "processing"}
 
         return None
@@ -237,21 +259,57 @@ class QueueManager:
     # ------------------------------------------------------------------
 
     def _position_of(self, endpoint: str, ticket_id: str) -> int:
-        """Approximate position of a ticket in its queue (1-based). 0 if not found."""
+        """Position in line (1 = next to start). 0 if the ticket is not waiting."""
+        waiting_first = self._next.get(endpoint)
+        if waiting_first is not None and waiting_first.ticket_id == ticket_id:
+            return 1
+        offset = 1 if waiting_first is not None else 0
         q = self._queues.get(endpoint)
         if not q:
             return 0
-        # PriorityQueue._queue is the underlying heap list
-        pos = 1
-        for _pri, item in list(q._queue):
-            if item is not None and item.ticket_id == ticket_id:
-                return pos
-            pos += 1
+        ordered = sorted(item for _pri, item in list(q._queue) if item is not None)
+        for index, item in enumerate(ordered, start=1):
+            if item.ticket_id == ticket_id:
+                return index + offset
         return 0
 
-    async def _worker(self, endpoint: str, q: asyncio.PriorityQueue) -> None:
-        """Pull items from the queue when capacity frees up, execute them."""
+    def _release(self, endpoint: str, start: float) -> None:
         cap = self._capacities[endpoint]
+        cap.active = max(0, cap.active - 1)
+        cap.record_latency(time.monotonic() - start)
+        self._slots[endpoint].release()
+
+    def _hold_or_release(self, endpoint: str, start: float, result: Any) -> Any:
+        """Keep the slot while the result's "_hold" awaitable runs, else free it now.
+
+        execute functions for full analyses return the report id straight away
+        and a "_hold" awaitable that finishes when every engine has reported.
+        """
+        hold = result.pop("_hold", None) if isinstance(result, dict) else None
+        if hold is None:
+            self._release(endpoint, start)
+            return result
+
+        hold = asyncio.ensure_future(hold)
+
+        async def keep_slot() -> None:
+            try:
+                await hold
+            except Exception as e:
+                log.error("Queue hold error (%s): %s", endpoint, e)
+            finally:
+                self._release(endpoint, start)
+
+        task = asyncio.create_task(keep_slot())
+        for pending in (task, hold):
+            self._holds.add(pending)
+            pending.add_done_callback(self._holds.discard)
+        return result
+
+    async def _worker(self, endpoint: str, q: asyncio.PriorityQueue) -> None:
+        """Start queued items one by one, in arrival order, as slots free up."""
+        cap = self._capacities[endpoint]
+        slots = self._slots[endpoint]
 
         while self._running:
             try:
@@ -263,20 +321,27 @@ class QueueManager:
                 return
 
             cap.queue_size = max(0, cap.queue_size - 1)
+            self._next[endpoint] = item
+            try:
+                await slots.acquire()
+            except asyncio.CancelledError:
+                return
+            finally:
+                self._next[endpoint] = None
             cap.active += 1
             start = time.monotonic()
 
             try:
                 result = await item.execute_fn(item.payload)
-                # Store result for polling
+                result = self._hold_or_release(endpoint, start, result)
                 self._results[item.ticket_id] = {
                     "result": result,
                     "expires": time.monotonic() + RESULT_TTL,
                 }
-                # Resolve the future (in case anyone is awaiting it directly)
                 if not item.future.done():
                     item.future.set_result(result)
             except Exception as e:
+                self._release(endpoint, start)
                 log.error(
                     "Queue worker error (%s, ticket=%s): %s",
                     endpoint,
@@ -291,12 +356,7 @@ class QueueManager:
                 if not item.future.done():
                     item.future.set_exception(e)
             finally:
-                elapsed = time.monotonic() - start
-                cap.active -= 1
-                cap.record_latency(elapsed)
-                # Cleanup ticket tracking
                 self._tickets.pop(item.ticket_id, None)
-                # Remove dedup entry (find by value)
                 to_remove = [k for k, v in self._dedup.items() if v == item.ticket_id]
                 for k in to_remove:
                     del self._dedup[k]
