@@ -1,0 +1,30 @@
+name: Publish the sloptotal package
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  pypi:
+    if: startsWith(github.event.release.tag_name, 'client-v')
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Tag matches the package version
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          VERSION=$(python -c "import tomllib; print(tomllib.load(open('client/pyproject.toml','rb'))['project']['version'])")
+          test "client-v$VERSION" = "$TAG" || { echo "::error::Tag $TAG does not match client/pyproject.toml version $VERSION"; exit 1; }
+      - run: pip install build
+      - run: python -m build client
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: client/dist
