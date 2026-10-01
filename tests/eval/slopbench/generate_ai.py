@@ -5,7 +5,8 @@ prompt, title...). The counterpart is asked for with that seed, in the same
 register and at about the same length, by one of ten models chosen
 by a stable hash of the sample id, so every family covers every domain.
 Four are free models and six are cheap ones (at most $1 per million output
-tokens); reasoning is kept low and out of the reply. ONLY=free or ONLY=cheap
+tokens). Reasoning is switched off, or kept low and out of the reply for models
+that cannot switch it off. ONLY=free or ONLY=cheap
 runs one group, so the free daily quota and the paid budget can be spent apart.
 
 Prompts are what a person would actually type. No instruction tries to evade
@@ -22,6 +23,7 @@ Usage: OPENROUTER_API_KEY=... python generate_ai.py [source ...]
 import hashlib
 import json
 import os
+import re
 import sys
 import threading
 import time
@@ -36,6 +38,8 @@ API = "https://openrouter.ai/api/v1/chat/completions"
 WORKERS = int(os.environ.get("WORKERS", "8"))
 TEMPERATURE = 0.8
 REASONING_ROOM = 3000
+REASONING_OFF = {"enabled": False}
+REASONING_LOW = {"effort": "low", "exclude": True}
 
 FREE_MODELS = [
     "google/gemma-4-31b-it:free",
@@ -53,6 +57,7 @@ CHEAP_MODELS = [
 ]
 MODELS = FREE_MODELS + CHEAP_MODELS
 ONLY = os.environ.get("ONLY", "")
+FALLBACK = os.environ.get("FALLBACK") == "1"
 
 PROMPTS = {
     "news-ccnews": "Write a news article with the headline “{headline}”. About {words} words.",
@@ -94,10 +99,10 @@ def chat(client: httpx.Client, model: str, prompt: str, max_tokens: int, tempera
                 "messages": [{"role": "user", "content": prompt}],
                 "temperature": temperature,
                 "max_tokens": max_tokens + REASONING_ROOM,
-                "reasoning": {"effort": "low", "exclude": True},
+                "reasoning": REASONING_OFF if attempt == 0 else REASONING_LOW,
             },
         )
-        if r.status_code == 200:
+        if r.status_code == 200 and "choices" in r.json():
             content = (r.json()["choices"][0]["message"].get("content") or "").strip()
             if content:
                 return content
@@ -131,8 +136,25 @@ def infer_prompts(client: httpx.Client, source: str) -> None:
     path.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows))
 
 
+LEAK = re.compile(
+    r"^(we need to|the user (wants|asks)|let me|okay,|i need to|thinking)|plain prose: no title|no preamble",
+    re.I,
+)
+
+
+def leaked_instructions(text: str) -> bool:
+    """A reasoning model narrating the request instead of answering it."""
+    return bool(LEAK.search(text[:300]))
+
+
 def model_for(sample_id: str) -> str:
-    return MODELS[int(hashlib.sha256(sample_id.encode()).hexdigest(), 16) % len(MODELS)]
+    """The sample's model; with FALLBACK=1, a cheap one in place of a free one,
+    because the free endpoints are throttled upstream to a few requests a minute."""
+    digest = int(hashlib.sha256(sample_id.encode()).hexdigest(), 16)
+    model = MODELS[digest % len(MODELS)]
+    if FALLBACK and model in FREE_MODELS:
+        return CHEAP_MODELS[(digest // len(MODELS)) % len(CHEAP_MODELS)]
+    return model
 
 
 def request_text(sample: dict) -> str:
@@ -144,8 +166,11 @@ def request_text(sample: dict) -> str:
 def generate(client: httpx.Client, sample: dict) -> dict | None:
     model = model_for(sample["id"])
     prompt = request_text(sample)
-    text = chat(client, model, prompt, max(400, sample["words"] * 3))
-    if not text or len(text.split()) < 40:
+    for _ in range(3):
+        text = chat(client, model, prompt, max(400, sample["words"] * 3))
+        if text and not leaked_instructions(text):
+            break
+    if not text or len(text.split()) < 40 or leaked_instructions(text):
         return None
     return {
         "id": f"ai-{sample['id']}",

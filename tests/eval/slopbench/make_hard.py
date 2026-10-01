@@ -25,7 +25,7 @@ from datetime import date
 
 import httpx
 
-from generate_ai import CORPUS, MODELS, WORKERS, chat
+from generate_ai import CHEAP_MODELS, CORPUS, WORKERS, OutOfCredits, chat, leaked_instructions
 
 PER_SOURCE = int(os.environ.get("HARD_PER_SOURCE", "20"))
 
@@ -70,7 +70,8 @@ def base_samples(kind: str, variant: str) -> list[dict]:
 
 
 def other_model(row: dict, rng: random.Random) -> str:
-    return rng.choice([m for m in MODELS if m != row.get("model")])
+    """A cheap model other than the one that wrote the base text."""
+    return rng.choice([m for m in CHEAP_MODELS if m != row.get("model")])
 
 
 def build(variant: str, client: httpx.Client) -> None:
@@ -94,7 +95,7 @@ def build(variant: str, client: httpx.Client) -> None:
             prompt = template.format(text=row["text"])
             text = chat(client, model, prompt, max(400, row["words"] * 3))
             split_at = None
-        if not text or len(text.split()) < 60:
+        if not text or len(text.split()) < 60 or leaked_instructions(text):
             return
         result = {
             "id": f"{variant}-{row['id']}",
@@ -124,7 +125,10 @@ def main() -> None:
     headers = {"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}", "X-Title": "SlopBench"}
     with httpx.Client(headers=headers, timeout=180) as client:
         for variant in sys.argv[1:] or list(VARIANTS):
-            build(variant, client)
+            try:
+                build(variant, client)
+            except OutOfCredits as error:
+                raise SystemExit(f"Out of OpenRouter credits, stopping: {error}") from None
 
 
 if __name__ == "__main__":
