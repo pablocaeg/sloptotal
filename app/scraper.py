@@ -113,8 +113,8 @@ async def _check_public_url(url: str) -> None:
         infos = await asyncio.get_running_loop().getaddrinfo(
             parsed.hostname, None, type=socket.SOCK_STREAM
         )
-    except socket.gaierror:
-        raise ValueError(f"Could not resolve {parsed.hostname}.")
+    except socket.gaierror as exc:
+        raise ValueError(f"Could not resolve {parsed.hostname}.") from exc
     for info in infos:
         addr = ipaddress.ip_address(info[4][0].split("%")[0])
         if not addr.is_global:

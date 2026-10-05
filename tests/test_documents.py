@@ -71,3 +71,10 @@ def test_plain_text():
 def test_rejections(name, data, msg):
     with pytest.raises(ValueError, match=msg):
         extract_document_text(name, data)
+
+
+@pytest.mark.parametrize("name", ["broken.pdf", "broken.docx"])
+def test_parse_errors_preserve_the_original_cause(name):
+    with pytest.raises(ValueError, match="Could not read") as caught:
+        extract_document_text(name, b"invalid document")
+    assert caught.value.__cause__ is not None

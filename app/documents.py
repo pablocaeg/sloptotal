@@ -21,16 +21,16 @@ def extract_document_text(filename: str, data: bytes) -> str:
         try:
             reader = PdfReader(io.BytesIO(data))
             pages = [page.extract_text() or "" for page in reader.pages[:50]]
-        except Exception:
-            raise ValueError("Could not read that PDF.")
+        except Exception as exc:
+            raise ValueError("Could not read that PDF.") from exc
         text = "\n\n".join(p.strip() for p in pages if p.strip())
     elif name.endswith(".docx"):
         from docx import Document
 
         try:
             doc = Document(io.BytesIO(data))
-        except Exception:
-            raise ValueError("Could not read that Word document.")
+        except Exception as exc:
+            raise ValueError("Could not read that Word document.") from exc
         text = "\n\n".join(p.text.strip() for p in doc.paragraphs if p.text.strip())
     elif name.endswith((".txt", ".md")):
         text = data.decode("utf-8", errors="replace")

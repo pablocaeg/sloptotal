@@ -73,11 +73,11 @@ class ModelPool:
             self.initialize()
         try:
             replica = self._pool.get(timeout=timeout)
-        except queue.Empty:
+        except queue.Empty as exc:
             raise TimeoutError(
                 f"ModelPool[{self._name}] timed out waiting for a replica "
                 f"after {timeout}s"
-            )
+            ) from exc
         try:
             yield replica
         finally:

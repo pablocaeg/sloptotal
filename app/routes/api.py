@@ -486,7 +486,8 @@ async def api_analyze(request: Request, req: AnalyzeRequest):
 
 
 @router.post("/extract")
-async def api_extract(file: UploadFile = File(...)):
+# FastAPI inspects File metadata in the parameter default.
+async def api_extract(file: UploadFile = File(...)):  # noqa: B008
     """Extract text from an uploaded .pdf, .docx, .txt or .md file.
 
     Returns {"text", "filename", "word_count"}; nothing is stored. Submit the
@@ -587,10 +588,10 @@ async def api_report_feedback(report_id: str, req: FeedbackRequest):
         raise HTTPException(status_code=400, detail="Invalid report ID")
     try:
         saved = await save_report_feedback(report_id, req.label)
-    except FeedbackNotReady:
+    except FeedbackNotReady as exc:
         raise HTTPException(
             status_code=409, detail="The report is still being analysed"
-        )
+        ) from exc
     if not saved:
         raise HTTPException(status_code=404, detail="Report not found")
     return {"status": "saved"}
