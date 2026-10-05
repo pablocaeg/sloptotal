@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 from app.database import (
     create_report,
     get_db,
+    get_report_by_hash,
     init_database,
     insert_engine_result_sync,
     mark_report_complete,
@@ -36,7 +37,7 @@ def make_report(complete: bool = True) -> str:
         insert_engine_result_sync(
             report_id, "perplexity", "Perplexity", 0.75, "slop", "details", ""
         )
-        await update_report_score(report_id, 64.0, "Likely AI-generated", 1)
+        await update_report_score(report_id, 64.0, "Likely AI-generated", 1, "test")
         if complete:
             await mark_report_complete(report_id)
 
@@ -137,3 +138,22 @@ def test_scan_log_follows_the_retention_window(client):
     asyncio.run(purge_expired_reports(30))
     excerpts = [r["text_excerpt"] for r in query("SELECT text_excerpt FROM scan_log")]
     assert "old text" not in excerpts and "new text" in excerpts
+
+
+def test_a_cached_report_is_reused_only_under_the_calibration_that_scored_it(client):
+    text_hash = uuid.uuid4().hex + uuid.uuid4().hex
+    report_id = uuid.uuid4().hex[:12]
+
+    async def build_and_look_up():
+        await create_report(report_id, text_hash, "text", "sample", "Text.", 120, 1)
+        await update_report_score(report_id, 64.0, "Likely AI-generated", 1, "old")
+        await mark_report_complete(report_id)
+        return (
+            await get_report_by_hash(text_hash, "old"),
+            await get_report_by_hash(text_hash, "new"),
+        )
+
+    same, changed = asyncio.run(build_and_look_up())
+
+    assert same.id == report_id
+    assert changed is None

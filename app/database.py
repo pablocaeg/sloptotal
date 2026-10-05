@@ -110,10 +110,11 @@ async def init_database() -> None:
             ("ml_score", "REAL"),
             ("blended", "INTEGER DEFAULT 0"),
         ]
-        try:
-            await db.execute("ALTER TABLE reports ADD COLUMN input_chars INTEGER")
-        except Exception:
-            pass  # Column already exists
+        for column in ("input_chars INTEGER", "calibration TEXT"):
+            try:
+                await db.execute(f"ALTER TABLE reports ADD COLUMN {column}")
+            except Exception:
+                pass  # Column already exists
 
         for col_name, col_type in _structural_columns:
             try:
@@ -420,15 +421,15 @@ async def get_report(report_id: str) -> AnalysisReport | None:
         )
 
 
-async def get_report_by_hash(text_hash: str) -> AnalysisReport | None:
-    """Cache lookup: find a completed report by text hash."""
+async def get_report_by_hash(text_hash: str, calibration: str) -> AnalysisReport | None:
+    """Cache lookup: find a completed report by text hash, scored under `calibration`."""
     if not text_hash or len(text_hash) != 64:
         return None
 
     async with get_db() as db:
         cursor = await db.execute(
-            "SELECT id FROM reports WHERE text_hash = ? AND completed_at IS NOT NULL ORDER BY created_at DESC LIMIT 1",
-            (text_hash,),
+            "SELECT id FROM reports WHERE text_hash = ? AND calibration = ? AND completed_at IS NOT NULL ORDER BY created_at DESC LIMIT 1",
+            (text_hash, calibration),
         )
         row = await cursor.fetchone()
         if not row:
@@ -479,16 +480,17 @@ async def update_report_score(
     overall_score: float,
     overall_verdict: str,
     engines_flagged: int,
+    calibration: str,
 ) -> None:
     """Update a report's aggregate scores."""
     async with get_db() as db:
         await db.execute(
             """
             UPDATE reports
-            SET overall_score = ?, overall_verdict = ?, engines_flagged = ?
+            SET overall_score = ?, overall_verdict = ?, engines_flagged = ?, calibration = ?
             WHERE id = ?
             """,
-            (overall_score, overall_verdict, engines_flagged, report_id),
+            (overall_score, overall_verdict, engines_flagged, calibration, report_id),
         )
         await db.commit()
 
@@ -535,6 +537,7 @@ def update_report_score_sync(
     overall_score: float,
     overall_verdict: str,
     engines_flagged: int,
+    calibration: str,
 ) -> None:
     """Thread-safe update of report scores (for use in ThreadPoolExecutor callbacks)."""
     conn = get_sync_connection()
@@ -542,10 +545,10 @@ def update_report_score_sync(
         conn.execute(
             """
             UPDATE reports
-            SET overall_score = ?, overall_verdict = ?, engines_flagged = ?
+            SET overall_score = ?, overall_verdict = ?, engines_flagged = ?, calibration = ?
             WHERE id = ?
             """,
-            (overall_score, overall_verdict, engines_flagged, report_id),
+            (overall_score, overall_verdict, engines_flagged, calibration, report_id),
         )
         conn.commit()
     except sqlite3.Error as e:

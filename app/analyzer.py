@@ -12,7 +12,7 @@ from app.schemas import (
     score_to_verdict_str,
     score_to_engine_verdict,
 )
-from app.calibration import calibrated_score
+from app.calibration import CALIBRATION_VERSION, calibrated_score
 from app.config import CACHE_ENABLED, MAX_ANALYSED_CHARS
 from app.cache import compute_text_hash, is_cacheable_report
 from app.database import (
@@ -234,7 +234,7 @@ async def start_analysis(
 
     # Check cache first
     if CACHE_ENABLED:
-        cached_report = await get_report_by_hash(text_hash)
+        cached_report = await get_report_by_hash(text_hash, CALIBRATION_VERSION)
         if cached_report and is_cacheable_report(cached_report):
             log.debug(f"Cache hit for hash {text_hash[:16]}...")
             return cached_report.id, True
@@ -424,7 +424,9 @@ def _update_report_score_sync(report_id: str):
     overall_verdict = score_to_verdict_str(overall_score)
     engines_flagged = sum(1 for score in score_map.values() if score >= 0.4)
 
-    update_report_score_sync(report_id, overall_score, overall_verdict, engines_flagged)
+    update_report_score_sync(
+        report_id, overall_score, overall_verdict, engines_flagged, CALIBRATION_VERSION
+    )
 
 
 async def stream_results(
@@ -472,7 +474,7 @@ async def _analyze_text_inner(
 
     # Check cache first
     if CACHE_ENABLED:
-        cached_report = await get_report_by_hash(text_hash)
+        cached_report = await get_report_by_hash(text_hash, CALIBRATION_VERSION)
         if cached_report and is_cacheable_report(cached_report):
             log.debug(f"Cache hit for API request (hash {text_hash[:16]}...)")
             return cached_report
@@ -538,7 +540,11 @@ async def _analyze_text_inner(
 
     # Update scores and mark complete
     update_report_score_sync(
-        report_id, overall_score, score_to_verdict_str(overall_score), engines_flagged
+        report_id,
+        overall_score,
+        score_to_verdict_str(overall_score),
+        engines_flagged,
+        CALIBRATION_VERSION,
     )
     await mark_report_complete(report_id)
 
