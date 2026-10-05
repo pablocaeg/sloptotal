@@ -1,0 +1,362 @@
+[
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Ticunas",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Os Ticunas, também grafados Tikuna ou Magüta, constituem o mais numeroso povo indígena da Amazônia brasileira, com uma população estimada em mais de cinquenta mil pessoas distribuídas principalmente ao longo do rio Solimões, na tríplice fronteira entre Brasil, Peru e Colômbia. Sua autodenominação, Magüta, significa “povos da água” ou “pessoas pintadas”, referência à pintura corporal tradicional feita com jenipapo e urucum e à estreita relação que mantêm com os rios e igapós de sua região. A língua ticuna, considerada isolada, sem parentesco comprovado com outras famílias linguísticas, é falada pela maioria dos membros do grupo e possui registros escritos e materiais didáticos produzidos nas últimas décadas. A organização social tradicional baseia-se em metades exogâmicas, associadas a clãs e a categorias rituais, cujo sistema de casamento regula alianças entre grupos locais. A cosmologia ticuna é marcada por narrativas de origem que descrevem a criação do mundo, dos rios e dos seres vivos, frequentemente ligadas a heróis culturais como Yo’i e Ipi, e por rituais como a Festa da Moça Nova, que celebra a iniciação feminina e reafirma laços comunitários. Historicamente, os Ticunas sofreram os impactos da colonização, da exploração da borracha e da atuação missionária, enfrentando epidemias, deslocamentos forçados e pressões sobre seus territórios. A partir do século XX, intensificaram a luta pela demarcação de terras e pelo reconhecimento de direitos,"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Mônica Carvalho",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Mônica Carvalho é um nome que, para muitos brasileiros, evoca imediatamente a imagem de uma mulher forte, talentosa e dona de uma presença marcante. Nascida no Rio de Janeiro, ela construiu uma carreira sólida e diversificada, conquistando espaço tanto na televisão quanto no cinema e no teatro. Sua trajetória começou ainda jovem, quando deu os primeiros passos como modelo, mas foi na atuação que encontrou sua verdadeira vocação. Com carisma e dedicação, Mônica logo chamou a atenção de diretores e produtores, o que a levou a participar de novelas e séries que marcaram época. Ao longo dos anos, ela demonstrou uma versatilidade impressionante, transitando com naturalidade entre papéis dramáticos e personagens cheios de humor, sempre com a mesma entrega e profissionalismo. Além de seu trabalho nas telas, Mônica também se aventurou como empresária e chegou a investir em projetos ligados à moda e à beleza, mostrando que seu talento vai muito além da interpretação. Sua vida pessoal, marcada por altos e baixos, sempre despertou curiosidade, mas ela soube preservar sua intimidade com elegância e maturidade. Mesmo diante dos desafios, Mônica Carvalho nunca deixou de acreditar em seu potencial e de lutar por seus sonhos, tornando-se uma inspiração para muitas mulheres que veem nela um exemplo de resiliência e autenticidade. Hoje, ela continua ativa, participando de projetos e mantendo uma legião"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Mega Drive",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "O Mega Drive, conhecido como Sega Genesis na América do Norte, é um console de videogame de quarta geração lançado pela Sega em 1988 no Japão e em 1989 na América do Norte. Projetado para suceder o Master System, o aparelho utilizava cartuchos como mídia principal e apresentava uma arquitetura de 16 bits, com um processador central Motorola 68000 e um coprocessador Zilog Z80, além de chips dedicados para som e gráficos. Essa configuração permitia gráficos coloridos, sprites grandes e efeitos de parallax, além de um som FM robusto proporcionado pelo chip Yamaha YM2612, características que o destacaram frente aos concorrentes de 8 bits e ao seu principal rival, o Super Nintendo Entertainment System. O console tornou-se especialmente popular nos Estados Unidos e no Brasil, onde foi fabricado e distribuído pela Tec Toy a partir de 1990, ganhando enorme base instalada e forte apelo cultural. No mercado norte-americano, a Sega adotou uma estratégia de marketing agressiva, com o slogan \"Genesis does what Nintendon't\", voltada a um público adolescente e jovem adulto. Títulos como Sonic the Hedgehog, Streets of Rage, Golden Axe, Shinobi, Phantasy Star e Madden NFL ajudaram a consolidar a identidade do sistema, associada à velocidade, à ação e a uma atitude mais \"arcade\". A Sega também lançou acessórios notáveis, como o Sega CD e o 32X, que ampliavam"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "BDSM",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Quando o assunto é BDSM, muitos ainda imaginam cenas sombrias ou algo exclusivo de filmes. Na verdade, trata-se de um universo vasto de práticas consensuais entre adultos que buscam prazer, autoconhecimento e conexão. A sigla reúne bondade, disciplina, dominação, submissão, sadismo e masoquismo, mas o que realmente importa não são as siglas, e sim os princípios que sustentam tudo: consentimento, comunicação e respeito absoluto. No centro da experiência está a negociação prévia. Antes de qualquer prática, as pessoas conversam abertamente sobre desejos, limites e palavras de segurança. Essa conversa não é burocracia, é cuidado. É o que garante que a entrega de controle, tão característica do BDSM, aconteça de forma segura e prazerosa. Muita gente se pergunta por que alguém gostaria de sentir dor ou de se submeter. A resposta é tão variada quanto as pessoas. Para alguns, a dor controlada libera endorfinas e provoca euforia. Para outros, a submissão oferece uma pausa mental libertadora, um espaço onde não precisam decidir nada. Já quem domina encontra satisfação na responsabilidade e na confiança depositada. O BDSM também pode ser uma ferramenta de autoconhecimento. Ao explorar papéis e sensações em ambiente seguro, muitas pessoas descobrem mais sobre seus próprios limites, desejos e formas de se relacionar. Isso não significa que todos devam experimentar, mas sim que a curiosidade alheia merece respeito, não"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Presumed Innocent (filme)",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Presumed Innocent é um filme estadunidense de suspense judicial lançado em 1990, dirigido por Alan J. Pakula e baseado no romance homônimo de Scott Turow, publicado em 1987. O longa acompanha Rusty Sabich, interpretado por Harrison Ford, um promotor público respeitado que se vê no centro de uma investigação criminal quando sua colega e amante, Carolyn Polhemus, é encontrada assassinada. À medida que as evidências apontam para o próprio Sabich, ele precisa enfrentar um julgamento que ameaça destruir sua carreira, seu casamento e sua liberdade, ao mesmo tempo em que tenta provar sua inocência diante de um sistema jurídico implacável. O elenco conta ainda com Brian Dennehy, Raul Julia, Bonnie Bedelia, Paul Winfield e Greta Scacchi, que compõem um retrato denso e moralmente ambíguo dos bastidores da justiça criminal. A direção de Pakula, conhecida por seu trabalho em thrillers políticos como Todos os Homens do Presidente, imprime ao filme uma atmosfera sóbria e tensa, explorando temas como corrupção, lealdade, desejo e a fragilidade das instituições. A fotografia de Gordon Willis e a trilha sonora de John Williams contribuem para o clima de paranoia e introspecção que marca a narrativa. Apesar de condensar elementos complexos do livro, o roteiro de Pakula e Frank Pierson preserva o impacto do twist final, considerado um dos mais memoráveis do cinema dos anos 1990. Presumed"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Ludificação da aprendizagem",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Você já percebeu como passamos horas jogando videogame sem sentir o peso do tempo, mas temos dificuldade de manter a concentração em uma aula expositiva? A ludificação da aprendizagem parte exatamente dessa observação: em vez de ignorar o poder dos jogos, ela os traz para dentro do processo educativo. Não se trata de transformar toda aula em competição ou de distribuir pontos e medalhas sem propósito. A ideia central é usar elementos que tornam os jogos envolventes — desafios progressivos, feedback imediato, metas claras, sensação de progresso e, por vezes, colaboração entre pares — para tornar a aprendizagem mais significativa e prazerosa. Pense em como uma criança aprende a andar de bicicleta. Ela cai, ajusta o equilíbrio, tenta de novo e sente uma vitória genuína quando consegue pedalar sozinha. Isso é ludificação em essência: o erro deixa de ser fracasso e passa a ser parte natural da jornada. Na sala de aula ou no estudo autodidata, isso significa criar pequenas missões, permitir que o aluno escolha caminhos, reconhecer conquistas intermediárias e dar retorno rápido para que ele saiba onde acertou e onde pode melhorar. Para o público geral, a mensagem é simples: aprender não precisa ser sinônimo de tédio ou obrigação. Quando o professor ou o próprio estudante insere mecânicas de jogo no cotidiano, a motivação cresce, a retenção de"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Santana de Parnaíba",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Santana de Parnaíba é um município brasileiro situado no estado de São Paulo, na Região Metropolitana de São Paulo, a cerca de trinta e sete quilômetros da capital paulista. Integra a sub-região oeste da macrometrópole e faz divisa com municípios como Barueri, Carapicuíba, Cotia, Pirapora do Bom Jesus, Araçariguama e Cajamar. Seu território abrange áreas urbanas e rurais, além de trechos de proteção ambiental próximos à Serra da Cantareira e à bacia do rio Tietê, o que condiciona parte relevante de seu ordenamento territorial. O clima é subtropical úmido, com verões quentes e chuvosos e invernos amenos, e a vegetação original, de Mata Atlântica, sobrevive em fragmentos preservados. A história do município remonta ao período colonial. Fundado no século XVI, liga-se à expansão bandeirante e à ocupação do interior paulista. Seu centro histórico preserva casarões, igrejas e o traçado urbano de origem colonial, sendo o conjunto arquitetônico tombado como patrimônio. Entre os marcos, destacam-se a Igreja Matriz de Sant'Ana e o antigo edifício da Câmara e Cadeia. O município também é conhecido por abrigar o chamado \"berço dos bandeirantes\", referência ao papel de suas famílias na exploração territorial. Economicamente, Santana de Parnaíba passou por intensa transformação ao longo do século XX. Inicialmente agrícola, com destaque para a cultura do café e a produção de tijolos e telhas, tornou-se polo industrial"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Alex Rodrigo Dias da Costa",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Alex Rodrigo Dias da Costa, conhecido no mundo do futebol simplesmente como Alex, é um daqueles zagueiros que marcaram época pela combinação rara de força física, inteligência tática e um carisma que conquistou torcedores por onde passou. Nascido em Niterói, no Rio de Janeiro, em 1982, Alex construiu uma carreira sólida que começou nas categorias de base do Santos e rapidamente chamou a atenção pela imponência e pela segurança defensiva. Não demorou para cruzar o oceano e brilhar no futebol europeu, onde defendeu com destaque o Chelsea, da Inglaterra, e o Paris Saint-Germain, da França, além de uma passagem marcante pelo PSV, da Holanda. No entanto, foi com a camisa do Milan que Alex viveu talvez seus melhores momentos. Ao lado de nomes como Thiago Silva, formou uma dupla de zaga que ficou na memória dos torcedores italianos pela solidez e pela elegância. Sua capacidade de antecipar jogadas, seu jogo aéreo impecável e a tranquilidade para sair jogando fizeram dele um pilar defensivo confiável em qualquer equipe. Mesmo sem ser um dos nomes mais badalados da imprensa, Alex sempre foi reconhecido por treinadores e companheiros como um profissional exemplar, líder silencioso e dedicado. Pela Seleção Brasileira, disputou a Copa América de 2007, ajudando o Brasil a conquistar o título. Após encerrar a carreira nos gramados, seguiu envolvido com o esporte,"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Código de barras",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "O código de barras é uma representação gráfica de dados numéricos ou alfanuméricos formada por uma sequência de barras verticais escuras e espaços claros de larguras variáveis, dispostos paralelamente e legíveis por dispositivos ópticos denominados leitores. Sua função primordial é permitir a identificação automática e rápida de produtos, documentos, embalagens e objetos diversos, substituindo a digitação manual e reduzindo significativamente a possibilidade de erros. O sistema baseia-se na reflexão diferenciada da luz: as barras escuras absorvem a radiação emitida pelo leitor, enquanto os espaços claros a refletem, gerando um padrão elétrico que é decodificado e convertido em informação compreensível por computadores e sistemas de gestão. A origem do código de barras remonta às décadas de 1940 e 1950, quando estudantes e engenheiros norte-americanos buscaram soluções para automatizar a conferência de estoques em supermercados. O primeiro pedido de patente foi registrado em 1949 por Norman Joseph Woodland e Bernard Silver, utilizando um padrão circular conhecido como bullseye. Contudo, a tecnologia só se tornou viável comercialmente em 1974, com a adoção do padrão UPC (Universal Product Code) nos Estados Unidos e, posteriormente, do EAN (European Article Number) na Europa, sistemas que se difundiram globalmente. Existem diversos tipos de códigos de barras, classificados principalmente em lineares e bidimensionais. Os lineares, como o EAN-13 e o Code 128, armazenam informações em uma única dimensão"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Khalid",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Khalid é um daqueles artistas que conseguem transformar sentimentos simples em hinos geracionais. Nascido Khalid Donnel Robinson, em 1998, nos Estados Unidos, ele cresceu entre mudanças constantes e uma infância nada fácil, mas foi justamente dessa mistura de inseguranças e sonhos que surgiu uma voz capaz de falar diretamente ao coração de milhões de jovens. Seu estilo, que passeia entre o R&B, o pop e toques de soul, não tenta ser complicado: pelo contrário, é na simplicidade das letras e na suavidade da melodia que mora a sua força. Canções como Location e Young Dumb & Broke colocaram seu nome no mapa quase da noite para o dia, e desde então ele se tornou uma presença constante nas playlists de quem gosta de música para sentir, pensar e relaxar. O que chama atenção em Khalid não é apenas o timbre reconhecível, mas a honestidade com que ele aborda temas como ansiedade, amores passageiros, amizade e a busca por um lugar no mundo. Em vez de posar de estrela inatingível, ele se mostra vulnerável, quase como um amigo que divide seus medos em forma de canção. Essa autenticidade rendeu colaborações com nomes como Billie Eilish, Shawn Mendes e Logic, além de prêmios e indicações importantes. Mesmo com o sucesso, Khalid mantém uma imagem discreta, muitas vezes descrito como tímido e caseiro,"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Isabel Carlota de Orleães",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Isabel Carlota de Orleães (1844–1864) foi uma princesa francesa pertencente ao ramo de Orléans da Casa de Bourbon, filha do príncipe Fernando Filipe, duque de Orleães, e da duquesa Helena de Mecklemburgo-Schwerin. Nascida em Neuilly-sur-Seine, recebeu educação refinada e destacou-se pela inteligência, sensibilidade artística e devoção religiosa, características que marcaram sua curta existência. Em 1864, aos dezenove anos, casou-se por procuração com o arquiduque Leopoldo da Áustria, príncipe herdeiro do trono austríaco e filho do imperador Francisco José I e da imperatriz Isabel. A união, articulada por interesses dinásticos e pela aproximação entre as cortes francesa e austríaca, foi celebrada com grande pompa, mas transformou-se rapidamente em tragédia. Durante a lua de mel, Isabel Carlota adoeceu gravemente, vítima de febre tifoide ou, segundo algumas versões, de uma infecção contraída em viagem. Apesar dos cuidados médicos, faleceu em 22 de maio de 1864, em Viena, poucos meses após o casamento, sem ter gerado descendência. Sua morte prematura causou comoção profunda na Europa, especialmente na Áustria, onde era vista como símbolo de esperança dinástica e de beleza romântica. A imperatriz Isabel, sua sogra, ficou profundamente abalada, e o arquiduque Leopoldo jamais se recuperou completamente da perda. O destino de Isabel Carlota, marcado pela juventude interrompida e por um casamento breve e fatal, alimentou a imaginação popular e literária, sendo por vezes comparada"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Syngman Rhee",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Syngman Rhee foi uma figura central e controversa na história moderna da Coreia, marcando profundamente o século XX. Nascido em 1875, numa Coreia ainda sob influência dinástica, ele teve uma juventude marcada pelo ativismo pró-independência. Preso e torturado por se opor à ocupação japonesa, exilou-se nos Estados Unidos, onde passou décadas como líder diplomático da causa coreana. Sua persistência chamou a atenção mundial, mas também revelou um estilo político autoritário e obsessivo. Com a derrota do Japão em 1945, Rhee retornou triunfalmente, tornando-se o primeiro presidente da República da Coreia em 1948. Seu governo, no entanto, logo mergulhou em contradições: anticomunista ferrenho, alinhou-se aos EUA, mas reprimiu duramente a oposição interna, manipulou eleições e manteve um poder quase vitalício. A Guerra da Coreia (1950-1953) consolidou seu papel como símbolo da resistência ao Norte comunista, mas também expôs a brutalidade de seu regime. Em 1960, após fraudes eleitorais escandalosas, protestos estudantis o forçaram ao exílio no Havaí, onde morreu em 1965. Para alguns, Rhee foi o pai da nação que impediu a unificação sob o comunismo; para outros, um tirano que atrasou a democracia. Sua vida resume as dores e os dilemas de uma Coreia dividida, mostrando como heróis e déspotas podem habitar o mesmo homem. Entender Syngman Rhee é essencial para compreender as raízes da atual Coreia do Sul, com"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Cora (divisão territorial)",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Cora é um termo utilizado em contextos de divisão territorial e administração pública, designando uma subdivisão de âmbito local ou regional. Em algumas tradições administrativas, sobretudo em países de língua espanhola e em regiões com herança jurídica ibérica, a cora pode corresponder a uma circunscrição de pequena dimensão, com funções de organização do espaço, cobrança de tributos, registro civil ou articulação entre o poder central e as comunidades locais. O vocábulo relaciona-se, em certos casos, com “corregimiento” ou “comarca”, ainda que não sejam sinónimos exatos, variando o seu significado conforme o ordenamento jurídico de cada Estado. Historicamente, as coras ou divisões similares surgiram da necessidade de administrar territórios extensos e de população dispersa, permitindo que autoridades intermediárias exercessem competências delegadas. Em alguns países, a cora constitui uma unidade territorial reconhecida para fins estatísticos, eleitorais ou de planeamento, podendo agrupar vários bairros, aldeias ou freguesias. A sua delimitação é geralmente fixada por lei ou por decisão administrativa, e pode ser alterada em função de critérios demográficos, económicos ou geográficos. Nas áreas rurais, a cora tende a coincidir com zonas de influência de uma pequena cidade ou sede administrativa, enquanto nas áreas urbanas pode designar um setor dentro de um município. Apesar da sua importância prática, o termo não é uniforme: em alguns contextos é uma divisão formal com órgãos próprios; noutros,"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Manuscrito (álbum)",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Lançado em 2018, “Manuscrito” é um álbum que funciona como uma carta íntima deixada sobre a mesa, à espera de ser lida com calma. O disco da cantora e compositora Sandy representa uma virada corajosa em sua carreira, distanciando-se do pop radiofônico para abraçar uma sonoridade orgânica, madura e profundamente pessoal. Cada faixa parece um capítulo de um diário que nunca foi feito para o público, mas que, ao ser compartilhado, encontra eco em quem já amou, perdeu ou se reinventou. A produção, assinada por Lucas Lima e outros parceiros, aposta em arranjos delicados, com piano, cordas e violões que criam uma atmosfera de introspecção. As letras falam de recomeços, saudade e autoconhecimento, sem medo de expor fragilidades. Músicas como “Noite Inteira” e “Pra Me Refazer” mostram que a artista não teme experimentar, flertando com o folk e a MPB sem perder sua identidade. É um trabalho que pede fones de ouvido e atenção plena, pois cada detalhe sonoro foi pensado para emocionar. O título já entrega: “Manuscrito” é um original, escrito à mão, sem filtros. Sandy não tenta agradar a todos, e é justamente essa autenticidade que torna o álbum tão cativante. Ele não é feito para hits instantâneos, mas para crescer a cada audição. Se você busca música com alma, que fale ao coração sem gritar, vale a"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Emil Odebrecht",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Emil Odebrecht foi um engenheiro e empresário brasileiro, nascido em 1898, em Santa Catarina, e falecido em 1969. Filho de imigrantes alemães, formou-se em engenharia civil pela Universidade Federal do Paraná e iniciou sua trajetória profissional na construção de estradas e pontes no sul do Brasil. Em 1944, fundou em Salvador a empresa que levaria seu nome, a Construtora Norberto Odebrecht, posteriormente conhecida como Odebrecht S.A., que se tornaria um dos maiores conglomerados de engenharia e construção da América Latina. Sob sua liderança, a companhia participou de obras de infraestrutura estratégicas, como a Refinaria Landulpho Alves, na Bahia, e a construção de rodovias, portos e usinas hidrelétricas. Emil Odebrecht consolidou um modelo de gestão baseado em disciplina, planejamento e formação de mão de obra própria, além de criar uma cultura empresarial voltada à expansão contínua. Após sua morte, o controle da empresa passou para seus filhos e netos, que a transformaram em um grupo internacional com atuação em dezenas de países. Nas décadas seguintes, a Odebrecht envolveu-se em diversos escândalos de corrupção, especialmente no âmbito da Operação Lava Jato, o que levou à sua reestruturação e recuperação judicial. Apesar das controvérsias posteriores, Emil Odebrecht é frequentemente citado como um dos pioneiros da engenharia pesada no Brasil e como fundador de uma das organizações empresariais mais influentes do país no século"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Corrosão",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "A corrosão é um processo silencioso que devolve metais ao seu estado natural, como se o tempo cobrasse de volta o que a indústria transformou. Todos os dias convivemos com ela: na ferrugem alaranjada de um portão antigo, no verde-esmeralda que cobre os telhados de cobre, ou na mancha que corrói a lataria do carro. Mas o que parece apenas um detalhe estético é, na verdade, uma reação química poderosa que causa prejuízos bilionários em todo o mundo, afetando desde pontes e navios até encanamentos e implantes dentários. Em essência, a corrosão acontece quando um metal reage com o ambiente — oxigênio, água, sais ou ácidos — e perde suas propriedades. O exemplo mais famoso é o ferro enferrujando, mas existem muitos tipos. Há a corrosão uniforme, que ataca toda a superfície por igual, e a corrosão localizada, que perfura pontos específicos e é ainda mais perigosa, pois pode causar falhas súbitas sem aviso. A umidade e a poluição urbana aceleram esse processo, e por isso cidades litorâneas sofrem tanto com estruturas metálicas deterioradas. A boa notícia é que a ciência e a engenharia desenvolveram armas eficientes contra esse inimigo invisível. Pinturas anticorrosivas, galvanização, uso de aços inoxidáveis e proteção catódica são algumas estratégias que prolongam a vida útil de máquinas, monumentos e infraestruturas. Até mesmo a natureza inspira soluções,"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Banco de dados orientado a objetos",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Um banco de dados orientado a objetos é um sistema de gerenciamento de dados que armazena e manipula informações na forma de objetos, seguindo os princípios da programação orientada a objetos, como encapsulamento, herança, polimorfismo e identidade. Diferentemente dos bancos de dados relacionais, que organizam os dados em tabelas normalizadas e utilizam a linguagem SQL para consultas, os bancos orientados a objetos persistem diretamente estruturas de dados complexas, incluindo atributos, métodos e relacionamentos entre objetos, sem a necessidade de converter essas estruturas para o modelo relacional. Essa abordagem surgiu na década de 1980 e ganhou força nos anos 1990, impulsionada pela popularização de linguagens como C++, Smalltalk e, posteriormente, Java e Python, que permitiam modelar o mundo real por meio de objetos. Entre as principais características desses sistemas estão a capacidade de armazenar objetos completos, com seus estados e comportamentos, o suporte a tipos de dados definidos pelo usuário, a navegação por referências entre objetos e a possibilidade de executar métodos diretamente no banco de dados. A linguagem de consulta mais associada a esse modelo é a OQL (Object Query Language), embora muitas implementações também ofereçam APIs específicas para a linguagem de programação hospedeira. Aplicações típicas incluem sistemas de CAD, modelagem científica, multimídia, geoprocessamento e ambientes de engenharia, nos quais a complexidade das estruturas de dados torna o modelo relacional"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Descolonização",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "A descolonização não foi apenas um evento histórico distante, mas um processo profundo e muitas vezes doloroso que redefiniu o mapa do mundo e a identidade de milhões de pessoas. Imagine um cenário em que vastos territórios, ricos em cultura e recursos, eram governados por potências europeias distantes, que impunham línguas, fronteiras e sistemas políticos. Após a Segunda Guerra Mundial, esse equilíbrio começou a ruir. Movimentos de independência, alimentados por um desejo profundo de autodeterminação e dignidade, ergueram-se em África, na Ásia e nas Caraíbas. Não foi um processo uniforme nem pacífico. Houve negociações, mas também guerras sangrentas, como as que ocorreram em Angola, Moçambique ou na Argélia. As potências coloniais, enfraquecidas economicamente e pressionadas internacionalmente, viram-se forçadas a ceder, mas frequentemente deixaram para trás fronteiras artificiais, economias desequilibradas e rivalidades étnicas que ainda hoje geram conflitos. A descolonização foi, portanto, um ato de libertação, mas também um legado complexo. Para os países recém-independentes, significou a oportunidade de construir nações soberanas, mas também o desafio de curar feridas coloniais e enfrentar a herança de exploração. Para as antigas metrópoles, representou a perda de impérios e a necessidade de repensar o seu lugar no mundo. Hoje, ao olharmos para o passado, percebemos que a descolonização não terminou com a troca de bandeiras. Ela continua viva nas lutas por justiça social, na"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Tite (treinador de futebol)",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Adenor Leonardo Bacchi, conhecido como Tite, é um treinador de futebol brasileiro nascido em Caxias do Sul, Rio Grande do Sul, em 25 de maio de 1961. Formado em Educação Física, iniciou a carreira como jogador de meio-campo em clubes modestos do interior gaúcho, mas foi na função de técnico que alcançou projeção nacional e internacional. Sua trajetória como treinador começou na década de 1990, passando por equipes como Guarani, Caxias, Grêmio, São Caetano, Corinthians e Internacional, além de uma breve experiência no futebol árabe. Foi no Corinthians que Tite consolidou sua reputação, ao conquistar a Copa Libertadores da América de 2012 de forma invicta e o Mundial de Clubes da FIFA de 2012, além de títulos nacionais e estaduais. Em 2016, assumiu a Seleção Brasileira em um momento de crise após a eliminação precoce na Copa América Centenário. Sob seu comando, a equipe conquistou a medalha de ouro nos Jogos Olímpicos do Rio de Janeiro em 2016 e o título da Copa América de 2019. Na Copa do Mundo de 2018, o Brasil foi eliminado nas quartas de final pela Bélgica, e em 2022 caiu nas quartas de final diante da Croácia. Tite deixou o cargo após o torneio no Catar. Posteriormente, dirigiu o Flamengo em 2023 e 2024, conquistando o Campeonato Carioca e a Copa do Brasil de"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Waterloo (álbum)",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Poucos discos na história da música pop conseguiram capturar tão perfeitamente a euforia do amor e, ao mesmo tempo, o gosto amargo de sua perda quanto Waterloo, lançado pelo ABBA em 1974. Muito antes de se tornarem a lenda que conhecemos, Agnetha, Björn, Benny e Anni-Frid eram apenas quatro suecos tentando a sorte em um festival europeu. Foi justamente com a faixa-título deste álbum que eles conquistaram o mundo, vencendo o Festival Eurovisão da Canção e transformando Estocolmo no centro das atenções. Mas seria um erro reduzir Waterloo a apenas um momento de sorte ou a uma música chiclete sobre Napoleão. O álbum é uma coleção vibrante que mostra a genialidade da dupla de compositores, Björn e Benny, que misturavam o pop melódico perfeito com arranjos de piano inspirados no glam rock e harmonias vocais que pareciam flutuar. Ao ouvir faixas como Honey, Honey ou a doce Hasta Mañana, percebe-se que o grupo já dominava a arte de criar refrões inesquecíveis. Há uma energia contagiante em cada faixa, uma produção que soa brilhante e otimista, típica do início dos anos 70. No entanto, o que torna Waterloo especial é a sua honestidade. É o som de quatro pessoas jovens, cheias de ambição e talento, celebrando o momento em que tudo começou a dar certo. É impossível não sorrir com a"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Qri",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Qri é um conceito originado no âmbito da filosofia e das ciências cognitivas contemporâneas, designando a capacidade de um sistema — biológico ou artificial — de integrar informação, regular os seus próprios estados internos e gerar respostas adaptativas em contextos de incerteza. O termo ganhou destaque a partir de debates interdisciplinares que cruzam a cibernética, a teoria dos sistemas complexos e a epistemologia, sendo frequentemente associado a noções como auto-organização, emergência e cognição situada. Ao contrário de definições rígidas, o Qri é entendido como uma propriedade graduável: manifesta-se de formas mais simples em organismos unicelulares que ajustam o seu comportamento a gradientes químicos e assume formas mais elaboradas em sistemas nervosos capazes de representação, memória e planeamento. Na literatura especializada, o Qri é por vezes descrito como uma ponte entre o observador e o ambiente, na medida em que permite ao sistema distinguir padrões relevantes, filtrar ruído e antecipar consequências. Essa função reguladora não exige consciência reflexiva; pode operar de modo implícito, distribuído por redes de interações locais. Investigadores da inteligência artificial têm explorado o conceito para conceber arquiteturas que aprendem sem supervisão constante, ajustando os seus parâmetros internos conforme a experiência acumulada. Já nas ciências sociais, o Qri tem sido mobilizado, de forma mais metafórica, para analisar como instituições e comunidades desenvolvem mecanismos de coordenação e resiliência face a"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Disco Blu-ray",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Você já parou para pensar em como a tecnologia e a diversão noturna podem se encontrar de um jeito inesperado? Pois conheça o Disco Blu-ray, uma expressão curiosa que mistura a nostalgia das pistas de dança com a revolução digital dos formatos de vídeo. Apesar do nome sugerir algo saído de uma festa anos 70, o Disco Blu-ray não é um gênero musical nem um passo de dança. Trata-se de uma brincadeira com as palavras que surgiu para descrever aquele momento em que você coloca um filme em alta definição para rodar e, de repente, a luz azulada do aparelho ilumina a sala como se fosse um globo de discoteca moderno. É claro que o Blu-ray, lançado no início dos anos 2000, revolucionou a forma de assistir a filmes em casa, oferecendo imagem cristalina e som imersivo. Mas o termo “Disco Blu-ray” ganhou força em conversas informais e memes da internet, justamente por evocar a ideia de uma balada retrô onde o protagonista é o laser azul lendo os dados do disco. Para o público geral, essa expressão pode soar estranha, mas ela captura bem o espírito de uma época em que a tecnologia parecia mágica. Enquanto o streaming domina hoje, o Blu-ray ainda resiste entre colecionadores e cinéfilos que apreciam a qualidade física. Então, da próxima vez que você"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Marie-Madeleine de Brinvilliers",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Marie-Madeleine de Brinvilliers, nascida Marie-Madeleine d'Aubray por volta de 1630, em Paris, foi uma nobre francesa cuja vida se tornou sinônimo de envenenamento e intriga criminal no reinado de Luís XIV. Filha de Antoine d'Aubray, tenente civil de Paris, casou-se em 1651 com o oficial de cavalaria Antoine Gobelin, marquês de Brinvilliers, união que lhe garantiu posição social mas também a aproximou do capitão Jean-Baptiste Godin de Sainte-Croix, amante que se tornaria seu cúmplice e mentor nos crimes. Em 1666, após o pai descobrir o relacionamento ilícito e obter uma lettre de cachet que mandou Sainte-Croix para a Bastilha, o casal passou a planejar a eliminação daqueles que se opunham à sua ligação. Durante esse período, Sainte-Croix entrou em contato com o envenenador italiano Exili e aprendeu a manipular compostos de arsênico e outros venenos sutis, cujos efeitos imitavam doenças naturais. Entre 1666 e 1670, a marquesa testou tais substâncias em pobres de hospitais e, em seguida, envenenou o próprio pai, dois irmãos e uma irmã, herdando parte considerável da fortuna familiar. A morte de Sainte-Croix em 1672, porém, desfez o esquema: ao ser aberto seu cadáver, autoridades encontraram um cofre com bilhetes, frascos de veneno e instruções, revelando a rede de assassinatos. A marquesa fugiu para Londres e depois para Liège, onde foi capturada em 1676. Condenada pela Chambre"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Economia do Recife",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Recife é muito mais do que suas praias e seu frevo vibrante. A capital pernambucana pulsa uma economia diversificada e cheia de contrastes, que mistura tradição e inovação de forma única. Ao caminhar pelo Recife Antigo ou pelos bairros da Zona Sul, fica claro que a cidade não vive apenas do turismo, embora ele seja um motor importante. O setor de serviços é o grande protagonista, impulsionado pelo comércio, pela educação e, cada vez mais, pela tecnologia. O Porto Digital talvez seja o maior símbolo dessa nova economia. Instalado no coração histórico da cidade, ele transformou armazéns antigos em polos de software, games e serviços digitais, atraindo empresas nacionais e internacionais. Isso gerou empregos qualificados e colocou o Recife no mapa da inovação brasileira. Enquanto isso, a indústria naval e o complexo portuário de Suape, na região metropolitana, continuam a movimentar cargas e a gerar oportunidades, ainda que com altos e baixos. A saúde também tem peso enorme, com hospitais de referência que atendem todo o Nordeste. Já o comércio varejista, desde as feiras de bairro até os grandes shoppings, mantém a economia girando no dia a dia. É uma cidade que sofre com desigualdades e desafios de infraestrutura, mas que encontra na criatividade e no empreendedorismo uma forma de seguir adiante. Entender a economia do Recife é entender uma"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Fear the Walking Dead (2.ª temporada)",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "A segunda temporada de Fear the Walking Dead, série derivada de The Walking Dead, foi transmitida originalmente entre 10 de abril e 2 de outubro de 2016, dividida em duas partes de oito e sete episódios, respectivamente. A trama começa imediatamente após os acontecimentos do final da primeira temporada, com os personagens a bordo do iate Abigail, afastando-se da costa de Los Angeles em busca de segurança. O grupo, liderado por Travis Manawa e Madison Clark, enfrenta dilemas morais e tensões internas enquanto tenta sobreviver num mundo cada vez mais dominado pelos mortos-vivos. A temporada explora a transição da fase inicial do apocalipse para uma realidade mais brutal, marcada pela escassez de recursos, pela desconfiança entre sobreviventes e pela perda de inocência dos protagonistas. Entre os acontecimentos centrais, destacam-se a chegada a uma comunidade costeira aparentemente segura, a separação do grupo em diferentes núcleos narrativos e o desenvolvimento de personagens como Alicia Clark, Nick Clark e Victor Strand. A segunda metade da temporada desloca a ação para o México, apresentando novas facções, como os colonos de La Colonia e os membros da fazenda de Alejandro, além de aprofundar o passado misterioso de Strand. Temas como lealdade, sobrevivência e moralidade em colapso são recorrentes, refletindo a proposta da série de mostrar o início do fim da civilização sob a perspetiva de"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Atletismo nos Jogos Olímpicos de Verão de 2004",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Os Jogos Olímpicos de Verão de 2004, realizados em Atenas, na Grécia, marcaram um retorno simbólico do maior evento esportivo do mundo às suas origens. E, como não poderia deixar de ser, o atletismo brilhou intensamente no Estádio Olímpico Spiridon Louis, palco de momentos inesquecíveis que emocionaram o público e entraram para a história do esporte. A pista grega viu surgir novos heróis e consagrou lendas que já figuravam entre os maiores nomes do esporte mundial. Entre os destaques, o velocista jamaicano Asafa Powell ainda engatinhava em sua trajetória, mas foi o americano Justin Gatlin quem roubou a cena ao vencer os 100 metros rasos com autoridade, iniciando uma década de domínio em provas de velocidade. Nos 200 metros, o jovem Shawn Crawford, também dos Estados Unidos, confirmou o favoritismo e levou o ouro. Já nas provas de fundo, a atenção se voltou para Hicham El Guerrouj, o marroquino que finalmente conquistou o ouro olímpico nos 1500 e nos 5000 metros, um feito raríssimo e que coroou uma carreira brilhante. No feminino, a britânica Kelly Holmes brilhou ao vencer os 800 e os 1500 metros, emocionando a todos com sua superação após anos de lesões. O Brasil também teve seu momento de glória com Jadel Gregório no salto triplo e, principalmente, com Fabiana Murer no salto com vara, embora sem"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Curt Hawkins",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Curt Hawkins, nome artístico de Brian Myers, é um lutador profissional norte-americano nascido em 20 de abril de 1985, em Glen Cove, Nova York. Conhecido por sua versatilidade como performer e por sua longa passagem pela WWE, Hawkins construiu uma carreira que abrangeu tanto os ringues independentes quanto o circuito mainstream, destacando-se principalmente por seu trabalho em duplas e por sua capacidade de adaptação a diferentes personas ao longo das décadas de 2000, 2010 e 2020. Hawkins iniciou seu treinamento na escola de wrestling da WWE, a Ohio Valley Wrestling, no início dos anos 2000, adotando inicialmente o nome de Brian Major. Sua estreia no plantel principal da WWE ocorreu em 2007, quando passou a integrar a divisão de duplas ao lado de Zack Ryder, formando a equipe conhecida como The Major Brothers. Posteriormente, os dois foram repaginados como Curt Hawkins e Zack Ryder, tornando-se membros da aliança Edgeheads, liderada pelo lutador Edge. Essa associação lhes rendeu notoriedade e participações em histórias de destaque. Após deixar a WWE em 2014, Hawkins atuou em diversas promoções independentes, incluindo a Total Nonstop Action Wrestling e a Global Force Wrestling, onde reafirmou sua reputação como um competidor confiável e carismático. Em 2016, retornou à WWE, onde enfrentou uma longa sequência de derrotas que se tornou parte de sua narrativa cômica, até finalmente conquistar"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "GE Aerospace",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Quando pensamos em aviação, logo imaginamos aviões cruzando os céus, mas por trás de cada voo seguro existe uma história de engenharia e inovação que poucos conhecem. A GE Aerospace é uma das protagonistas dessa história. Com décadas de experiência, a empresa se consolidou como líder mundial em motores aeronáuticos, sistemas e serviços para aviação comercial e militar. Seu legado começou ainda no século XX, quando revolucionou a propulsão a jato, e desde então não parou de evoluir. Hoje, seus motores equipam desde grandes jatos de passageiros até caças de última geração, sempre com foco em eficiência, segurança e redução de emissões. Mas a GE Aerospace vai além de fabricar motores: ela investe pesadamente em tecnologia de ponta, como monitoramento em tempo real e manutenção preditiva, que ajudam companhias aéreas a economizar combustível e evitar atrasos. Em um mundo que busca alternativas mais sustentáveis, a empresa também pesquisa combustíveis renováveis e projetos híbridos-elétricos, mostrando que o futuro da aviação pode ser mais verde. Para o público geral, talvez o nome não seja tão familiar quanto o de fabricantes de aviões, mas sem a GE Aerospace, boa parte dos voos que fazemos hoje simplesmente não existiria. É uma daquelas empresas que trabalham nos bastidores, mas cujo impacto atravessa continentes, conecta pessoas e impulsiona a economia global. Se você já olhou pela"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Hipótese interdimensional",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "A hipótese interdimensional é uma conjectura científica e filosófica que propõe a existência de dimensões espaciais adicionais além das três dimensões clássicas de espaço e da dimensão temporal, comumente discutidas no âmbito da física teórica. Diferentemente de interpretações puramente matemáticas, essa hipótese sugere que tais dimensões extras poderiam ser acessíveis ou exercer influência mensurável sobre o nosso universo observável, ainda que de forma sutil ou indireta. Suas raízes remontam a desenvolvimentos da teoria de Kaluza-Klein, na década de 1920, que unificou gravidade e eletromagnetismo postulando uma quinta dimensão compactada. Posteriormente, a teoria das cordas e a teoria M ampliaram esse conceito, propondo até onze dimensões para descrever consistentemente todas as forças fundamentais. No contexto da hipótese interdimensional, fenômenos como a gravidade anômala em escalas submilimétricas, a matéria escura ou certos aspectos da energia escura poderiam ser explicados pela presença de dimensões extras que interagem com o nosso espaço-tempo. Experimentos em aceleradores de partículas, como o Large Hadron Collider, buscam indícios de partículas massivas de Kaluza-Klein ou de desvios na lei da gravidade inversa do quadrado da distância, que sinalizariam a existência dessas dimensões. A hipótese também inspira debates filosóficos sobre a natureza da realidade, a possibilidade de universos paralelos e a unificação final da física. Apesar de seu apelo teórico, a hipótese interdimensional carece de evidência experimental direta até o"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Mariluz",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Mariluz é um nome que carrega uma beleza singular, quase como se trouxesse consigo o reflexo do sol sobre as ondas do mar. Não por acaso, essa combinação de “mar” e “luz” evoca paisagens de costa, manhãs claras e a sensação de recomeço que só o encontro entre a água e o horizonte sabe proporcionar. Mas Mariluz vai muito além da sonoridade agradável: é também um nome que atravessa gerações e culturas, aparecendo em canções, poemas e histórias de vida que merecem ser contadas. Em muitos lugares, Mariluz é sinônimo de uma mulher forte e ao mesmo tempo delicada, capaz de iluminar os ambientes por onde passa. Há quem diga que o nome influencia o destino, e não faltam exemplos de Mariluzes que se destacaram nas artes, na educação, na ciência e no cuidado com o próximo. Seja como nome próprio, seja como personagem de ficção, essa palavra tem o poder de despertar curiosidade e afeto. Quem nunca conheceu uma Mariluz que, com um simples sorriso, mudou o astral de um dia cinzento? A verdade é que Mariluz combina contrastes: a imensidão do mar com o aconchego da luz. É um nome que soa como poesia e age como abraço. Em um mundo tão corrido, encontrar algo que remeta a calma e brilho ao mesmo tempo é um privilégio. Por"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Olduvaiense",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Olduvaiense é a designação tradicionalmente atribuída à indústria lítica mais antiga amplamente reconhecida, associada sobretudo às populações de Homo habilis e de outras formas humanas arcaicas do Plistocénico inferior. O termo deriva de Olduvai, desfiladeiro situado no norte da Tanzânia, onde, a partir da década de 1930 e de forma mais sistemática nos trabalhos de Louis e Mary Leakey nas décadas de 1950 e 1960, foram identificados conjuntos de artefactos em contextos geológicos com idades que remontam a cerca de 2,6 milhões de anos. A indústria olduvaiense caracteriza-se pela produção de utensílios simples obtidos a partir de seixos ou blocos de rocha, dos quais se destacam os choppers, núcleos trabalhados por levantamentos unifaciais ou bifaciais que criam gumes cortantes, e as lascas resultantes desse processo, frequentemente utilizadas como instrumentos de corte. A matéria-prima varia conforme a disponibilidade local, incluindo basalto, quartzo, quartzito e sílex, e a sua seleção e transporte revelam capacidade de planeamento e de exploração do ambiente. Apesar da aparente simplicidade técnica, o olduvaiense representa um marco na evolução cultural, ao documentar a produção intencional e repetida de ferramentas, o aproveitamento de recursos animais, incluindo o acesso a carcaças, e a transmissão de conhecimentos entre gerações. O seu significado cronológico e geográfico é amplo, com ocorrências em vários pontos de África, como Etiópia, Quénia, Tanzânia e África do"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Guerra Pírrica",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Você já deve ter ouvido alguém dizer que “ganhou, mas foi uma vitória de Pirro”. Essa expressão vem de um episódio real da Antiguidade, quando o rei Pirro, do Epiro, enfrentou os romanos em batalhas que mudaram para sempre a forma como pensamos sobre custo e benefício. Pirro era um general talentoso e ambicioso, e por volta de 280 a.C. desembarcou na Itália para expandir seu território. Na Batalha de Heracleia e, depois, na de Ascoli, ele derrotou os romanos. No papel, vitórias brilhantes. Na prática, cada triunfo veio acompanhado de perdas tão devastadoras entre seus melhores soldados e aliados que o exército ficou exausto e insubstituível. Diz a tradição que, após uma dessas batalhas, Pirro teria comentado: “Mais uma vitória como essa e estaremos perdidos”. Ele não estava exagerando. Enquanto Roma podia repor suas tropas com facilidade, o rei grego não tinha como recuperar veteranos experientes. Anos depois, acabou derrotado e voltou para casa com muito menos do que tinha. O episódio ficou conhecido como vitória pírrica, ou guerra pírrica, e virou sinônimo de qualquer sucesso que sai caro demais. No dia a dia, usamos a expressão para situações em que ganhar não compensa: um processo judicial que consome todas as economias, uma promoção no trabalho que destrói a saúde, uma discussão em que se prova o ponto, mas"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Chevrolet Chevelle",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "O Chevrolet Chevelle foi um automóvel de porte médio produzido pela divisão Chevrolet da General Motors entre os anos-modelo de 1964 e 1977. Lançado como parte da plataforma A-body da GM, o Chevelle nasceu para preencher a lacuna entre os compactos Chevy II e os modelos full-size, tornando-se um dos veículos mais versáteis e bem-sucedidos da marca. Ao longo de suas três gerações, ofereceu uma ampla variedade de carrocerias, incluindo cupês de duas portas, sedãs de quatro portas, peruas e conversíveis, atendendo tanto ao público familiar quanto aos entusiastas de alto desempenho. A primeira geração, de 1964 a 1967, apresentava linhas sóbrias e motores de seis cilindros ou V8 de pequeno bloco. A segunda geração, entre 1968 e 1972, é considerada por muitos a mais icônica, com estilo fastback nos cupês e uma gama de motores que incluía potentes V8 de até 454 polegadas cúbicas. Nesse período, o Chevelle deu origem a versões lendárias como o Malibu, o Concours e, principalmente, o SS 396, que se tornou um dos muscle cars mais respeitados da era dourada do desempenho americano. A terceira geração, de 1973 a 1977, refletiu as mudanças da indústria automobilística, com carrocerias maiores, foco em conforto e a gradual perda de potência devido às normas de emissões e à crise do petróleo. Apesar disso, manteve boas vendas até"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Dante (Devil May Cry)",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Dante é muito mais do que um simples caçador de demônios; ele é o ícone perfeito do anti-herói carismático que conquistou fãs ao redor do mundo desde 2001. Metade humano, metade demônio, filho do lendário Cavaleiro Negro Sparda e da humana Eva, ele carrega o peso de um legado complicado, mas prefere encarar tudo com um sarcasmo afiado e uma pizza fria na mão. Diferente dos heróis tradicionais, Dante não usa capa nem discursos grandiosos. Ele veste um casaco vermelho surrado, empunha espadas gigantescas com nomes como Rebellion e Ebony & Ivory, e enfrenta criaturas infernais como se fosse apenas mais um dia de trabalho. Sua personalidade irreverente, cheia de piadas e provocações, esconde uma dor profunda: a perda da mãe, o conflito com o irmão gêmeo Vergil e a luta constante contra suas próprias origens demoníacas. O que torna Dante tão cativante é justamente esse equilíbrio entre o caos e a proteção. Ele pode destruir um exército de demônios sem perder o estilo, mas também arrisca a vida por estranhos sem esperar recompensa. Nos jogos da série Devil May Cry, sua jogabilidade frenética e estilosa definiu um gênero, misturando ação, combos e uma trilha sonora pesada. Fora dos games, ele inspirou animês, livros e até teorias sobre o verdadeiro significado de sua jornada. Dante não é um salvador perfeito;"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Daisuke Takahashi",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Daisuke Takahashi é um patinador artístico japonês, nascido em 16 de março de 1986, em Kurashiki, província de Okayama. É amplamente reconhecido como um dos pioneiros do patinação artística masculina no Japão e uma das figuras mais influentes do esporte na primeira década do século XXI. Takahashi iniciou sua carreira internacional no início dos anos 2000 e rapidamente se destacou pelo estilo expressivo, pela musicalidade refinada e pela capacidade de combinar elementos técnicos complexos com uma presença artística marcante. Em 2002, conquistou o título mundial júnior, sinalizando seu potencial. Seu maior feito veio em 2010, quando se tornou o primeiro patinador japonês a ganhar a medalha de ouro olímpica na patinação artística masculina, nos Jogos de Inverno de Vancouver. Além disso, foi medalhista de bronze olímpico em 2012? Não, em 2012 não houve Jogos Olímpicos de Inverno; ele conquistou o bronze nos Jogos de Sochi, em 2014, e também foi campeão mundial em 2010 e medalhista de prata mundial em 2007 e 2012. Ao longo de sua carreira, Takahashi venceu múltiplos campeonatos nacionais japoneses e etapas do Grand Prix. Conhecido por programas memoráveis como “Eye” e “Blues for Klook”, ele ajudou a elevar a popularidade da patinação no Japão, inspirando uma geração de patinadores, incluindo Yuzuru Hanyu. Após se aposentar das competições em 2014, dedicou-se a apresentações profissionais e ao"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Evolve (álbum)",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Lançado em junho de 2017, Evolve marcou um ponto de virada definitivo na carreira do Imagine Dragons. O terceiro álbum de estúdio da banda americana abandonou parte da sonoridade densa e experimental dos trabalhos anteriores para abraçar uma produção mais polida, radiofônica e acessível. A mudança gerou debates entre fãs antigos, mas conquistou um público ainda maior, transformando o grupo em uma das bandas mais ouvidas da década. O disco abre com I Don't Know Why, uma faixa que já sinaliza a nova direção: batidas eletrônicas, refrões grandiosos e a voz inconfundível de Dan Reynolds. Logo em seguida vem Whatever It Takes, com seu ritmo pulsante e letras sobre determinação. Mas o grande fenômeno veio com Believer, uma explosão de energia que mistura rock, pop e elementos de hip-hop, tornando-se um hino de superação em trilhas de filmes, comerciais e vídeos virais. Thunder, por sua vez, prova que simplicidade pode ser hipnótica, com seu refrão repetitivo que gruda na cabeça. Evolve também reserva momentos mais introspectivos, como Walking the Wire e I'll Make It Up to You, que mostram o lado emocional da banda sem perder a grandiosidade. A produção executiva ficou a cargo de Alex da Kid, responsável por lapidar o som e deixá-lo pronto para as paradas globais. O resultado foram milhões de cópias vendidas, singles no topo"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Resta in Ascolto",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Resta in Ascolto é o quinto álbum de estúdio da cantora italiana Laura Pausini, lançado internacionalmente em outubro de 2004. O título, que significa \"permaneço à escuta\" ou \"fico à escuta\", reflete o estado de espírito da artista durante o período de composição, marcado pela observação atenta das próprias emoções e das transformações pessoais após uma década de carreira. O disco sucede ao bem-sucedido From the Inside, de 2002, e representa um retorno de Pausini às raízes melódicas italianas, sem abandonar a ambição internacional que a consagrou. Como era habitual em sua discografia, o projeto foi gravado simultaneamente em italiano e em espanhol, sob o título Escucha, permitindo alcançar tanto o público europeu quanto o latino-americano e o ibérico. A produção contou com a colaboração de nomes como Celso Valli, Dado Parisini e Alfredo Cerruti, além de compositores como Cheope, Giuseppe Dati e a própria intérprete, que assina várias faixas. Entre os temas centrais estão o amor em suas diversas fases, a saudade, a maturidade afetiva e a busca por autenticidade. O primeiro single, \"Resta in ascolto\", tornou-se um dos maiores êxitos da carreira de Pausini, acompanhado por canções como \"Vivimi\", \"Come se non fosse stato mai amore\" e \"Bendecida\", esta última com forte carga espiritual. O álbum estreou no topo das paradas italianas e alcançou boas posições em diversos"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Corpo Dourado",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Quem viveu os anos 90 sabe o quanto as novelas das sete marcavam época, e \"Corpo Dourado\" é um exemplo perfeito disso. Exibida pela Globo em 1998, a trama escrita por Antônio Calmon conquistou o público com uma mistura viciante de romance, praia, sol e conflitos familiares. A história gira em torno de Selena, interpretada por Cristiana Oliveira, uma jovem forte e determinada que volta à cidade litorânea de Boca do Rio para investigar a morte do pai. No caminho, ela se envolve com Chico, vivido por Humberto Martins, um peão bonito e misterioso que trabalha na fazenda da família. A química entre os dois virou um dos maiores atrativos da novela, mas o que realmente fez \"Corpo Dourado\" brilhar foi o clima de verão que tomava conta de cada cena. As paisagens paradisíacas, as cenas na praia e a trilha sonora repleta de hits como \"Corpo Dourado\", cantada por Sérgio Reis, transportavam o espectador para um mundo onde o mar e o amor pareciam resolver tudo. Além do casal principal, personagens como a divertida Tiana e o vilão César movimentavam a trama com humor e tensão na medida certa. A novela também abordou temas como a preservação ambiental e os conflitos entre o progresso e a natureza, algo bastante atual para a época. \"Corpo Dourado\" não foi apenas mais"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Braz Paschoalin",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "Braz Paschoalin é uma figura histórica brasileira lembrada principalmente por sua atuação como educador, jornalista e político no interior do estado de São Paulo durante o final do século XIX e início do século XX. Nascido em meados do século XIX, dedicou boa parte de sua vida à instrução pública, defendendo a expansão do ensino primário e a valorização do magistério em uma época em que a educação formal ainda era restrita a parcelas limitadas da população. Sua trajetória está associada à cidade de Espírito Santo do Pinhal e à região do Circuito das Águas Paulista, onde exerceu influência intelectual e administrativa. Como jornalista, Braz Paschoalin colaborou com periódicos locais, utilizando a imprensa como instrumento de divulgação de ideias republicanas e de debates sobre cidadania, progresso e desenvolvimento regional. Sua produção textual abordava temas como a necessidade de escolas, a formação de professores e a participação popular na vida pública, refletindo o clima de transformações políticas que marcou a transição do Império para a República no Brasil. Nesse contexto, integrou-se aos grupos que buscavam modernizar as estruturas sociais e ampliar o acesso ao conhecimento. Na esfera política, ocupou cargos públicos que lhe permitiram implementar parte de suas convicções educacionais, notadamente no âmbito municipal. Sua atuação como educador deixou marcas em instituições de ensino da região, e seu nome foi posteriormente"
+ },
+ {
+  "label": "ai",
+  "model": "deepseek-chat",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "T.O.P",
+  "meta": "deepseek-chat temperature=0.9 generated=2026-09-30",
+  "text": "No mundo acelerado em que vivemos, a sigla T.O.P ecoa em diferentes cenários, mas sempre carregando a ideia de excelência e destaque. Para muitos, ela surge imediatamente associada a um dos maiores ícones do K-pop: T.O.P, o rapper e ator sul-coreano que conquistou milhões de fãs ao redor do planeta. Nascido Choi Seung-hyun, ele ganhou notoriedade como integrante do lendário grupo BIGBANG, onde seu estilo único, voz grave e presença de palco magnética ajudaram a redefinir os limites da música pop asiática. Sua jornada solo também é marcada por experimentações ousadas, misturando hip-hop, arte visual e atuação em dramas e filmes de sucesso, como a série Round 6, onde sua participação gerou enorme expectativa. Mas T.O.P também representa algo mais amplo: a busca constante por estar no topo, seja nos negócios, nos esportes ou na vida pessoal. Em um mundo competitivo, ser “top” significa superar obstáculos, manter a autenticidade e inspirar outras pessoas. A trajetória desse artista mostra que o verdadeiro topo não é apenas uma posição de fama, mas um estado de espírito que combina talento, resiliência e a coragem de se reinventar. Seja nos palcos ou na vida, T.O.P nos lembra que todos podemos almejar o nosso próprio auge, respeitando nosso ritmo e nossa história. Afinal, mais do que uma sigla, ser top é reconhecer o valor da"
+ }
+]

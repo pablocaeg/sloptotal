@@ -65,10 +65,10 @@ so a model was first asked which question each essay answers.
 | Model | Texts | Note |
 |---|---|---|
 | `deepseek/deepseek-v4.1-flash` | 272 | |
-| `openai/gpt-6-luna` | 265 | |
-| `qwen/qwen3.8-flash` | 257 | |
+| `openai/gpt-6-luna` | 264 | |
+| `qwen/qwen3.8-flash` | 256 | |
 | `z-ai/glm-5.3-flash` | 253 | |
-| `meta-llama/llama-4-maverick` | 248 | |
+| `meta-llama/llama-4-maverick` | 247 | |
 | `mistralai/mistral-small-2603` | 235 | |
 | `nvidia/nemotron-3-ultra-550b-a55b` | 26 | free tier |
 | `nvidia/nemotron-3-super-120b-a12b` | 24 | free tier |
@@ -109,7 +109,7 @@ python analyze.py results.jsonl                        # tables
 python fit.py results.jsonl results-short.jsonl        # calibration
 ```
 
-Generating the AI side and the hard cases cost $1.44 through OpenRouter.
+Generating the AI side, the hard cases and the extra multilingual AI text cost $1.73 through OpenRouter.
 
 ## Licences
 

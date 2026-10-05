@@ -1,0 +1,308 @@
+[
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "NV Ingenieurskantoor voor Scheepsbouw",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "NV Ingenieurskantoor voor Scheepsbouw (IvS), cuyo nombre significa «Oficina de Ingeniería Naval», fue una empresa de diseño y consultoría naval establecida en La Haya en 1922. Su creación estuvo vinculada a las restricciones impuestas a Alemania por el Tratado de Versalles tras la Primera Guerra Mundial, que limitaban severamente la construcción de buques de guerra y prohibían el desarrollo de determinadas armas. La empresa ofreció una vía para conservar y ampliar conocimientos técnicos alemanes sin atribuir oficialmente esos proyectos a la industria del país. Aunque estaba registrada en los Países Bajos, IvS mantuvo estrechos vínculos con la marina alemana y con astilleros como Germaniawerft, en Kiel, y Blohm & Voss, en Hamburgo. Sus ingenieros trabajaron en diseños de submarinos y otros buques, que podían presentarse como proyectos destinados a clientes extranjeros. Para probarlos y adquirir experiencia práctica, IvS colaboró con astilleros y organismos de otros países. Entre sus proyectos más conocidos figuraron submarinos diseñados para Turquía y Finlandia; algunos sirvieron como base técnica para modelos posteriores de la Kriegsmarine. La actividad de la compañía permitió a Alemania mantener parte de su capacidad de investigación naval durante el periodo de entreguerras, pese a las limitaciones del tratado. En Finlandia, por ejemplo, diseños relacionados con IvS contribuyeron al desarrollo del submarino Vesikko, utilizado después como referencia para el submarino alemán Tipo II."
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "Copa del Rey de fútbol 1924",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "La Copa del Rey de fútbol de 1924 fue la vigésima edición de este prestigioso torneo español, organizado por la Real Federación Española de Fútbol. Se disputó entre el 16 de marzo y el 4 de mayo de ese año, con la participación de ocho equipos, todos ellos campeones de sus respectivas federaciones regionales. El formato consistió en una ronda inicial de cuartos de final, seguida de semifinales y una final a partido único en terreno neutral, sistema que se mantuvo desde ediciones anteriores. El Real Unión de Irún se proclamó campeón tras superar al Real Madrid en la final, celebrada en el Estadio de Atotxa de San Sebastián. El partido terminó con un resultado de 1-0 a favor del equipo vasco, con gol de René Petit, uno de los jugadores más destacados de la época y figura clave en la victoria. Este triunfo supuso el segundo título copero para el Real Unión, que ya había ganado la competición en 1918. El subcampeonato recayó en el Real Madrid, que buscaba revalidar su éxito de 1905, 1906, 1907 y 1917, pero no logró superar a la sólida defensa unionista. La competición destacó por la calidad de los equipos participantes, entre los que también figuraban el Athletic Club de Bilbao, el FC Barcelona y el Sevilla FC, este último alcanzando las semifinales"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "es",
+  "topic": "7.º Escuadrón de la RAF (Reino Unido)",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "El 7.º Escuadrón de la RAF es una de las unidades más históricas y prestigiosas de la Royal Air Force británica. Fundado en 1914, el escuadrón ha desempeñado un papel crucial en numerosos conflictos y operaciones aéreas a lo largo de su centenaria historia. Inicialmente equipado con aviones de reconocimiento y bombardeo, el 7.º Escuadrón participó en la Primera Guerra Mundial, llevando a cabo misiones de reconocimiento y ataque contra las fuerzas enemigas. Durante la Segunda Guerra Mundial, el escuadrón se convirtió en una unidad clave en la campaña de bombardeo estratégico contra Alemania, operando aviones como el Short Stirling y el Avro Lancaster. Sus tripulaciones realizaron numerosas misiones de bombardeo nocturno, contribuyendo significativamente al esfuerzo bélico aliado. Después de la guerra, el 7.º Escuadrón continuó operando aviones de bombardeo, incluyendo el English Electric Canberra, antes de ser disuelto en 1964. Sin embargo, el escuadrón fue reactivado en 1970 como una unidad de reconocimiento equipada con el avión de vigilancia terrestre Hawker Siddeley Nimrod. En esta capacidad, el 7.º Escuadrón desempeñó un papel vital en la vigilancia marítima y el reconocimiento aéreo, apoyando las operaciones de la OTAN y las fuerzas británicas en diversas regiones. Más recientemente, el escuadrón ha operado aviones de inteligencia, vigilancia y reconocimiento (ISR) como el Boeing RC-135W Rivet Joint, llevando a cabo misiones de vigilancia"
+ },
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "Masacre de Baga de 2015",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "La masacre de Baga de 2015 fue una serie de ataques perpetrados por el grupo yihadista Boko Haram en el noreste de Nigeria, principalmente en la localidad de Baga y sus alrededores, cerca del lago Chad. La ofensiva comenzó el 3 de enero, cuando los combatientes tomaron una base militar multinacional situada en la zona y ocuparon la ciudad. En los días siguientes, los ataques se extendieron a comunidades vecinas, entre ellas Doron Baga. Los hechos se produjeron en el marco de la insurgencia de Boko Haram, que desde 2009 combatía al Estado nigeriano y atacaba a civiles, fuerzas de seguridad e instituciones públicas. La magnitud de la destrucción y el número de víctimas fueron difíciles de establecer de inmediato. Testimonios de sobrevivientes describieron asesinatos, incendios y la huida de miles de personas. Imágenes satelitales difundidas posteriormente mostraron amplias áreas de viviendas destruidas en Baga y Doron Baga. Las estimaciones iniciales de víctimas mortales variaron considerablemente: algunas declaraciones oficiales nigerianas informaron de decenas de fallecidos, mientras que autoridades locales y organizaciones civiles hablaron de cifras mucho mayores. Amnistía Internacional calculó que unas 2.000 personas podrían haber muerto, aunque advirtió que la cifra no podía verificarse de manera independiente. Por ello, el número exacto de víctimas sigue siendo objeto de controversia. La población desplazada buscó refugio en otras partes de Nigeria"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "Liga Nacional de Gibraltar",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "La Liga Nacional de Gibraltar es la máxima competición futbolística de Gibraltar, un territorio británico de ultramar ubicado en el sur de la península ibérica. Organizada por la Asociación de Fútbol de Gibraltar (GFA), esta liga es el principal torneo de fútbol masculino en el territorio y sirve como base para la clasificación de los clubes gibraltareños en competiciones europeas. Fundada en 1907, la liga ha experimentado una evolución significativa, especialmente tras la admisión de Gibraltar como miembro de pleno derecho de la UEFA en 2013, lo que permitió a sus equipos competir en torneos continentales como la Liga de Campeones y la Europa League. La competición consta actualmente de once equipos que disputan partidos bajo un sistema de liga a doble vuelta, sumando un total de 20 jornadas. El campeón de la liga nacional se clasifica para la fase preliminar de la Liga de Campeones de la UEFA, mientras que el subcampeón y el ganador de la Rock Cup (copa nacional) obtienen plazas en la Europa Conference League. Además, el último clasificado desciende a la Segunda División de Gibraltar, conocida como la Segunda División. La liga ha visto un aumento en la competitividad en los últimos años, con equipos como el Lincoln Red Imps, considerado uno de los clubes más exitosos del territorio, dominando gran parte de la historia"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "es",
+  "topic": "Rookery Building",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "El edificio Rookery es una joya arquitectónica ubicada en el corazón de Chicago, Illinois. Construido en 1888, este emblemático edificio fue diseñado por los renombrados arquitectos Daniel Burnham y John Wellborn Root, y su nombre se debe a la anterior ocupación del sitio por parte de una colonia de garzas y otros pájaros. En su época, el Rookery era considerado uno de los edificios de oficinas más importantes de la ciudad, y su diseño innovador y elegante lo convirtió en un modelo a seguir para futuras construcciones. La fachada del edificio es imponente, con una estructura de piedra caliza y granito que le da un aspecto sólido y duradero. Sin embargo, es en el interior donde se encuentra la verdadera magia. El vestíbulo, con su techo abovedado y su ornamentación intrincada, es un ejemplo destacado del estilo arquitectónico de la época. La luz natural que inunda el espacio a través de la claraboya central crea un ambiente luminoso y acogedor. A lo largo de los años, el Rookery ha sido objeto de varias restauraciones y renovaciones, lo que ha permitido conservar su belleza original. En la actualidad, el edificio sigue siendo un lugar emblemático de la ciudad, y su arquitectura sigue inspirando a arquitectos y diseñadores de todo el mundo. Los visitantes pueden admirar su esplendor y conocer un poco"
+ },
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "Eje ferroviario transversal de Andalucía",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "El eje ferroviario transversal de Andalucía es un corredor de transporte concebido para conectar las principales áreas urbanas y económicas de la comunidad mediante una línea de altas prestaciones. Su trazado previsto enlaza Huelva y Sevilla con Antequera, Granada y Almería, y se integra con otros itinerarios ferroviarios hacia Málaga y el resto de España. El proyecto pretende reducir los tiempos de viaje entre provincias, favorecer los desplazamientos cotidianos y mejorar la conexión de Andalucía oriental con el valle del Guadalquivir y la red ferroviaria nacional. La actuación combina la construcción de nuevos tramos con la renovación y adaptación de líneas existentes. Entre sus elementos más destacados figura la conexión de alta velocidad entre Sevilla y Antequera, donde el corredor puede enlazar con la línea de alta velocidad Córdoba-Málaga. También se han planteado mejoras de infraestructura, electrificación y señalización, así como la adecuación de estaciones y accesos. Las características técnicas varían según el tramo, por lo que el eje no constituye una línea uniforme ni ha entrado en servicio en su totalidad. La planificación del corredor se ha desarrollado por fases y ha experimentado cambios de calendario, alcance y financiación. Algunos segmentos han avanzado o se han incorporado a redes ferroviarias existentes, mientras que otros siguen pendientes de obras o de decisiones sobre su configuración. Por ello, el término designa"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "Unión Deportiva Tamaraceite",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "Unión Deportiva Tamaraceite es un club de fútbol de Las Palmas de Gran Canaria, España, fundado en 1965 en el barrio de Tamaraceite. Este equipo representa una de las entidades deportivas más emblemáticas de la capital grancanaria, con una destacada trayectoria en categorías regionales y, en algunas etapas, en competiciones nacionales. Su estadio, el Campo Municipal de Fútbol de Tamaraceite, ubicado en el polígono industrial de la Isleta, sirve como escenario para sus partidos como local, contando con unas modestas pero funcionales instalaciones que reflejan su carácter humilde y cercano. A lo largo de su historia, Unión Deportiva Tamaraceite ha alternado participaciones en la Tercera División de España con etapas en categorías inferiores, siempre con un fuerte arraigo comunitario. El club ha sido un referente en la formación de jóvenes talentos, destacando por su cantera y su compromiso con el deporte base en la isla de Gran Canaria. Además, ha mantenido una rivalidad local con otros equipos de la zona, como la Unión Deportiva San Mateo o la Unión Deportiva Villa de Santa Brígida, lo que ha enriquecido el panorama futbolístico regional. La entidad, que viste en sus partidos con camiseta blanca y pantalón azul, ha vivido momentos de ascenso y descenso, pero siempre ha conservado su identidad como club de barrio con gran apoyo vecinal. En los últimos años,"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "es",
+  "topic": "Deutschland (1933)",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "La película \"Deutschland (1933)\", dirigida por el cineasta italiano Luis Trenker en 1933, es un testimonio fascinante de la compleja relación entre el arte y la política en un momento crucial de la historia alemana. Estrenada en el mismo año en que Adolf Hitler asumió el poder, la película refleja la tensión entre la creciente influencia del nacionalsocialismo y la libertad artística. La trama sigue a un joven alemán que regresa a su país después de pasar varios años en Estados Unidos, solo para encontrarse con un entorno político y social en rápida transformación. A través de su historia, la película explora temas como la identidad nacional, la lealtad y la resistencia a la opresión. Aunque inicialmente la película fue vista como una crítica velada al régimen nazi, su recepción fue compleja y su mensaje fue objeto de diversas interpretaciones. Algunos críticos la vieron como una obra que reflejaba la confusión y la incertidumbre de la época, mientras que otros la interpretaron como una forma de resistencia sutil al nuevo régimen. La película es notable no solo por su contenido, sino también por el contexto en el que se produjo y estrenó. Luis Trenker, el director, era un cineasta de origen tirolés que había trabajado en Hollywood y que estaba familiarizado con las técnicas narrativas de la industria cinematográfica estadounidense."
+ },
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "Margarita Rosa de Francisco",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "Margarita Rosa de Francisco Baquero (Cali, Colombia, 8 de agosto de 1965) es actriz, cantante, presentadora y escritora. Hija del músico y compositor Gerardo de Francisco y de la actriz Mercedes Baquero, creció en un entorno artístico y comenzó su carrera en el espectáculo durante la adolescencia. En 1981 representó a Colombia en el concurso Miss Mundo, experiencia que precedió a su entrada en la televisión y el cine. Alcanzó reconocimiento internacional por su interpretación de Gaviota, una recolectora de café que aspira a mejorar su vida, en la telenovela Café, con aroma de mujer (1994), creada por Fernando Gaitán. La producción tuvo amplia difusión en América Latina y fue adaptada en otros países. De Francisco también protagonizó Gallito Ramírez (1986) y Los pecados de Inés de Hinojosa (1988), y participó en películas como Ilona llega con la lluvia (1996) y Paraíso Travel (2008). Su trayectoria televisiva abarca dramas, series y concursos; durante varios años presentó Desafío, programa colombiano de competencia y supervivencia. Paralelamente, desarrolló una actividad musical. Publicó álbumes como Margarita Rosa (1988) y Corazón de mojado (1990), en los que combinó pop y ritmos latinoamericanos. También ha escrito y divulgado reflexiones personales sobre bienestar, disciplina física y búsqueda espiritual. En 2016 publicó El hombre del teléfono, una novela que explora vínculos y experiencias cotidianas. Su carrera se ha"
+ },
+ {
+  "label": "ai",
+  "model": "qwen/qwen3.8-flash",
+  "domain": "blog",
+  "lang": "es",
+  "topic": "Capitolio de La Habana",
+  "meta": "qwen/qwen3.8-flash temperature=0.8 generated=2026-10-01",
+  "text": "Pasear por La Habana es un acto de fe en la belleza que sobrevive al tiempo, y en el corazón de esta ciudad, donde el Malecón se encuentra con la historia, se alza imponente el Capitolio Nacional. No es solo una copia reducida del edificio de Washington D.C., sino un símbolo vivo de identidad, resistencia y elegancia arquitectónica que ha marcado el pulso de la isla durante más de un siglo. Al acercarse a sus columnas corintias, uno siente el peso de los debates políticos que alguna vez resonaron entre sus muros, aunque hoy su función haya cambiado para convertirse en la sede de la Asamblea Nacional del Poder Popular. El interior del edificio es un laberinto de mármol y bronce que invita a la contemplación silenciosa. En el centro exacto de la rotonda principal descansa la famosa estatua de La República, una figura femenina colosal realizada en bronce dorado que parece vigilar el destino de la nación con una dignidad serena. Justo debajo de ella, incrustada en el suelo, hay una réplica del diamante de Colón, un detalle curioso que atrae la mirada de los visitantes y añade un toque de misterio legendario al espacio. Las escalinatas de mármol, amplias y majestuosas, fueron diseñadas para que quienes subieran hacia la democracia sintieran la grandeza del lugar, una experiencia que"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "Anthony Bourdain",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "Anthony Bourdain fue un chef, escritor y presentador de televisión estadounidense, reconocido por su influencia en la gastronomía y la cultura global. Nació el 25 de junio de 1956 en Nueva York y creció en el barrio de Queens, donde desarrolló desde joven una pasión por la cocina. Tras graduarse en la Escuela de Cine de Vassar, Bourdain eligió dedicarse a la gastronomía y, en 1978, se convirtió en chef en restaurantes de Nueva York, destacando por su estilo innovador y su enfoque en ingredientes frescos. Su carrera dio un giro decisivo en 1999, cuando la revista The New Yorker publicó su artículo \"Don’t Eat Before Reading This\", una cruda y humorística descripción de la vida en las cocinas profesionales. El éxito del texto lo llevó a escribir libros como \"Kitchen Confidential\" (2000), que se convirtió en un bestseller y lo consagró como figura pública. Su estilo directo, irreverente y apasionado atrajo a millones de lectores, quienes veían en sus palabras una mezcla única de honestidad y amor por la comida. En televisión, Bourdain alcanzó fama mundial con programas como No Reservations (2005-2012) y Parts Unknown (2013-2018), emitidos en canales como Travel Channel y CNN. En estos espacios, exploró culturas a través de su gastronomía, combatiendo estereotipos y mostrando la humanidad detrás de los platos. Sus viajes, desde Marruecos hasta"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "es",
+  "topic": "O.J.: Made in America",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "La serie documental \"O.J.: Made in America\" es una obra maestra que explora uno de los casos más mediáticos y controvertidos de la historia de Estados Unidos. Dirigida por Ezra Edelman, la serie profundiza en la vida de O.J. Simpson, un ícono del fútbol americano y una figura que se convirtió en sinónimo de la cultura popular en la década de 1990. A través de una narrativa envolvente y una investigación exhaustiva, Edelman nos lleva en un viaje a través de la carrera deportiva de Simpson, su ascenso a la fama y su posterior caída en desgracia tras el brutal asesinato de su ex esposa, Nicole Brown Simpson, y su amigo, Ron Goldman. La serie no solo se centra en el juicio que siguió a los asesinatos, sino que también explora la compleja personalidad de Simpson, su relación con la raza y la cultura en Estados Unidos, y el impacto que tuvo el caso en la sociedad americana. Con entrevistas con personas cercanas a Simpson, así como con expertos y periodistas que cubrieron el caso, Edelman logra crear un retrato multifacético de un hombre que fue a la vez un héroe y un villano para muchos. A medida que avanza la serie, se hace evidente que \"O.J.: Made in America\" es más que un simple documental sobre un caso famoso;"
+ },
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "Yolanda Pantin",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "Yolanda Pantin (Caracas, 1954) es una poeta, dramaturga y ensayista venezolana, considerada una de las voces más relevantes de la literatura hispanoamericana contemporánea. Estudió Letras en la Universidad Católica Andrés Bello y formó parte del grupo Tráfico, surgido en Caracas a comienzos de la década de 1980. Sus integrantes propusieron renovar la poesía venezolana mediante un lenguaje atento a la vida urbana, la experiencia cotidiana y las tensiones sociales, sin renunciar a la exploración formal. Su primer libro de poesía, Casa o lobo, apareció en 1981. Desde entonces ha publicado una obra que combina observación del entorno, memoria personal, reflexión histórica y una particular atención a la naturaleza y los animales. Entre sus títulos se encuentran Correo del corazón, La canción fría, Poemas del escritor, País y Lo que hace el tiempo. Su escritura suele alternar registros y formas: junto a la concisión lírica aparecen la narración, la conversación y la incorporación de materiales documentales. La infancia, la familia, la violencia y la fragilidad de la identidad son algunos de sus temas recurrentes. Pantin también ha desarrollado una importante labor en el teatro y la literatura infantil. En 1985 cofundó el grupo editorial y teatral Editorial Ekaré, dedicado especialmente a la producción de libros para niños y jóvenes. Su trabajo para la escena incluye obras destinadas tanto al público infantil"
+ },
+ {
+  "label": "ai",
+  "model": "qwen/qwen3.8-flash",
+  "domain": "blog",
+  "lang": "es",
+  "topic": "Agua, azucarillos y aguardiente",
+  "meta": "qwen/qwen3.8-flash temperature=0.8 generated=2026-10-01",
+  "text": "“Agua, azucarillos y aguardiente” suena como una receta sencilla, pero en realidad es una pequeña joya de la música española, una zarzuela breve que convierte el barrio, la calle y la conversación popular en un escenario lleno de humor, ritmo y ternura. Creada a finales del siglo XIX por Federico Chueca, con libreto de Miguel Ramos Carrión, esta obra nació para retratar con simpatía la vida cotidiana madrileña: los vecinos, los comerciantes, las parejas que se quieren, los enredos amorosos y las pequeñas travesuras del día a día. No se necesita ser un experto en ópera para disfrutarla; basta con dejarse llevar por sus melodías pegadizas, su lenguaje cercano y ese ambiente de fiesta que parece extenderse desde el patio de butacas hasta la plaza más bulliciosa. El título mismo invita a saborear algo sencillo: agua para la sed, azucarillos para el dulce y aguardiente para el coraje, pero lo que realmente ofrece es una comedia lírica donde la música habla como hablan los personajes, con picardía y corazón. Hoy, más de un siglo después, sigue teniendo encanto porque recuerda que la cultura no siempre llega desde lo solemne: a veces aparece en un chascarrillo, en una tonadilla o en una escena donde el pueblo canta sus alegrías y sus problemas. Su magia está en lo modesto: en la capacidad"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "Sierra Grande",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "Sierra Grande es una formación montañosa ubicada en la provincia de Río Negro, en la región patagónica de Argentina. Con una altitud de 2.030 metros sobre el nivel del mar, representa uno de los relieves más destacados de la meseta patagónica, caracterizada por su imponente presencia en un paisaje predominantemente árido y desolado. Su nombre, que significa \"sierra grande\" en español, refleja tanto su tamaño como su importancia geográfica en la zona. Geológicamente, Sierra Grande forma parte de un complejo de sierras de origen precámbrico, lo que la convierte en una de las formaciones más antiguas de la región. Su estructura está compuesta principalmente por rocas metamórficas y graníticas, que han resistido la erosión durante millones de años. En su base se encuentran yacimientos minerales de hierro, los cuales fueron explotados desde la década de 1940 hasta mediados de los años 90, cuando la actividad minera cesó temporalmente. Este pasado industrial dejó un legado de infraestructura abandonada y un impacto ambiental que aún perdura. En el ámbito climático, Sierra Grande se encuentra en una zona de transición entre el clima árido de la Patagonia y el semiárido, con inviernos fríos y veranos secos. Las precipitaciones son escasas, lo que limita la vegetación a especies adaptadas a la aridez, como arbustos y pastos resistentes. La fauna local incluye guanacos, piches y"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "es",
+  "topic": "Volkswagen e-Golf",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "El Volkswagen e-Golf es una versión eléctrica del popular modelo Golf, que ha sido un referente en el mercado automovilístico durante décadas. Con la creciente conciencia sobre el medio ambiente y la necesidad de reducir las emisiones de gases de efecto invernadero, Volkswagen ha dado un paso importante hacia la movilidad sostenible con su e-Golf. Este vehículo eléctrico ofrece una alternativa atractiva para aquellos que buscan reducir su huella de carbono sin sacrificar el rendimiento ni la comodidad. El e-Golf cuenta con un motor eléctrico que produce 136 caballos de fuerza y un par motor instantáneo, lo que se traduce en una aceleración suave y rápida. La batería de iones de litio tiene una capacidad de 35,8 kWh, lo que permite una autonomía de hasta 300 kilómetros en ciclo urbano, según el estándar WLTP. Además, el e-Golf cuenta con un sistema de recuperación de energía cinética que ayuda a recargar la batería durante la frenada, lo que aumenta su eficiencia. En cuanto a la experiencia de conducción, el e-Golf es prácticamente idéntico al Golf convencional, con la misma calidad de construcción y comodidad. Sin embargo, el e-Golf ofrece algunas características exclusivas, como el modo de conducción \"B\" que permite una mayor recuperación de energía durante la frenada, y el sistema de infoentretenimiento que proporciona información detallada sobre el estado de"
+ },
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "Flamurtari Football Club",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "El Flamurtari Football Club, conocido habitualmente como Flamurtari Vlorë, es un club de fútbol de Vlorë, ciudad portuaria del suroeste de Albania. Fundado en 1923, es una de las entidades deportivas históricas del país y disputa sus partidos como local en el estadio Flamurtari. Sus colores tradicionales son el rojo y el negro, los mismos de la bandera albanesa, y su nombre significa «abanderado» o «portador de la bandera». El equipo vivió sus mayores éxitos nacionales durante las décadas de 1980 y 1990. Ganó la Copa de Albania en varias ocasiones y obtuvo títulos de liga, entre ellos el campeonato de 1991-1992. También conquistó la Supercopa albanesa. En competiciones europeas, Flamurtari alcanzó notoriedad en la Copa de la UEFA de 1987-1988: eliminó al Partizán de Belgrado y avanzó hasta los octavos de final, donde fue derrotado por el FC Barcelona. En la temporada siguiente volvió a enfrentarse al Barcelona y estuvo cerca de superar la eliminatoria, resultado que consolidó su reputación más allá de Albania. La trayectoria del club ha alternado periodos de éxito con etapas de dificultades deportivas y económicas. Tras competir habitualmente en la máxima categoría, descendió en varias ocasiones y regresó después a la élite. Su rivalidad más destacada es con el SK Vllaznia Shkodër, aunque también mantiene encuentros de gran interés local frente a otros equipos"
+ },
+ {
+  "label": "ai",
+  "model": "qwen/qwen3.8-flash",
+  "domain": "blog",
+  "lang": "es",
+  "topic": "Paris Hilton",
+  "meta": "qwen/qwen3.8-flash temperature=0.8 generated=2026-10-01",
+  "text": "Paris Hilton es mucho más que el nombre que aparecía en revistas de entretenimiento a principios de los años dos mil. Nacida en una familia dedicada al negocio hotelero, creció bajo los reflectores y aprendió pronto que la imagen podía ser tan poderosa como un apellido. Su serie de televisión Simple Life, junto con Nicole Richie, convirtió sus frases, sus outfits y su perro en un fenómeno cultural, y al mismo tiempo la colocó en el centro de un debate sobre fama, clase social y cultura pop. Durante años, muchos la redujeron a un personaje ligero, pero su carrera demuestra una notable capacidad para reinventarse. Hilton supo entender el nuevo lenguaje de los medios digitales, las redes y la marca personal, anticipando una forma de celebrity que luego sería común en emprendedores e influencers. Además de modelos y campañas publicitarias, incursionó en la música, la moda, el cine y los negocios, construyendo un imperio que incluye fragancias, accesorios y productos de belleza. También ha usado su visibilidad para hablar de temas serios, como el bienestar infantil, los derechos de las mujeres y el impacto de la salud mental, mostrando una faceta más madura y comprometida. Para el público general, Paris Hilton funciona como un espejo de la cultura contemporánea: representa tanto el exceso mediático como la inteligencia estratégica, la frivolidad"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "Caballerizo mayor",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "El caballerizo mayor era una figura destacada en las cortes europeas de la Edad Moderna y el Antiguo Régimen, encargado de supervisar el cuidado y la gestión de los caballos de silla y tiro pertenecientes a la realeza o a la nobleza. Su rol no se limitaba únicamente a lo veterinario o a la doma, sino que también incluía funciones administrativas y protocolarias. En la España de los Austrias y los Borbones, el cargo alcanzaba gran relevancia, pues los caballos eran símbolo de poder y estatus, y su manejo adecuado reflejaba el prestigio de la corte. El caballerizo mayor respondía directamente al monarca o al príncipe heredero, y sus responsabilidades abarcaban desde la adquisición de ejemplares de raza hasta la organización de desfiles, cacerías o justas ecuestres. En la corte española, su figura estaba jerárquicamente por encima de los caballerizos menores y otros sirvientes relacionados con la equitación. Además, supervisaba las caballerizas reales, que incluían no solo estables, sino también talleres de herraje, veterinarios y personal auxiliar. La elección de este cargo recaía en nobles de alta alcurnia, a menudo con experiencia militar, ya que los caballos eran fundamentales en la guerra y la caza. En otros reinos europeos, como Francia o Inglaterra, aunque con matices distintos, el caballerizo mayor compartía funciones similares. En la corte de Luis XIV de"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "es",
+  "topic": "Perú en la clasificación de Conmebol para la Copa Mundial de Fútbol de 2006",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "La selección peruana de fútbol afrontó un desafío importante durante la clasificación de Conmebol para la Copa Mundial de Fútbol de 2006, que se llevó a cabo en Alemania. El camino hacia el Mundial comenzó en marzo de 2003 y se prolongó hasta octubre de 2005, un período de casi tres años en el que Perú se enfrentó a las demás selecciones sudamericanas en un torneo de todos contra todos. La emoción y la expectativa se apoderaron de los aficionados peruanos, que anhelaban ver a su equipo en el máximo torneo de fútbol del mundo. A lo largo de la campaña, Perú mostró destellos de buen fútbol, pero también enfrentó momentos de decepción y altibajos en su rendimiento. A pesar de contar con jugadores talentosos, el equipo no logró consolidarse y mantener una racha constante de buenos resultados. La clasificación sudamericana resultó ser extremadamente competitiva, con selecciones como Brasil, Argentina y Uruguay demostrando un nivel de juego superior. En el transcurso de las eliminatorias, Perú sumó algunos triunfos importantes, como victorias contra selecciones como Paraguay y Venezuela, lo que hizo que los aficionados peruanos mantuvieran la esperanza de una clasificación. Sin embargo, la irregularidad del equipo y los resultados adversos en partidos clave, como derrotas contra Chile y Ecuador, complicaron las aspiraciones peruanas. Finalmente, Perú no logró clasificar para la"
+ },
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "Reino de Croacia-Eslavonia",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "El Reino de Croacia-Eslavonia fue una entidad política autónoma dentro de la monarquía de los Habsburgo y, desde 1867, de Austria-Hungría. Existió entre 1868 y 1918 y comprendía territorios de las actuales Croacia y Serbia. Su creación se formalizó mediante el Compromiso croata-húngaro de 1868, que unió administrativamente los reinos históricos de Croacia y Eslavonia bajo la Corona húngara, al tiempo que reconoció ciertos derechos de autogobierno. Su capital era Zagreb. El reino contaba con un parlamento propio, el Sabor, y con instituciones encargadas de asuntos internos, educación y justicia. Sin embargo, su autonomía era limitada: Hungría conservaba el control de las finanzas, la defensa y buena parte de las comunicaciones. El soberano era el emperador de Austria, que también ostentaba la corona húngara, y el gobierno croata era encabezado por un ban o gobernador nombrado formalmente por el monarca, a propuesta de las autoridades húngaras. Este sistema generó tensiones persistentes entre los defensores de una mayor autonomía croata y quienes favorecían la cooperación con Hungría. La población era diversa. Predominaban los croatas, junto con comunidades serbias, húngaras, alemanas y de otros grupos. Las diferencias religiosas —principalmente catolicismo entre los croatas y cristianismo ortodoxo entre muchos serbios— se combinaban con disputas políticas y nacionales. La región fronteriza conocida como la Frontera Militar, administrada durante siglos directamente por Viena, fue incorporada"
+ },
+ {
+  "label": "ai",
+  "model": "qwen/qwen3.8-flash",
+  "domain": "blog",
+  "lang": "es",
+  "topic": "Arytera",
+  "meta": "qwen/qwen3.8-flash temperature=0.8 generated=2026-10-01",
+  "text": "En el vasto y fascinante reino de las plantas, existe una joya botánica que a menudo pasa desapercibida para el ojo común pero que posee un encanto singular: la Arytera. Este género, perteneciente a la familia de las Sapindáceas, nos invita a explorar los rincones más húmedos y sombreados de las selvas tropicales del sudeste asiático, donde sus especies han encontrado su hábitat ideal entre la exuberancia de la vegetación densa. Aunque no es tan conocida como otras plantas ornamentales populares en los jardines domésticos, la Arytera destaca por su estructura elegante y su capacidad para adaptarse a entornos específicos con una gracia silenciosa. Sus hojas, dispuestas de manera alterna, crean una cortina verde que filtra la luz solar, ofreciendo refugio a pequeños insectos y aves que encuentran en sus ramas un hogar seguro. La verdadera magia de esta planta reside en su discreción; no busca atraer atención con flores estridentes o colores vibrantes, sino que impone su presencia a través de la textura de su follaje y la solidez de su tronco. Para los entusiastas de la botánica y los amantes de la naturaleza, descubrir la Arytera es como encontrar un secreto guardado por la tierra misma. Su cultivo, aunque requiere conocimientos técnicos sobre humedad y temperatura, recompensa al jardinero paciente con una visión serena y naturalista. En un"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "Videoconsolas de octava generación",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "Las videoconsolas de octava generación representan un hito en la evolución de los videojuegos, abarcando el período comprendido entre 2012 y 2020, aproximadamente. Este ciclo, dominado por gigantes como Sony, Microsoft y Nintendo, introdujo avances tecnológicos significativos que redefinieron la experiencia de juego. Entre las consolas más destacadas se encuentran la PlayStation 4 (2013), Xbox One (2013) y Nintendo Switch (2017), cada una con características únicas que atrajeron a distintos segmentos de jugadores. La PlayStation 4, desarrollada por Sony, se consolidó como líder en ventas gracias a su potente hardware, gráficos de alta definición y una biblioteca de exclusivos como God of War, The Last of Us y Uncharted. Su diseño compacto y enfoque en la jugabilidad en línea a través de PlayStation Plus la hicieron muy popular. Por su parte, la Xbox One de Microsoft priorizó la integración con servicios en la nube, el control parental y la retrocompatibilidad con títulos de generaciones anteriores, aunque su lanzamiento inicial fue criticado por su política de DRM y restricciones en el uso offline. Nintendo, en cambio, revolucionó el mercado con la Switch, una consola híbrida que podía usarse tanto como sistema doméstico como portátil. Su innovador diseño con Joy-Con desmontables y juegos como The Legend of Zelda: Breath of the Wild y Animal Crossing: New Horizons atrajeron a un público amplio,"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "es",
+  "topic": "Mimí",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "La historia de Mimí es una de esas tragedias que conmueven el corazón y nos recuerdan la fragilidad de la vida. Mimí es un personaje emblemático de la ópera \"La Bohème\" de Giacomo Puccini, una de las obras más queridas y representadas en todo el mundo. La ópera nos cuenta la historia de un grupo de jóvenes artistas que viven en París a mediados del siglo XIX, luchando por sobrevivir y hacer realidad sus sueños. Mimí es una joven costurera que se enamora de Rodolfo, un joven poeta y uno de los protagonistas de la ópera. Su encuentro es casual, pero el destino los une en un amor apasionado y profundo. Sin embargo, la vida de Mimí está marcada por la pobreza y la enfermedad, y su relación con Rodolfo se ve amenazada por la tuberculosis que la aqueja. A medida que avanza la ópera, la salud de Mimí se deteriora y su relación con Rodolfo se vuelve cada vez más tensa. A pesar de la desesperación y el dolor que siente, Mimí sigue siendo una figura luminosa y llena de vida, que conmueve a todos los que la rodean. Su muerte prematura es uno de los momentos más conmovedores de la ópera, y nos recuerda la transitoriedad de la vida y la importancia de aprovechar cada momento. La historia"
+ },
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "Molla Mallory",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "Molla Mallory (de soltera Bjurstedt; 1884-1959) fue una tenista noruega que destacó en las primeras décadas del siglo XX y se convirtió en una de las figuras más exitosas del tenis femenino. Nació en Moss, Noruega, y comenzó a practicar el deporte durante su juventud. Antes de dedicarse plenamente al tenis, representó a su país en competiciones de atletismo y ganó una medalla de bronce en lanzamiento de disco en los Juegos Olímpicos de Estocolmo de 1912. Ese mismo año se trasladó a Estados Unidos, donde su carrera tenística alcanzó su apogeo. Adoptó el apellido Mallory al casarse con Franklin Mallory y se estableció en Nueva York. Su juego se caracterizaba por una gran resistencia física, una notable regularidad desde el fondo de la pista y una intensa determinación. Aunque no dependía de golpes especialmente elegantes, su capacidad para prolongar los intercambios y mantener la presión la hacía difícil de vencer. Mallory ganó el campeonato nacional estadounidense individual —el torneo que posteriormente se conocería como Abierto de Estados Unidos— en ocho ocasiones: entre 1915 y 1918, en 1920 y 1921, y nuevamente en 1922 y 1926. Este récord de títulos individuales femeninos en el torneo se mantuvo durante décadas. También obtuvo el campeonato de dobles femeninos en 1916 y 1917, ambos junto a Eleonora Sears. En 1921 protagonizó uno de"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "Cecilia de Baden (Olga Feodorovna)",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "Cecilia de Baden, conocida también como Olga Feodorovna, fue una princesa alemana nacida el 20 de septiembre de 1839 en Karlsruhe, capital del Gran Ducado de Baden. Hija del gran duque Leopoldo I de Baden y de la princesa Sofía Guillermina de Suecia, pertenecía a una de las familias más influyentes de Europa, emparentada con las principales dinastías reinantes. En 1857, contrajo matrimonio con el gran duque Miguel Nikoláievich de Rusia, miembro de la familia imperial rusa y hermano del zar Alejandro II. Su unión fortaleció los lazos entre las cortes de Baden y Rusia, consolidando su papel en la política europea de la época. Olga Feodorovna, que adoptó el nombre ruso tras su conversión a la ortodoxia, se convirtió en una figura destacada en la sociedad rusa. Como gran duquesa, ejerció una notable influencia en la corte de San Petersburgo, donde su elegancia y erudición fueron ampliamente reconocidas. Se dedicó a labores benéficas, especialmente en favor de los niños y las mujeres, fundando instituciones educativas y hospitales. Su labor social le granjeó el respeto de la nobleza y el pueblo, consolidando su imagen como una mujer compasiva y comprometida. Además de sus actividades filantrópicas, Olga Feodorovna cultivó una profunda devoción religiosa, influyendo en los círculos más cercanos a la familia imperial. Su relación con el zar Alejandro II y"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "es",
+  "topic": "Marcha del orgullo gay de Moscú",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "La Marcha del Orgullo Gay de Moscú es un evento anual que busca visibilizar y reivindicar los derechos de la comunidad LGBTQ+ en Rusia, un país donde la homofobia y la transfobia están profundamente arraigadas. A pesar de la represión y la violencia que han enfrentado en numerosas ocasiones, los activistas y simpatizantes de la comunidad LGBTQ+ rusos continúan organizando esta marcha para exigir igualdad y respeto. La primera Marcha del Orgullo Gay de Moscú se llevó a cabo en 2006, y desde entonces se ha convertido en un acto de resistencia y desafío frente a la intolerancia y la discriminación. Los organizadores de la marcha enfrentan numerosos obstáculos, desde la negativa de las autoridades a autorizar el evento hasta la violencia y las amenazas de grupos ultraconservadores y neonazis. A pesar de estos desafíos, la marcha sigue adelante, con participantes que llegan de diferentes partes de Rusia y del mundo para mostrar su solidaridad y apoyo. La Marcha del Orgullo Gay de Moscú no solo busca visibilizar a la comunidad LGBTQ+, sino también denunciar la persecución y la discriminación que sufren en Rusia, donde las leyes aprobadas en los últimos años han restringido severamente la libertad de expresión y reunión de la comunidad. La marcha es un recordatorio de que la lucha por los derechos LGBTQ+ es una lucha"
+ },
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "Bombardeo de Qana de 2006",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "El bombardeo de Qana de 2006 ocurrió durante la guerra entre Israel y Hezbolá, en el sur del Líbano. En la madrugada del 30 de julio, un ataque aéreo israelí alcanzó una vivienda de tres plantas en la localidad de Qana, donde se habían refugiado numerosas personas desplazadas por los combates. El edificio se derrumbó y causó la muerte de 28 civiles, entre ellos 16 niños, según las cifras difundidas por las autoridades libanesas. Algunas personas fueron rescatadas de los escombros y otras resultaron heridas. Israel afirmó que sus fuerzas habían atacado objetivos de Hezbolá en la zona y que el edificio se encontraba cerca de lugares desde los cuales el grupo lanzaba cohetes. También sostuvo que había advertido a la población que abandonara el área. Las autoridades libanesas y testigos cuestionaron la justificación del ataque y señalaron que los ocupantes de la vivienda eran civiles que buscaban refugio. Las circunstancias exactas del impacto, incluidos los indicios de advertencia y la información disponible para las fuerzas israelíes, fueron objeto de controversia. La muerte de tantos civiles provocó indignación internacional y aumentó la presión diplomática para detener las hostilidades. Israel anunció una suspensión temporal de los ataques aéreos en el sur del Líbano para permitir la salida de civiles, aunque las operaciones militares continuaron en otros lugares. Organismos humanitarios denunciaron los"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "Carolina Arredondo",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "Carolina Arredondo es una destacada académica y filóloga española especializada en lingüística histórica y sociolingüística. Nacida en Madrid, desarrolló su formación inicial en la Universidad Complutense de Madrid, donde obtuvo su licenciatura en Filología Hispánica, y posteriormente cursó un máster y doctorado en Lingüística Aplicada en la Universidad de Alcalá, con una tesis centrada en la evolución del español en contextos de contacto lingüístico durante los siglos XVI y XVII. Su trabajo ha contribuido significativamente al estudio de los fenómenos de cambio lingüístico en variedades del español europeo y americano, así como a la preservación de lenguas minorizadas en contextos históricos. Arredondo ha publicado numerosos artículos en revistas especializadas y capítulos de libros, abordando temas como la koineización del español en América, los procesos de simplificación morfosintáctica y el papel de las lenguas indígenas en la configuración dialectal del español. Entre sus líneas de investigación más relevantes se encuentra el análisis de corpus históricos, donde ha aplicado métodos cuantitativos y cualitativos para rastrear la variación lingüística en textos coloniales. Su enfoque interdisciplinario, que combina la lingüística histórica con la sociología del lenguaje, ha sido reconocido en congresos internacionales, donde ha participado como ponente y coordinadora de mesas redondas. Además de su labor investigadora, Carolina Arredondo ha desempeñado funciones docentes en varias universidades españolas, impartiendo asignaturas relacionadas con la gramática histórica,"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "es",
+  "topic": "Mónica Cruz",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "Mónica Cruz es una de las figuras más destacadas del panorama artístico español en la actualidad. Nacida en Madrid en 1977, esta actriz, bailarina y modelo ha conquistado al público con su talento y versatilidad. Comenzó su carrera en el mundo del espectáculo como bailarina, participando en varios proyectos de danza y espectáculos musicales. Sin embargo, fue su papel en la película \"Astérix en los Juegos Olímpicos\" lo que la lanzó a la fama internacional, compartiendo pantalla con figuras como Javier Bardem y Victoria Abril. Su éxito en la gran pantalla continuó con su participación en la serie de televisión \"El Príncipe\", donde interpretó a una policía que se ve envuelta en una trama de crimen y corrupción en un barrio conflictivo de Madrid. Su interpretación le valió el reconocimiento de la crítica y del público, consolidando su posición como una de las actrices más destacadas de España. Además de su trabajo como actriz, Mónica Cruz también ha destacado en el mundo de la moda. Ha trabajado como modelo para varias marcas y diseñadores, y ha sido imagen de campañas publicitarias de renombre. Su elegancia y estilo en la pasarela han llamado la atención de la industria de la moda, y ha sido considerada una de las mujeres más glamurosas de España. A lo largo de su carrera, Mónica Cruz"
+ },
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "Vudú (cómic)",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "Vudú es un cómic de terror creado por el guionista argentino Eugenio Zappietro, conocido como Ray Collins, y el dibujante José Muñoz. Publicado originalmente en Argentina durante la década de 1960, apareció en las páginas de la revista de historietas Misterix, una de las publicaciones populares del país. La serie pertenece a una etapa en la que el género de terror adquirió gran difusión en la historieta argentina, con relatos breves de atmósfera siniestra y finales inquietantes. El protagonista es un hombre vinculado con el mundo de lo sobrenatural y los ritos de vudú. A través de sus historias, la serie explora temas como la magia, la muerte, la venganza y el miedo a lo desconocido. Los relatos suelen presentar situaciones en las que lo cotidiano se transforma en amenaza, y recurren a elementos asociados con las leyendas y las prácticas religiosas afrocaribeñas. El vudú funciona tanto como motivo narrativo como fuente de misterio, aunque su representación refleja los estereotipos y las convenciones del terror popular de la época. El dibujo de Muñoz contribuye de manera decisiva al clima de la obra. Sus composiciones, el uso marcado de las sombras y la expresividad de los personajes refuerzan la tensión de los argumentos y anticipan el estilo gráfico que desarrollaría en trabajos posteriores. La colaboración entre Collins y Muñoz combina una"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "es",
+  "topic": "La voz (programa de televisión mexicano)",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "La voz es un programa de televisión mexicano de competencia musical que se estrenó el 19 de agosto de 2019 en el canal Las Estrellas, producido por Televisa en colaboración con Talpa Media, la misma empresa que desarrolló el formato original en Países Bajos bajo el nombre The Voice. Inspirado en el exitoso modelo internacional, el programa consiste en un concurso de canto donde los participantes, divididos en cuatro equipos liderados por coaches o entrenadores, compiten por ser la mejor voz del país. A diferencia de otros talent shows, los jueces inicialmente no ven al concursante, ya que su espalda está orientada hacia ellos durante la audición a ciegas, lo que añade un elemento de sorpresa y emotividad al descubrir el talento oculto de cada artista. A lo largo de las temporadas, La voz ha contado con figuras destacadas de la música mexicana e internacional como coaches, incluyendo a Alejandro Sanz, Carlos Rivera, Belinda, Christian Nodal, Paulina Rubio, Maluma, Anitta y Lalo Ebratt. El formato combina las fases de audiciones, batallas, knockouts y shows en vivo, culminando con una final donde el público y los entrenadores eligen al ganador. El programa no solo ha servido como plataforma para descubrir nuevos talentos, sino que también ha generado canciones exitosas interpretadas por los participantes, impulsando sus carreras artísticas. Con múltiples temporadas emitidas,"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "es",
+  "topic": "Prometheus (película)",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "La película Prometheus, dirigida por Ridley Scott, nos lleva a un viaje épico por el espacio y el tiempo, explorando algunos de los misterios más profundos de la humanidad. La historia comienza en un futuro no muy lejano, donde un equipo de científicos y exploradores, liderados por la pareja formada por Elizabeth Shaw y Charlie Holloway, emprenden una misión a un planeta distante en busca de respuestas sobre el origen de la vida en la Tierra. La tripulación de la nave Prometheus descubre una serie de antiguas ruinas alienígenas que sugieren que una civilización avanzada, conocida como los \"Ingenieros\", podría haber sido responsable de crear la vida en nuestro planeta. A medida que avanzan en su investigación, el equipo se enfrenta a una serie de desafíos y peligros, desde criaturas hostiles hasta decisiones éticas difíciles. La tensión y la intriga se acumulan a medida que se revelan secretos sobre el verdadero propósito de la misión y las motivaciones de los personajes. La película plantea interrogantes filosóficos y existenciales, como la naturaleza de la creación y la relación entre los seres humanos y sus creadores. La dirección de Ridley Scott y la cinematografía de Dariusz Wolski crean un ambiente inmersivo y atmosférico, transportando al espectador a un mundo lejano y misterioso. El elenco, que incluye a Noomi Rapace, Michael Fassbender y"
+ }
+]

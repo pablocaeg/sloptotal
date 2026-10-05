@@ -89,6 +89,8 @@ def machine_translated(client: httpx.Client, lang: str, title: str) -> bool:
 def prose(client: httpx.Client, lang: str, revid: int) -> str:
     """Paragraph text after the lead section, without citations or tables."""
     data = api(client, lang, action="parse", oldid=revid, prop="text", disablelimitreport=1)
+    if "parse" not in data:
+        return ""
     soup = BeautifulSoup(data["parse"]["text"]["*"], "html.parser")
     root = soup.select_one(".mw-parser-output") or soup
     paragraphs = []

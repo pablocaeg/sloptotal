@@ -140,8 +140,8 @@ def to_score(z: np.ndarray, knots: list[list[float]]) -> np.ndarray:
 def fit_length(theta, X, y, words, w) -> tuple[float, float]:
     """k and neutral that minimise weighted log loss on cut texts."""
     best = (0.0, 0.0, float("inf"))
-    for k in [0, 10, 20, 30, 40, 60, 80, 120]:
-        for neutral in np.linspace(-1.5, 0.5, 21):
+    for k in [0, 5, 10, 20, 30, 40, 60, 80, 120, 200]:
+        for neutral in np.linspace(-4.0, 1.0, 51):
             p = np.clip(scores(theta, X, words, k, neutral) / 100, 1e-6, 1 - 1e-6)
             ll = -np.sum(w * (y * np.log(p) + (1 - y) * np.log(1 - p))) / w.sum()
             if ll < best[2]:
