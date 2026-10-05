@@ -1,0 +1,147 @@
+{
+  "version": "2026-10-05",
+  "source": "tests/eval/slopbench (fit.py, fit_multilingual.py)",
+  "multilingual": {
+    "intercept": 5.5363,
+    "weights": {
+      "classifier_bert_raid": 0.0,
+      "binoculars": 0.0,
+      "burstiness": 0.1096,
+      "classifier_chatgpt": 0.1155,
+      "cross_perplexity": 0.0,
+      "classifier_desklib": 0.0229,
+      "diveye": 0.0,
+      "classifier_e5": 0.2421,
+      "classifier_fakespot": 0.0,
+      "fast_detectgpt": 0.1581,
+      "formulaic": 0.0,
+      "gltr": 0.0,
+      "linguistic": 0.015,
+      "log_rank": 0.0,
+      "classifier_openai": 0.031,
+      "perplexity": 0.0,
+      "classifier_remodetect": 0.9038,
+      "readability": 0.0,
+      "sentiment": 0.0,
+      "structural": 0.2295,
+      "classifier_superannotate": 0.1783,
+      "classifier_tmr": 0.1802,
+      "vocabulary": 0.0
+    },
+    "default_offset": -0.5385,
+    "languages": {
+      "ar": {
+        "offset": -1.1185,
+        "status": "experimental"
+      },
+      "de": {
+        "offset": -1.5715,
+        "status": "supported"
+      },
+      "es": {
+        "offset": -0.4565,
+        "status": "supported"
+      },
+      "fr": {
+        "offset": -0.7151,
+        "status": "supported"
+      },
+      "hi": {
+        "offset": -0.3106,
+        "status": "unsupported"
+      },
+      "it": {
+        "offset": -0.4094,
+        "status": "supported"
+      },
+      "ja": {
+        "offset": -0.8092,
+        "status": "supported"
+      },
+      "ko": {
+        "offset": -0.317,
+        "status": "experimental"
+      },
+      "nl": {
+        "offset": -0.6204,
+        "status": "supported"
+      },
+      "pl": {
+        "offset": -0.2666,
+        "status": "supported"
+      },
+      "pt": {
+        "offset": -0.7635,
+        "status": "supported"
+      },
+      "ru": {
+        "offset": -0.972,
+        "status": "supported"
+      },
+      "tr": {
+        "offset": 0.5528,
+        "status": "unsupported"
+      },
+      "zh": {
+        "offset": -0.1435,
+        "status": "unsupported"
+      }
+    }
+  },
+  "english": {
+    "intercept": 0.9571,
+    "weights": {
+      "classifier_bert_raid": 0.0,
+      "binoculars": 0.0951,
+      "burstiness": 0.0074,
+      "classifier_chatgpt": 0.0,
+      "cross_perplexity": 0.0,
+      "classifier_desklib": 0.3686,
+      "diveye": 0.0,
+      "classifier_e5": 0.0,
+      "classifier_fakespot": 0.2621,
+      "fast_detectgpt": 0.0,
+      "formulaic": 0.1121,
+      "gltr": 0.0,
+      "linguistic": 0.0,
+      "log_rank": 0.0,
+      "classifier_openai": 0.0,
+      "perplexity": 0.0,
+      "classifier_remodetect": 0.0,
+      "readability": 0.0991,
+      "sentiment": 0.0,
+      "structural": 0.4081,
+      "classifier_superannotate": 0.1568,
+      "classifier_tmr": 0.0,
+      "vocabulary": 0.0
+    },
+    "length_k": 5.0,
+    "length_neutral": -3.6,
+    "band_knots": [
+      [
+        -7.0416,
+        0.0
+      ],
+      [
+        -1.0416,
+        30.0
+      ],
+      [
+        0.2894,
+        45.0
+      ],
+      [
+        1.1572,
+        55.0
+      ],
+      [
+        2.1993,
+        80.0
+      ],
+      [
+        6.1993,
+        100.0
+      ]
+    ]
+  }
+}

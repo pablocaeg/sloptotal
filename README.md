@@ -52,43 +52,38 @@ it publishes how accurate that is, failures included.
 
 ## Measured accuracy
 
-Most detectors publish an accuracy figure without saying what it was measured on.
-These numbers, the harness that produced them and the raw per-sample results are
-all in [tests/eval/](tests/eval/).
+Most detectors publish an accuracy figure without saying what it was measured
+on. SlopTotal is measured on [SlopBench](tests/eval/slopbench/): 1,626 human
+texts, every one written before ChatGPT, and 1,626 AI texts on the same topics
+and at the same lengths from 14 current models, across 15 kinds of writing
+(news, Wikipedia, arXiv, Stack Exchange, Reddit, reviews, student essays,
+non-native English, fiction and literature published 1532-1915). Every number
+below is measured on kinds of writing the model was not tuned on.
 
-Two corpora, deliberately:
-
-| Corpus | What | Size |
-|---|---|---|
-| Multi-domain | RAID: news, book prose, poetry, academic abstracts. AI from GPT-4, ChatGPT, Llama, Mistral, Cohere, GPT-3 | 110 (40 human, 70 AI) |
-| Literary control | Project Gutenberg prose published 1532-1915 -- Machiavelli, Austen, Melville, Kafka | 26 (all human) |
-
-The second exists because a high score there cannot be anything but an error: the
-writing predates language models by a century or more. Optimising on the first
-corpus alone produces a threshold that mislabels literature.
-
-| | Result |
+| | |
 |---|---|
-| Overall AUC | 0.974 |
-| AI reaching "Suspicious" or above | 90% |
-| Human text wrongly called "Likely AI" | 1 of 66 |
-| Literary passages flagged | **0 of 26** |
+| AUC | **0.942** |
+| AI texts called "Likely AI" (55+) | 67% |
+| Human texts called "Likely AI" (55+) | **1.7%** |
+| Human texts flagged at all (45+) | 3.9% |
+| Literature published 1532-1915 flagged | **0 of 87** |
 
-Re-measured in September 2026 on a fresh RAID sample (180 texts) with upgraded
-dependencies: AUC 0.979, 1 of 40 human texts called "Likely AI", 0 of 26
-literary passages flagged.
+The score bands are anchored on that human text: 45 is where the top 5% of
+human writing begins, 55 the top 2%, 80 the top 0.5%. So "Likely AI" means
+fewer than 2 in 100 human texts score this high.
 
-**What does not work.** Short text is unreliable below roughly 80 words and
-settles from about 200. Hand-edited AI loses fingerprints with every rewriting
-pass. Source code is outside what these engines do: in testing they never falsely
-accused human code, and never caught machine-written code either -- so we do not
-claim they can.
+**Other languages.** Spanish, French, German, Italian, Portuguese, Dutch,
+Polish, Russian and Japanese are supported (AUC 0.91 to 0.997); Arabic and
+Korean are experimental; Hindi, Turkish and Chinese are not reliable yet, and
+the report says so.
 
-The failures are published too, including three engines found scoring backwards
-and two loading a randomly initialised network while carrying real ensemble
-weight. Read them at
-[sloptotal.com/detect/ai-detector-benchmark/](https://sloptotal.com/detect/ai-detector-benchmark/)
-and [sloptotal.com/detect/ai-detector-false-positives/](https://sloptotal.com/detect/ai-detector-false-positives/).
+**What does not work.** Essays by non-native English writers are still flagged
+more than native ones (15% of TOEFL essays called Likely AI, against none of 88
+US school essays). Under about 80 words a score is a weak signal. AI text run
+through a "humanizer" is caught about half the time. Source code is outside
+what these engines do. All of it, per source, per model and per engine, is in
+[the findings](tests/eval/slopbench/FINDINGS.md), including that the
+classifiers which top the RAID benchmark drop to AUC 0.75 on current models.
 
 ## Quick start
 
