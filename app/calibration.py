@@ -16,6 +16,7 @@ from app.language import detect_language
 
 _CALIBRATION = json.loads((Path(__file__).parent / "calibration.json").read_text())
 SHORT_TEXT_WORDS = 80
+UNSPACED_LANGUAGES = {"ja", "zh"}
 UNCERTAIN = (35.0, 65.0)
 CONFIDENT = (15.0, 80.0)
 
@@ -64,9 +65,11 @@ def calibrated_score(
     Short English texts are pulled toward a neutral score by
     `words / (words + k)`, in proportion to how unreliable they measured, and
     the band edges (30, 45, 55, 80) sit where a measured share of human text
-    begins. Other languages subtract `short_alpha * (1/words - 1/short_ref_words)`
-    from the log-odds below `short_ref_words`. Confidence is never above "low" for a short text, a score in the
-    uncertain middle, or a language whose detection is not supported.
+    begins. Other languages written with spaces between words subtract
+    `short_alpha * (1/words - 1/short_ref_words)` from the log-odds below
+    `short_ref_words`. Confidence is never above "low" for a short text, a
+    score in the uncertain middle, or a language whose detection is not
+    supported.
     """
     lang = detect_language(text)
     words = len(text.split())
@@ -86,7 +89,7 @@ def calibrated_score(
         )
         z = _weighted(multilingual, engine_scores) + offset
         reference = multilingual["short_ref_words"]
-        if 0 < words < reference:
+        if lang not in UNSPACED_LANGUAGES and 0 < words < reference:
             z -= multilingual["short_alpha"] * (1 / words - 1 / reference)
         score = 100 / (1 + math.exp(-z))
 
