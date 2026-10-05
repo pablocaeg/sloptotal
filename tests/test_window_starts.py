@@ -13,5 +13,5 @@ def test_long_texts_get_a_bounded_even_sample_from_start_to_end():
     assert len(starts) == MAX_WINDOWS
     assert starts[0] == 0 and starts[-1] == 5200 - 510
     assert starts == sorted(set(starts))
-    gaps = {b - a for a, b in zip(starts, starts[1:])}
+    gaps = {b - a for a, b in zip(starts, starts[1:], strict=False)}
     assert max(gaps) - min(gaps) <= 1

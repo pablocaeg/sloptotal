@@ -4,7 +4,7 @@ target-version = "py310"
 extend-exclude = ["benchmarks", "tests/eval"]
 
 [tool.ruff.lint]
-select = ["E", "F", "W"]
+select = ["E", "F", "W", "B"]
 ignore = [
     "E402",   # module-import-not-at-top — intentional in main.py (autoconfig before torch)
     "E501",   # line-too-long — existing codebase style

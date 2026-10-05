@@ -48,7 +48,7 @@ def _interpolate(z: float, knots: list[list[float]]) -> float:
     knots put each band edge where a measured share of human text begins."""
     if z <= knots[0][0]:
         return knots[0][1]
-    for (z0, s0), (z1, s1) in zip(knots, knots[1:]):
+    for (z0, s0), (z1, s1) in zip(knots, knots[1:], strict=False):
         if z <= z1:
             return s0 + (s1 - s0) * (z - z0) / (z1 - z0)
     return knots[-1][1]
