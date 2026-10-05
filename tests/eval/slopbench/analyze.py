@@ -4,8 +4,8 @@ Headline: AUC of AI against human text, and how much AI is caught when the
 threshold is set so that only 1% or 5% of human text is flagged. Then the
 production bands: how often each kind of human text is flagged (scores above
 45) or called AI (55 and above), which is where fairness shows, for non-native
-writers above all. Then detection by generating model, by adversarial variant,
-and each engine on its own.
+writers above all. Then detection by text length, by generating model, by
+adversarial variant, and each engine on its own.
 
 Usage: python analyze.py results.jsonl
 """
@@ -76,6 +76,29 @@ def main() -> None:
         print(
             f"| {source} | {len(h)} | {len(a)} | {fmt(auc(a, h))} | {share(a, FLAGGED)} "
             f"| {share(h, FLAGGED)} | {share(h, CALLED_AI - 1e-9)} | {medians} |"
+        )
+
+    print("\n### By length\n")
+    # Older results may omit words; do not infer a count from truncation metadata.
+    with_words = [r for r in base if type(r.get("words")) is int and r["words"] >= 0]
+    if len(with_words) != len(base):
+        print(
+            f"Base samples omitted from this table due to missing or invalid word counts: {len(base) - len(with_words)}.\n"
+        )
+    print("| Words | Human flagged (>45) | AI flagged (>45) | AUC |")
+    print("|---|---|---|---|")
+    for label, lower, upper in (
+        ("<100", 0, 100),
+        ("100-199", 100, 200),
+        ("200-399", 200, 400),
+        ("400+", 400, float("inf")),
+    ):
+        items = [r for r in with_words if lower <= r["words"] < upper]
+        h = [r["overall"] for r in items if r["label"] == "human"]
+        a = [r["overall"] for r in items if r["label"] == "ai"]
+        # share and auc/fmt render empty and single-class groups as unavailable.
+        print(
+            f"| {label} | {share(h, FLAGGED)} | {share(a, FLAGGED)} | {fmt(auc(a, h))} |"
         )
 
     print("\n### By generating model\n")
