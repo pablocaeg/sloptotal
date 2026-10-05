@@ -96,3 +96,13 @@ def test_an_unknown_language_never_gets_more_than_low_confidence():
     _, confidence, lang = calibrated_score(_all(0.99), text)
     assert lang == "other"
     assert confidence == "low"
+
+
+def test_a_short_non_english_text_is_held_back():
+    sentence = "El ayuntamiento aprobó el plan después de varios meses de debate y los vecinos dijeron que no se les consultó."
+    short_score, short_confidence, lang = calibrated_score(_all(0.9), sentence)
+    long_score, _, _ = calibrated_score(_all(0.9), " ".join([sentence] * 10))
+
+    assert lang == "es"
+    assert short_score < long_score
+    assert short_confidence == "low"

@@ -2,6 +2,8 @@
   "version": "2026-10-05",
   "source": "tests/eval/slopbench (fit.py, fit_multilingual.py)",
   "multilingual": {
+    "short_alpha": 81.9,
+    "short_ref_words": 150,
     "intercept": 5.5363,
     "weights": {
       "classifier_bert_raid": 0.0,

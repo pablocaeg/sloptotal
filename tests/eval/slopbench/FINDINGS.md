@@ -190,3 +190,20 @@ only classifier that keeps working across scripts.
 
 The report states the language it scored and its status, and never reports
 more than low confidence for an unsupported language.
+
+### Short texts in other languages
+
+The English length pull does not apply to other languages, and short
+non-English text was flagged too often: cut to 50 words, a fifth of French,
+Spanish, German, Italian and Portuguese human texts scored above 45. Below
+150 words the score now subtracts `81.9 * (1/words - 1/150)` from the
+log-odds, fitted on 352 texts cut to 50 and 100 words so that about 5% of
+short human text still lands above 45:
+
+| Words | Human flagged (>45), before → after | AI flagged (>45), before → after |
+|---|---|---|
+| 50 | 20% → 5% | 69% → 46% |
+| 100 | 6% → 6% | 76% → 71% |
+
+At 50 words a quarter of the AI text drops below 45 with it: a sentence or two
+does not carry enough evidence either way, and the report says so.
