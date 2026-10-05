@@ -62,7 +62,5 @@ def test_compute_config_worker_counts(
     hw, profile, expected_snippet_workers, expected_full_workers
 ):
     config = compute_config(hw, profile)
-    snippet_workers = int(config["SLOPTOTAL_SNIPPET_WORKERS"])
-    full_workers = int(config["SLOPTOTAL_FULL_WORKERS"])
-    assert snippet_workers > 0
-    assert full_workers > 0
+    assert int(config["SLOPTOTAL_SNIPPET_WORKERS"]) == expected_snippet_workers
+    assert int(config["SLOPTOTAL_FULL_WORKERS"]) == expected_full_workers
