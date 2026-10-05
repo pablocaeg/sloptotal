@@ -8,13 +8,23 @@ tests/eval/slopbench/FINDINGS.md. Change them by re-running the fits, never by
 hand.
 """
 
+import hashlib
 import json
 import math
 from pathlib import Path
 
 from app.language import detect_language
 
-_CALIBRATION = json.loads((Path(__file__).parent / "calibration.json").read_text())
+_HERE = Path(__file__).parent
+_CALIBRATION = json.loads((_HERE / "calibration.json").read_text())
+# Fingerprint of everything that turns engine scores into the overall score;
+# a cached report is reused only when it was scored under the same one.
+CALIBRATION_VERSION = hashlib.sha256(
+    b"".join(
+        (_HERE / name).read_bytes()
+        for name in ("calibration.json", "calibration.py", "language.py")
+    )
+).hexdigest()[:16]
 SHORT_TEXT_WORDS = 80
 UNSPACED_LANGUAGES = {"ja", "zh"}
 UNCERTAIN = (35.0, 65.0)
