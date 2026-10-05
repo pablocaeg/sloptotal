@@ -40,7 +40,7 @@ def test_landing_from_form():
     assert (result["type"], result["scoreable"]) == ("landing", False)
 
 
-def test_landing_from_code_blocks():
+def test_reference_from_many_code_blocks():
     result = classify_page_type(
         LONG_TEXT,
         html_features={"code_blocks": 4},
