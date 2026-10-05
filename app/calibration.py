@@ -64,7 +64,8 @@ def calibrated_score(
     Short English texts are pulled toward a neutral score by
     `words / (words + k)`, in proportion to how unreliable they measured, and
     the band edges (30, 45, 55, 80) sit where a measured share of human text
-    begins. Confidence is never above "low" for a short text, a score in the
+    begins. Other languages subtract `short_alpha * (1/words - 1/short_ref_words)`
+    from the log-odds below `short_ref_words`. Confidence is never above "low" for a short text, a score in the
     uncertain middle, or a language whose detection is not supported.
     """
     lang = detect_language(text)
@@ -83,7 +84,11 @@ def calibrated_score(
             .get(lang, {})
             .get("offset", multilingual["default_offset"])
         )
-        score = 100 / (1 + math.exp(-(_weighted(multilingual, engine_scores) + offset)))
+        z = _weighted(multilingual, engine_scores) + offset
+        reference = multilingual["short_ref_words"]
+        if 0 < words < reference:
+            z -= multilingual["short_alpha"] * (1 / words - 1 / reference)
+        score = 100 / (1 + math.exp(-z))
 
     support = language_support(lang)
     if (

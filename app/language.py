@@ -1,7 +1,9 @@
 """Which language a text is in, for the languages the calibration knows.
 
 Script decides most of them; Latin-script languages are told apart by their
-most frequent function words, which is reliable at the lengths SlopTotal
+most frequent function words, including languages the calibration has no fit
+for (Romanian, Catalan, Indonesian, Vietnamese, Swedish, Danish), so they are
+reported as unsupported instead of passing as French or Spanish, which is reliable at the lengths SlopTotal
 scores (50 words and up). One-letter words do not vote: English "I" would
 read as Polish "i". Anything else is "other".
 """
@@ -19,6 +21,12 @@ FUNCTION_WORDS = {
     "nl": "de van het een en in is dat op te zijn met voor niet aan er die ook",
     "pl": "na nie się do to że jest jak co ale tak od po przez dla oraz jego jej są był była który która które ich jako także tego też może już",
     "tr": "ve bir bu da de için ile olarak çok daha gibi olan en ama sonra kadar ise olduğu değil her göre ancak kendi sadece",
+    "ro": "și în este pentru care sunt cu din pe mai fost această acest fiind prin între sau nu ca la",
+    "ca": "amb per els les del una que és són també però aquest aquesta seu dels això",
+    "id": "yang dan di untuk dengan ini itu dari dalam tidak ada pada akan juga atau",
+    "vi": "và của là có được trong cho những với này không người các một đã",
+    "sv": "och att det som är för med på inte av till har om ett jag",
+    "da": "og at det som er for med på ikke af til har om et jeg",
 }
 _WORDS = {lang: set(words.split()) for lang, words in FUNCTION_WORDS.items()}
 _TOKEN = re.compile(r"[^\W\d_]+", re.UNICODE)

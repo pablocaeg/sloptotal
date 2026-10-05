@@ -14,7 +14,12 @@ A language is "supported" when its held-out AUC is at least 0.90 and it
 catches at least 60% of AI text at 45, "experimental" from AUC 0.80, and
 "unsupported" below that.
 
-Usage: python fit_multilingual.py ../multilingual/results.jsonl > report.md
+Short texts carry less signal, so below SHORT_REF_WORDS a length-dependent
+shift, short_alpha * (1/words - 1/SHORT_REF_WORDS), is subtracted from the
+log-odds. short_alpha is fitted on texts cut to 50 and 100 words so that about
+5% of short human text still lands above 45, as it does for full texts.
+
+Usage: python fit_multilingual.py ../multilingual/results-20260930.jsonl [../multilingual/results-short-20261005.jsonl] > report.md
 """
 
 import json
@@ -27,6 +32,7 @@ from sklearn.model_selection import StratifiedKFold
 from fit import ENGINE_KEYS, FLAGGED, fit_weights, matrix, sample_weights, write_section
 
 TARGET_FPR = 0.05
+SHORT_REF_WORDS = 150
 SUPPORTED_AUC, EXPERIMENTAL_AUC, SUPPORTED_RECALL = 0.90, 0.80, 0.60
 
 
@@ -101,12 +107,40 @@ def main() -> None:
     for name, value in sorted(weights.items(), key=lambda kv: -kv[1]):
         print(f"| {name} | {value:.3f} |")
 
+    short_alpha = fit_short_alpha(sys.argv[2], engines, theta, shift) if len(sys.argv) > 2 else 0.0
+
     write_section("multilingual", {
+        "short_alpha": round(short_alpha, 2),
+        "short_ref_words": SHORT_REF_WORDS,
         "intercept": round(float(theta[0]), 4),
         "weights": {ENGINE_KEYS[name]: round(float(v), 4) for name, v in weights.items()},
         "default_offset": round(float(np.median(list(shift.values()))), 4),
         "languages": {L: {"offset": round(shift[L], 4), "status": status[L]} for L in sorted(shift)},
     })
+
+
+def fit_short_alpha(path: str, engines: list[str], theta: np.ndarray, shift: dict[str, float]) -> float:
+    """The shift strength that keeps TARGET_FPR of short human text above 45."""
+    rows = [json.loads(line) for line in open(path) if line.strip()]
+    rows = [r for r in rows if r["lang"] in shift]
+    z = theta[0] + matrix(rows, engines) @ theta[1:] + np.array([shift[r["lang"]] for r in rows])
+    human = np.array([r["label"] != "ai" for r in rows])
+    cut = np.array([r["cut"] for r in rows], float)
+    flagged = float(np.log(FLAGGED / (100 - FLAGGED)))
+    lengths = sorted(set(cut))
+    needed = np.array([max(0.0, float(np.quantile(z[(cut == c) & human], 1 - TARGET_FPR)) - flagged) for c in lengths])
+    x = np.array([1 / c - 1 / SHORT_REF_WORDS for c in lengths])
+    alpha = float(x @ needed / (x @ x))
+    pulled = z - alpha * np.maximum(0, 1 / cut - 1 / SHORT_REF_WORDS)
+
+    print(f"\n## Short texts (short_alpha = {alpha:.1f})\n")
+    print("| Words | Human above 45, before → after | AI above 45, before → after |")
+    print("|---|---|---|")
+    for c in lengths:
+        h, a = (cut == c) & human, (cut == c) & ~human
+        print(f"| {int(c)} | {rate(to_score(z[h]))} → {rate(to_score(pulled[h]))} "
+              f"| {rate(to_score(z[a]))} → {rate(to_score(pulled[a]))} |")
+    return alpha
 
 
 if __name__ == "__main__":
