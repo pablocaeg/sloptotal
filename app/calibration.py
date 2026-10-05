@@ -13,7 +13,7 @@ import json
 import math
 from pathlib import Path
 
-from app.language import detect_language
+from app.language import count_words, detect_language
 
 _HERE = Path(__file__).parent
 _CALIBRATION = json.loads((_HERE / "calibration.json").read_text())
@@ -82,7 +82,7 @@ def calibrated_score(
     supported.
     """
     lang = detect_language(text)
-    words = len(text.split())
+    words = count_words(text)
     if lang == "en":
         english = _CALIBRATION["english"]
         z = _weighted(english, engine_scores)

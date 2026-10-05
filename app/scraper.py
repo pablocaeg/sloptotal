@@ -9,6 +9,8 @@ import httpx
 import trafilatura
 from bs4 import BeautifulSoup
 
+from app.language import count_words
+
 # Models only process ~750-1024 tokens. Extracting more is wasted work.
 MAX_WORDS = 1000
 
@@ -197,7 +199,7 @@ async def extract_text_with_metadata(url: str) -> PageContent:
         heuristic_text=full_text[:MAX_HEURISTIC_CHARS],
         full_text=full_text,
         char_count=len(full_text),
-        word_count=len(full_text.split()),
+        word_count=count_words(full_text),
         html_features=html_features,
     )
 

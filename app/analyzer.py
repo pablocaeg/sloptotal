@@ -15,6 +15,7 @@ from app.schemas import (
 from app.calibration import CALIBRATION_VERSION, calibrated_score
 from app.config import CACHE_ENABLED, MAX_ANALYSED_CHARS
 from app.cache import compute_text_hash, is_cacheable_report
+from app.language import count_words
 from app.database import (
     create_report,
     get_report as db_get_report,
@@ -261,7 +262,7 @@ async def start_analysis(
             _inflight_full_count += 1
 
     report_id = uuid.uuid4().hex[:12]
-    word_count = len(text.split())
+    word_count = count_words(text)
 
     # Create report in database
     try:
@@ -509,7 +510,7 @@ async def _analyze_text_inner(
     engines_flagged = sum(1 for r in results if r.score >= 0.4)
 
     report_id = uuid.uuid4().hex[:12]
-    word_count = len(text.split())
+    word_count = count_words(text)
 
     # Create report in database
     await create_report(
