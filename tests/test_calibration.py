@@ -106,3 +106,11 @@ def test_a_short_non_english_text_is_held_back():
     assert lang == "es"
     assert short_score < long_score
     assert short_confidence == "low"
+
+
+def test_a_japanese_text_is_not_held_back_as_a_one_word_text():
+    paragraph = "東京都は日本の首都であり、政治や経済、文化の中心地として知られている。人口は約千四百万人で、世界でも有数の大都市圏を形成している。"
+    score, _, lang = calibrated_score(_all(0.5), paragraph)
+
+    assert lang == "ja"
+    assert score > 50
