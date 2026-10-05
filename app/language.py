@@ -1,13 +1,15 @@
 """Which language a text is in, for the languages the calibration knows.
 
 Script decides most of them; Latin-script languages are told apart by their
-most frequent function words, including languages the calibration has no fit
+most frequent function words, which is reliable at the lengths SlopTotal
+scores (50 words and up). That includes languages the calibration has no fit
 for (Romanian, Catalan, Indonesian, Vietnamese, Swedish, Danish), so they are
-reported as unsupported instead of passing as French or Spanish, which is reliable at the lengths SlopTotal
-scores (50 words and up). One-letter words do not vote: English "I" would
-read as Polish "i". Anything else is "other".
+reported as unsupported instead of passing as French or Spanish. One-letter
+words do not vote: English "I" would read as Polish "i". Anything else is
+"other".
 """
 
+import math
 import re
 from collections import Counter
 
@@ -30,6 +32,11 @@ FUNCTION_WORDS = {
 }
 _WORDS = {lang: set(words.split()) for lang, words in FUNCTION_WORDS.items()}
 _TOKEN = re.compile(r"[^\W\d_]+", re.UNICODE)
+_CJK = re.compile(r"[\u3040-\u30ff\u4e00-\u9fff]")
+_CJK_PUNCTUATION = re.compile(r"[\u3000-\u303f\uff00-\uffef]")
+# The SlopBench corpus asks for "about 600 characters" in Chinese and Japanese
+# where it asks for "about 300 words" elsewhere.
+CJK_CHARACTERS_PER_WORD = 2
 
 
 def _script_counts(text: str) -> Counter:
@@ -51,6 +58,14 @@ def _script_counts(text: str) -> Counter:
         elif ch.isalpha():
             counts["latin"] += 1
     return counts
+
+
+def count_words(text: str) -> int:
+    """Words separated by spaces, with Chinese and Japanese, which use none,
+    counted at CJK_CHARACTERS_PER_WORD characters a word."""
+    cjk = len(_CJK.findall(text))
+    spaced = len(_CJK_PUNCTUATION.sub(" ", _CJK.sub(" ", text)).split())
+    return spaced + math.ceil(cjk / CJK_CHARACTERS_PER_WORD)
 
 
 def detect_language(text: str) -> str:

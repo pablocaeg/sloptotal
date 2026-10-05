@@ -1,6 +1,6 @@
 import pytest
 
-from app.language import detect_language
+from app.language import count_words, detect_language
 
 SAMPLES = {
     "en": "I think the council should have voted on the plan before the summer, because it was clear that the budget would not be ready in time for the new school year.",
@@ -40,3 +40,13 @@ def test_text_with_no_known_function_words_is_other():
         == "other"
     )
     assert detect_language("12345 67890") == "other"
+
+
+def test_chinese_and_japanese_are_counted_at_two_characters_a_word():
+    assert count_words("東京都は日本の首都である。") == 6
+    assert count_words("这是一个测试。") == 3
+    assert count_words("SlopTotal は 文章 を 判定する") == 5
+
+
+def test_spaced_text_is_counted_by_spaces():
+    assert count_words("Hello there,  world") == 3

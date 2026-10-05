@@ -41,6 +41,7 @@ from app.scraper import (
     extract_text_with_metadata,
     fetch_page,
 )
+from app.language import count_words
 from app.site_fingerprints import detect_builders
 from app.documents import MAX_UPLOAD_BYTES, extract_document_text
 from app.page_classifier import classify_page_type
@@ -498,7 +499,7 @@ async def api_extract(file: UploadFile = File(...)):  # noqa: B008
         text = await asyncio.to_thread(extract_document_text, file.filename, data)
     except ValueError as e:
         return JSONResponse({"error": str(e)}, status_code=400)
-    return {"text": text, "filename": file.filename, "word_count": len(text.split())}
+    return {"text": text, "filename": file.filename, "word_count": count_words(text)}
 
 
 @router.post("/scan/site")
@@ -530,7 +531,7 @@ async def api_scan_site(req: SiteScanRequest):
             raise ValueError("text scoring not requested")
         text = _extract_text_from_html(html)
         text_result = await quick_analyze_text(text)
-        text_result["word_count"] = len(text.split())
+        text_result["word_count"] = count_words(text)
     except ValueError:
         pass  # app shells and landing pages often have no prose to score
 
