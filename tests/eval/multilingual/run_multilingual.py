@@ -39,6 +39,11 @@ def score(client: httpx.Client, row: dict) -> dict | None:
     for attempt in range(MAX_TRIES):
         try:
             r = client.post(API, json={"text": row["text"]})
+            if r.status_code == 202:
+                ticket = r.json()["ticket_id"]
+                while r.status_code == 202:
+                    time.sleep(2)
+                    r = client.get(API.replace("/api/analyze", f"/api/queue/ticket/{ticket}"))
             r.raise_for_status()
             d = r.json()
             return {

@@ -1,0 +1,317 @@
+[
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Ticunas",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "Os Ticunas, também chamados Magüta, são um povo indígena da região amazônica, com comunidades distribuídas sobretudo pelo Brasil, pela Colômbia e pelo Peru. No Brasil, vivem principalmente no Alto Solimões, no estado do Amazonas, em áreas próximas às fronteiras internacionais. São frequentemente considerados o povo indígena mais numeroso do país, embora as estimativas variem conforme a fonte e o ano do levantamento. A língua ticuna pertence a uma família linguística própria e é falada por grande parte da população, inclusive por muitas crianças. O português e o espanhol também são usados em diferentes graus, especialmente nas relações com instituições, escolas e cidades. A transmissão da língua e dos conhecimentos tradicionais continua sendo importante para a identidade coletiva, embora a educação escolar, a migração e o contato prolongado com a sociedade não indígena influenciem os modos de vida contemporâneos. Tradicionalmente, a subsistência combina agricultura, pesca, caça e coleta. A mandioca, a banana e o milho estão entre os produtos cultivados, e os rios fornecem alimento e vias essenciais de deslocamento. As atividades econômicas atuais também incluem o trabalho assalariado, o comércio e a produção de artesanato. A vida comunitária se organiza em aldeias e famílias extensas, e a autoridade pode envolver lideranças locais e organizações indígenas. A história ticuna foi profundamente afetada pela expansão colonial, pela exploração da borracha e por"
+ },
+ {
+  "label": "ai",
+  "model": "qwen/qwen3.8-flash",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Mônica Carvalho",
+  "meta": "qwen/qwen3.8-flash temperature=0.8 generated=2026-10-01",
+  "text": "Mônica Carvalho é daquelas presenças que transformam um simples encontro em memória afetiva. Em seu universo, a arte não aparece apenas como profissão, mas como uma forma delicada de observar o mundo e traduzir suas cores. Quem acompanha seu percurso percebe uma artista que cresceu com sinceridade, construindo uma trajetória marcada por coragem, sensibilidade e uma elegância que não depende de excessos. Há nela um equilíbrio raro entre a força e a suavidade, como se cada escolha revelasse tanto o brilho dos palcos quanto a intimidade dos bastidores. Muito além da fama que pode acompanhar nomes conhecidos, Mônica Carvalho carrega uma história feita de persistência. Cada etapa parece ter ensinado a ela a valorizar o processo, entendendo que o talento também precisa ser lapidado pelo tempo, pela escuta e pela disciplina. Essa maturidade aparece na forma como se comunica, como sorri, como escolhe palavras e como cria vínculos com o público. Não se trata de apenas estar presente, mas de deixar uma marca, um modo próprio de existir que convida outros a acreditarem em suas próprias vozes. Para quem busca inspiração em uma figura pública, Mônica Carvalho oferece algo mais simples e mais profundo: a impressão de que a autenticidade pode ser um caminho. Em tempos de aparências rápidas, sua trajetória lembra que a verdadeira presença nasce da consistência, da"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Mega Drive",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "A Mega Drive, também conhecida como Genesis nos Estados Unidos e em outros mercados, foi um console de videogame lançado pela Sega em 16 de outubro de 1988 no Japão. Desenvolvida como sucessora do Master System, a Mega Drive destacou-se por sua arquitetura de 16 bits, que oferecia gráficos e som superiores aos de seus concorrentes da época, como o Nintendo Entertainment System (NES), que operava em 8 bits. O console foi projetado com um processador Motorola 68000 e um chip de som Yamaha YM2612, permitindo trilhas sonoras mais complexas e efeitos de áudio inovadores para a época. O lançamento da Mega Drive impulsionou uma das mais famosas rivalidades da indústria, conhecida como \"Guerra dos Consoles\", travada contra a Nintendo, que dominava o mercado com o Super Nintendo Entertainment System (SNES) nos anos seguintes. A Sega adotou uma estratégia agressiva de marketing, direcionada ao público mais velho, com slogans como \"Genesis does what Nintendon't\", enfatizando a superioridade técnica de seus jogos. Essa abordagem, aliada a títulos exclusivos como Sonic the Hedgehog, ajudou a consolidar a imagem da Sega como uma marca inovadora e voltada para jogadores mais velhos. Ao longo de sua vida útil, a Mega Drive recebeu várias versões e acessórios, incluindo o Mega CD e o 32X, que buscavam estender sua relevância, mas com sucesso limitado. No Japão,"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "BDSM",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "O BDSM é um conjunto de práticas e preferências sexuais que envolvem poder, dor e submissão, mas é muito mais do que isso. É uma cultura que valoriza o consentimento, a comunicação e a exploração de fantasias e limites. Embora muitas pessoas ainda o vejam como algo tabu ou extremo, o BDSM é uma parte natural da diversidade sexual humana. Para aqueles que praticam o BDSM, a experiência pode ser incrivelmente libertadora. Ao explorar diferentes dinâmicas de poder, como dominância e submissão, ou ao experimentar sensações intensas, como dor e prazer, as pessoas podem descobrir novas facetas de si mesmas e de sua sexualidade. Além disso, o BDSM enfatiza a importância do consentimento informado e da negociação prévia, o que pode levar a relacionamentos mais abertos e honestos. No entanto, é comum que o BDSM seja mal compreendido ou associado a estereótipos negativos. Muitas pessoas imaginam que se trata de abuso ou violência, mas na verdade, as práticas BDSM são baseadas em acordos mútuos e respeitosos entre os participantes. É fundamental entender que o BDSM não é sobre infligir dor ou humilhação sem consentimento, mas sim sobre explorar limites e desejos de forma segura e consensual. Ao abordar o BDSM de forma aberta e informada, podemos trabalhar para desmistificar esses estereótipos e promover uma compreensão mais profunda da diversidade sexual."
+ },
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Presumed Innocent (filme)",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "Presumed Innocent é um filme norte-americano de suspense jurídico lançado em 1990, dirigido por Alan J. Pakula e baseado no romance homônimo de Scott Turow, publicado em 1987. No Brasil, a produção é conhecida como Acima de Qualquer Suspeita. Harrison Ford interpreta Rusty Sabich, promotor público de Chicago que passa a ser investigado pelo assassinato de Carolyn Polhemus, sua colega e antiga amante. A morte da promotora abala o gabinete do procurador e transforma Rusty, antes responsável por conduzir processos criminais, em suspeito de um crime que pode levá-lo à prisão. A investigação é conduzida por seu rival profissional, o promotor Tommy Molto, interpretado por Joe Grifasi, enquanto o advogado de defesa Sandy Stern, papel de Raul Julia, procura desmontar as provas apresentadas contra o acusado. Brian Dennehy interpreta Raymond Horgan, superior e mentor de Rusty, e Bonnie Bedelia vive Barbara, a esposa do protagonista. O elenco também inclui Greta Scacchi como Carolyn Polhemus. A narrativa alterna a investigação, os procedimentos judiciais e aspectos da vida pessoal de Rusty, mantendo em aberto a questão de sua culpa e explorando as tensões entre ambição, lealdade e justiça. O roteiro foi escrito por Pakula e Frank Pierson. Embora preserve elementos centrais do livro, o filme adapta a trama para o cinema e organiza a revelação de informações de modo a sustentar o"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Santana de Parnaíba",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "Santana de Parnaíba é um município brasileiro localizado no estado de São Paulo, na Região Metropolitana de São Paulo, a aproximadamente 35 quilômetros a noroeste da capital paulista. Fundada em 1625 por bandeirantes, a cidade é reconhecida como um dos berços da colonização do interior paulista, tendo papel fundamental no ciclo do ouro e na expansão territorial do Brasil colonial. Seu nome homenageia Nossa Senhora de Santana, padroeira local, e o rio Parnaíba, que banha a região. A cidade preserva um rico patrimônio histórico e cultural, com destaque para o centro histórico, tombado pelo Conselho de Defesa do Patrimônio Histórico (Condephaat), que abriga igrejas barrocas, casarões do século XVII e XVIII e ruas de paralelepípedos. Entre os pontos mais emblemáticos estão a Igreja Matriz de Santana, construída em 1648, e o Solar dos Abreu, antiga residência de uma das famílias mais influentes da região. Santana de Parnaíba também é conhecida por suas festas tradicionais, como a Festa de Nossa Senhora de Santana e a Festa do Divino, que atraem visitantes de todo o país. Economicamente, o município se destaca no setor de serviços, com um comércio diversificado e forte presença de indústrias, especialmente no ramo metalúrgico e de autopeças. Nos últimos anos, Santana de Parnaíba também tem se tornado um polo de tecnologia e inovação, atraindo empresas e startups para"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Alex Rodrigo Dias da Costa",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "Alex Rodrigo Dias da Costa, conhecido simplesmente como Alex, é um ex-futebolista brasileiro que atuava como zagueiro. Nascido em Niterói, Rio de Janeiro, Alex começou sua carreira no futebol em times modestos, mas logo chamou a atenção de clubes maiores devido à sua habilidade e liderança em campo. Sua passagem pelo Santos FC foi um dos pontos altos de sua carreira, onde conquistou títulos importantes e se destacou por sua segurança defensiva. Alex também teve uma carreira de sucesso em times europeus, especialmente no Chelsea FC, da Inglaterra, onde conquistou vários títulos, incluindo a Premier League e a Copa da Liga Inglesa. Sua experiência e capacidade de leitura de jogo foram fundamentais para o sucesso da equipe londrina durante sua estadia. Além disso, Alex representou a seleção brasileira em diversas oportunidades, participando de torneios importantes e contribuindo com sua experiência e qualidade para o time. Um dos aspectos mais notáveis da carreira de Alex é sua capacidade de adaptação a diferentes estilos de jogo e competições. Ele conseguiu se destacar tanto no futebol brasileiro, conhecido por sua criatividade e habilidade técnica, quanto no futebol europeu, onde a intensidade e a tática são frequentemente mais enfatizadas. Sua habilidade em liderar a defesa e sua capacidade de marcar gols importantes também foram características marcantes de sua carreira. Após encerrar sua carreira como"
+ },
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Código de barras",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "Código de barras é uma representação gráfica de dados que permite identificar produtos, documentos e outros itens por meio da leitura automatizada. Em sua forma mais conhecida, consiste em linhas paralelas de diferentes larguras e espaços, organizados segundo um padrão que codifica números ou caracteres. Leitores ópticos captam esse padrão e o convertem em informação digital, geralmente vinculada a um registro armazenado em um sistema. O uso comercial do código de barras se expandiu a partir da década de 1970, sobretudo no varejo, onde facilitou o registro de mercadorias e o controle de estoques. O Universal Product Code (UPC), adotado nos Estados Unidos em 1974, foi um dos primeiros sistemas amplamente utilizados. Em muitos países, incluindo o Brasil, é comum o padrão EAN-13, composto por treze algarismos. A sequência numérica pode identificar a organização responsável pelo registro e o item, além de incluir um dígito verificador, empregado para detectar certos erros de leitura ou digitação. O código, por si só, normalmente não descreve todas as características do produto: funciona como uma chave que permite consultar essas informações em uma base de dados. Há diferentes tipos de códigos de barras. Os chamados lineares, ou unidimensionais, codificam dados principalmente em uma direção e são frequentes em embalagens, etiquetas e documentos. Já os bidimensionais, como o QR Code e o Data Matrix, distribuem"
+ },
+ {
+  "label": "ai",
+  "model": "qwen/qwen3.8-flash",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Khalid",
+  "meta": "qwen/qwen3.8-flash temperature=0.8 generated=2026-10-01",
+  "text": "Imagine um mundo onde a melodia suave de um sintetizador se entrelaça perfeitamente com uma voz que parece ter sido moldada pela própria suavidade da noite. Esse é o universo de Khalid, o jovem prodígio americano que redefiniu o conceito de R&B contemporâneo para toda uma geração. Nascido em Texas e criado em movimento devido à carreira militar do pai, Khalid encontrou na música não apenas um escape, mas uma linguagem universal capaz de conectar pessoas ao redor do globo através de emoções puras e vulneráveis. Sua ascensão meteórica começou com o single \"Location\", uma faixa minimalista que capturou a essência da solidão urbana e do desejo romântico, transformando-se rapidamente em um hino viral nas redes sociais e nos streamings. O que torna Khalid tão especial não é apenas sua técnica vocal impressionante, caracterizada por um falsete fluido e uma entrega emocionalmente crua, mas também sua capacidade de narrar histórias cotidianas com uma profundidade poética rara. Álbuns como \"American Teen\" e \"Free Spirit\" serviram como diários sonoros da juventude moderna, abordando temas como ansiedade, amor não correspondido e a busca por identidade em um mundo hiperconectado, porém muitas vezes isolado. Sua colaboração com artistas como Normani no hit \"Love Lies\" demonstrou sua versatilidade e capacidade de transcender gêneros, mantendo sempre a assinatura sonora que o tornou reconhecível: batidas relaxantes, letras"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Isabel Carlota de Orleães",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "Isabel Carlota de Orleães, também conhecida como Mademoiselle de Montpensier, nasceu a 13 de setembro de 1810 em Palermo, Sicília, e faleceu a 14 de maio de 1850 em Lucca, Toscana. Filha do príncipe Antônio de Orleães, duque de Montpensier, e de Maria Amélia de Nápoles e Sicília, pertencia à casa real francesa dos Orleães, ramo cadete da dinastia Bourbon. Seu avô materno foi o rei Fernando I das Duas Sicílias, e seu pai era irmão do rei Luís Filipe I da França, o que a tornava prima do também futuro rei Fernando II das Duas Sicílias. Criada em ambiente aristocrático e influenciado pelas cortes europeias, Isabel Carlota recebeu educação refinada, destacando-se em línguas, música e literatura. Em 1832, casou-se com o príncipe Francisco de Bourbon, conde de Trápani, filho do rei Francisco I das Duas Sicílias e da rainha Maria Isabel de Espanha. O casamento foi arranjado politicamente, visando fortalecer os laços entre as casas de Orleães e Bourbon, mas não foi feliz. O casal teve uma única filha, Maria Anunciata, nascida em 1843, que mais tarde se casaria com o arquiduque Carlos Luís da Áustria. Isabel Carlota viveu grande parte de sua vida entre a França, a Itália e a Áustria, acompanhando os frequentes deslocamentos da família real. Sua saúde delicada e sua personalidade melancólica foram por vezes"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Syngman Rhee",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "Syngman Rhee foi uma figura central na história da Coreia do Sul, servindo como o primeiro presidente do país de 1948 a 1960. Nascido em 1875, Rhee teve uma longa e tumultuada carreira política que se estendeu por várias décadas, marcada por períodos de exílio, luta pela independência e autoritarismo. Inicialmente, Rhee foi um ativista pela independência da Coreia, lutando contra o domínio japonês que durou de 1910 a 1945. Ele passou muitos anos exilado nos Estados Unidos, onde se formou e desenvolveu uma visão política fortemente anticomunista e pró-americana. Com o fim da Segunda Guerra Mundial e a subsequente divisão da Coreia ao longo do paralelo 38, Rhee retornou à Coreia do Sul e rapidamente se tornou uma figura dominante na política do novo país. Ele foi eleito presidente em 1948, após uma eleição controversa, e seu governo foi marcado por uma forte repressão política, corrupção e autoritarismo. Durante sua presidência, Rhee enfrentou a Guerra da Coreia, que começou em 1950 com a invasão norte-coreana, e recebeu apoio significativo dos Estados Unidos e de outras nações ocidentais. Rhee se manteve no poder por mais de uma década, mas sua presidência se tornou cada vez mais contestada devido à sua postura autoritária e às denúncias de corrupção. Em 1960, após uma eleição presidencial fraudulenta, manifestações massivas irromperam em todo o"
+ },
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Cora (divisão territorial)",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "A cora é uma antiga divisão territorial e administrativa utilizada em diferentes regiões do mundo, sobretudo no Egito e no Oriente Próximo. O termo deriva do grego khṓra, que significa “região” ou “território”, e foi empregado por autores antigos para designar áreas delimitadas, geralmente organizadas em torno de uma cidade ou de um centro administrativo. O sentido exato da palavra variava conforme o período e o contexto político, não correspondendo necessariamente a uma unidade de tamanho ou função constantes. No Egito, a organização territorial em unidades chamadas nomos é muito mais conhecida, mas fontes gregas também empregam cora para se referir ao território rural em contraste com a cidade. No período helenístico e, mais tarde, sob o domínio romano, a palavra podia designar o conjunto de terras e localidades subordinadas a um centro urbano. Nesse uso, a cora compreendia não apenas a cidade principal, mas também aldeias, propriedades agrícolas, áreas de cultivo e, em certos casos, terras de pastagem ou regiões pouco povoadas. A cidade funcionava como núcleo de administração, comércio e culto, enquanto a zona rural fornecia alimentos, matérias-primas e receitas fiscais. O conceito aparece com destaque no estudo do Egito greco-romano, especialmente em documentos administrativos e papiros. Neles, a cora pode ser entendida como o espaço provincial ou rural fora de Alexandria, embora seus limites e sua organização"
+ },
+ {
+  "label": "ai",
+  "model": "qwen/qwen3.8-flash",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Manuscrito (álbum)",
+  "meta": "qwen/qwen3.8-flash temperature=0.8 generated=2026-10-01",
+  "text": "Há discos que não entram na nossa vida apenas pela música, mas pela sensação de intimidade que provocam, e Manuscrito é exatamente isso: um álbum que parece ter sido escrito à mão, com traços irregulares, pausas, hesitações e uma beleza que não tenta ser perfeita demais. Para quem se deixa levar, a escuta funciona como abrir uma carta antiga e encontrar ali palavras que ainda têm temperatura, ritmo e fôlego próprio. Em vez de um espetáculo grandioso, o disco aposta no gesto delicado da canção, naquela espécie de confidência sonora em que a voz, a letra e o arranjo se unem para criar uma atmosfera quase doméstica. Isso torna a experiência envolvente, porque não exige distância nem admiração fria; pede aproximação, pede que o ouvinte reconheça em suas próprias memórias o eco das melodias. Manuscrito também conversa com a ideia de registro: como um manuscrito, o álbum guarda marcas de quem fez, mas deixa espaço para quem ouve completar o sentido. É um convite a perceber detalhes, a escutar entre as linhas, a descobrir que uma canção pode ser um pequeno território de afeto, saudade e resistência. Para o público geral, talvez o maior encanto esteja justamente aí: o disco não parece feito para impressionar de imediato, mas para permanecer. Ele cresce com o tempo, com as repetições, com as"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Emil Odebrecht",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "Emil Odebrecht foi um engenheiro e empresário alemão nascido em 18 de novembro de 1894, em Hamburgo, que se tornou uma figura central na fundação e expansão do grupo Odebrecht, hoje uma das maiores empresas de engenharia e construção da América Latina. Filha de um pastor luterano, sua família migrou para o Brasil em 1918, estabelecendo-se inicialmente em Itapira, interior de São Paulo, onde Emil trabalhou como engenheiro em projetos de infraestrutura. Seu espírito empreendedor levou-o a fundar, em 1918, a empresa Emílio Odebrecht & Comp., que mais tarde viria a ser conhecida como Construtora Norberto Odebrecht, em homenagem a seu filho, Norberto Odebrecht, que assumiria a liderança do negócio nas décadas seguintes. Odebrecht destacou-se pela visão inovadora na área de construção pesada, especialmente em obras de grande porte, como estradas, barragens e empreendimentos industriais. Sua abordagem técnica, aliada a uma gestão empreendedora, permitiu que a empresa se consolidasse no mercado brasileiro e, posteriormente, expandisse suas operações para outros países da América Latina e África. Além de sua atuação empresarial, Emil Odebrecht foi também um pioneiro na introdução de métodos modernos de gestão e tecnologia na construção civil brasileira, contribuindo para o desenvolvimento da infraestrutura nacional. Sua trajetória refletiu um profundo compromisso com o trabalho e a disciplina, valores que foram transmitidos aos seus descendentes e que moldariam a cultura"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Corrosão",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "A corrosão é um processo natural que ocorre quando materiais, especialmente metais, reagem com o ambiente ao seu redor, resultando em deterioração ou desgaste. É um fenômeno comum que afeta diversas estruturas e objetos do nosso cotidiano, desde tubulações de água e gasodutos até peças de automóveis e monumentos históricos. A corrosão pode ser causada por vários fatores, incluindo exposição à umidade, oxigênio, substâncias químicas agressivas e variações de temperatura. Quando um metal entra em contato com o oxigênio e a umidade, por exemplo, ocorre uma reação química que leva à formação de óxidos, que são compostos que resultam da combinação do metal com o oxigênio. Esse processo é conhecido como oxidação e é uma das principais causas de corrosão. O caso mais conhecido é a ferrugem, que se forma quando o ferro reage com o oxigênio na presença de água. A corrosão não apenas causa danos estéticos, mas também pode comprometer a integridade estrutural de materiais e objetos, levando a falhas catastróficas em alguns casos. Além disso, a corrosão pode ter implicações econômicas significativas, pois requer manutenção e reparos constantes para prevenir ou mitigar seus efeitos. Existem várias estratégias para prevenir ou reduzir a corrosão, incluindo a aplicação de revestimentos protetores, como tintas e vernizes, o uso de materiais resistentes à corrosão, como o aço inoxidável, e a implementação"
+ },
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Banco de dados orientado a objetos",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "Um banco de dados orientado a objetos é um sistema de armazenamento e gerenciamento de informações que representa os dados como objetos, seguindo conceitos usados em linguagens de programação orientadas a objetos. Cada objeto reúne dados, chamados atributos, e operações associadas, chamadas métodos. Essa abordagem permite modelar diretamente entidades complexas, como documentos, imagens, peças mecânicas ou estruturas científicas, sem necessariamente convertê-las em tabelas e relacionamentos. Entre os conceitos comuns nesses sistemas estão classes, identidade dos objetos, encapsulamento, herança e polimorfismo. Uma classe define as características e os comportamentos de um conjunto de objetos, enquanto a identidade permite distinguir cada objeto independentemente dos valores de seus atributos. A herança possibilita criar classes especializadas a partir de outras, reutilizando características e acrescentando novas propriedades. Em muitos sistemas, os objetos podem conter referências a outros objetos, formando estruturas complexas que permanecem armazenadas de modo persistente. Uma vantagem importante é a correspondência mais direta entre os modelos usados no software e os dados mantidos no banco. Isso pode reduzir a necessidade de transformar objetos em registros relacionais e facilitar o tratamento de informações com estruturas aninhadas ou tipos definidos pelo usuário. Por esse motivo, bancos de dados orientados a objetos são empregados em áreas como engenharia, sistemas de informação geográfica, telecomunicações, produção multimídia e aplicações científicas. Apesar dessas características, sua adoção é menos ampla"
+ },
+ {
+  "label": "ai",
+  "model": "qwen/qwen3.8-flash",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Descolonização",
+  "meta": "qwen/qwen3.8-flash temperature=0.8 generated=2026-10-01",
+  "text": "A descolonização não é apenas um capítulo encerrado nos livros de história, marcado por datas específicas em que bandeiras foram baixadas e novas nações nasceram. É, na verdade, um processo contínuo, vivo e muitas vezes invisível, que se desenrola no cotidiano das sociedades pós-coloniais. Quando falamos em descolonizar, estamos convidando a sociedade a olhar para as estruturas de poder que persistem muito depois da retirada física dos exércitos colonizadores. Trata-se de questionar por que certas línguas são consideradas universais enquanto outras são marginalizadas, ou por que padrões estéticos eurocêntricos ainda ditam o que é considerado bonito, profissional ou aceitável. A descolonização do saber exige uma revisão crítica dos currículos escolares, que frequentemente apagam as contribuições intelectuais e artísticas dos povos africanos, indígenas e asiáticos, apresentando-os apenas como objetos de estudo ou vítimas passivas, nunca como protagonistas de suas próprias narrativas. Além disso, implica repensar as relações econômicas globais, onde o Norte continua a extrair recursos do Sul sem uma partilha justa de lucros, perpetuando uma dependência estrutural que remonta aos tempos imperiais. Para o público geral, isso pode soar abstrato, mas manifesta-se diariamente: quando escolhemos ignorar histórias locais em favor de mitos importados, quando reforçamos estereótipos raciais inconscientes ou quando defendemos políticas que beneficiam corporações estrangeiras em detrimento das comunidades locais. Descolonizar é, portanto, um ato de cura coletiva e"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Tite (treinador de futebol)",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "Adailton Alves de Sousa, mais conhecido como Tite, é um treinador e ex-futebolista brasileiro nascido em 25 de maio de 1961 em Caxias do Sul, Rio Grande do Sul. Ao longo de sua carreira, destacou-se tanto como jogador quanto como técnico, especialmente por seu trabalho à frente de clubes e da seleção brasileira. Como atleta, Tite atuou como meia ou meia-atacante em equipes como Caxias, Grêmio e Vitória, mas foi na função de treinador que alcançou maior reconhecimento. Sua trajetória como técnico começou em 2001, quando comandou o Caxias, clube de sua cidade natal. Contudo, foi no Grêmio, entre 2001 e 2004, que Tite começou a ganhar projeção, liderando o time gaúcho a títulos como a Copa do Brasil de 2001 e a Copa Libertadores da América de 2002. Seu estilo de jogo, baseado em organização tática, pressão alta e posse de bola, tornou-se uma marca registrada. Nos anos seguintes, passou por clubes como Inter de Porto Alegre, São Paulo e Atlético Mineiro, consolidando sua reputação como um treinador capaz de extrair o máximo de seus jogadores. O auge de sua carreira, entretanto, veio com a Seleção Brasileira, onde assumiu o cargo em junho de 2016, sucedendo Dunga. Sob seu comando, a equipe conquistou a Copa América Centenário em 2016, o título mais importante da competição desde 1997, e obteve"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Waterloo (álbum)",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "O álbum Waterloo, lançado em 1974, é um marco importante na discografia do grupo sueco ABBA. Após uma longa jornada de busca por reconhecimento, o ABBA finalmente alcançou o estrelato com este álbum que os catapultou para a fama internacional. Waterloo foi o primeiro álbum do grupo a alcançar um sucesso significativo fora da Escandinávia, graças em grande parte à vitória no Festival Eurovisão da Canção de 1974 com a música-título \"Waterloo\". A canção, que mistura elementos de rock e pop, tornou-se um hino instantâneo e ajudou a estabelecer o ABBA como uma força a ser reconhecida na indústria musical. O álbum em si é uma mistura eclética de estilos, apresentando desde canções animadas e cativantes como \"Honey, Honey\" e \"Watch Out\" até baladas emocionais como \"What About Livingstone?\" e \"My Mama Said\". A diversidade de estilos e a habilidade do grupo em criar melodias memoráveis e letras cativantes são evidentes ao longo do álbum. A produção, liderada por Björn Ulvaeus e Benny Andersson, é impecável, com arranjos orquestrais e vocais harmônicos que enriquecem as canções. A importância de Waterloo não se limita apenas ao seu sucesso comercial, mas também ao seu papel em lançar as bases para o estilo e a direção musical do ABBA nos anos subsequentes. O álbum mostrou que o grupo era capaz de criar música"
+ },
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Qri",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "“Qri” é um nome curto que pode designar pessoas, projetos, produtos ou organizações diferentes, e seu significado depende do contexto em que aparece. Sem uma referência adicional, não é possível identificar com segurança um único assunto conhecido por essa forma. A sequência de três letras pode funcionar como sigla, marca, nome artístico ou grafia estilizada; por isso, atribuir-lhe uma origem ou uma definição específica sem informação complementar pode levar a confusões. Ao encontrar “Qri” em um texto, convém observar elementos como o idioma, o país, a área temática e a data da publicação. Em páginas de tecnologia, por exemplo, o termo pode nomear uma ferramenta ou iniciativa; em conteúdos culturais, pode referir-se a uma pessoa, personagem ou projeto criativo. Também é possível que apareça como abreviação interna, cujo significado só é explicado no documento ou na organização em questão. A capitalização, a pronúncia e a forma de escrita podem variar, sobretudo quando o nome é usado internacionalmente. A busca por informações sobre Qri deve privilegiar fontes que apresentem contexto verificável, como páginas institucionais, registros oficiais, publicações especializadas e perfis associados diretamente ao nome. É útil conferir se as fontes tratam do mesmo referente, já que resultados semelhantes podem reunir entidades sem relação entre si. Dados como local de atuação, setor, autoria e período ajudam a distinguir homônimos e a evitar"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Marie-Madeleine de Brinvilliers",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "Marie-Madeleine de Brinvilliers foi uma nobre francesa do século XVII, famosa por seu envolvimento em crimes e envenenamentos que marcaram a história da França sob o reinado de Luís XIV. Nascida em 1630, numa família aristocrática, era filha de Antoine Dreux d’Aubray, um alto funcionário da corte. Desde cedo, casou-se com o marquês Antoine de Brinvilliers, um homem violento e dissipado, com quem teve três filhos. Seu casamento, no entanto, foi infeliz, e ela buscou consolo em casos amorosos e, segundo rumores da época, em práticas criminosas. Sua fama de envenenadora surgiu após a morte suspeita de seu pai e dois de seus irmãos, em 1666 e 1670, respectivamente. Investigações posteriores revelaram que ela havia administrado arsênico a suas vítimas, motivada por ganhos financeiros e ressentimento pessoal. Seu cúmplice, Godin de Sainte-Croix, um oficial militar e farmacêutico, forneceu-lhe os venenos e a instruiu em sua manipulação. Juntos, teriam envenenado dezenas de pessoas, incluindo servos e outros membros da nobreza. Descoberta em 1672, após uma investigação conduzida pelo famoso policial da época, Gabriel Nicolas de La Reynie, Marie-Madeleine fugiu para a Inglaterra e depois para a Holanda, mas foi extraditada de volta à França. Presa na Bastilha, ela confessou seus crimes sob interrogatório, embora tenha negado inicialmente. Seu julgamento tornou-se um espetáculo público, e ela foi condenada à morte por decapitação"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Economia do Recife",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "A economia do Recife é diversificada e tem apresentado um crescimento significativo nos últimos anos, impulsionada por setores como serviços, comércio e turismo. A cidade é um importante centro financeiro e comercial do Nordeste brasileiro, abrigando diversas instituições financeiras e empresas de grande porte. Além disso, o Recife é um polo de atração para investimentos, graças à sua localização estratégica e infraestrutura adequada. O turismo é um dos principais motores da economia local, com a cidade oferecendo uma rica diversidade cultural e histórica, além de praias e paisagens naturais. O Centro Histórico do Recife, com suas construções coloniais e arquitetura única, é um dos principais pontos turísticos, atraindo visitantes de todo o Brasil e do mundo. A cidade também é um importante centro de ensino e pesquisa, com diversas universidades e instituições de ensino superior, o que contribui para a formação de profissionais qualificados e para o desenvolvimento de novas tecnologias e inovações. Isso, por sua vez, atrai empresas de tecnologia e startups, que se estabelecem na cidade em busca de mão de obra qualificada e de um ambiente propício para o desenvolvimento de negócios. Outro setor que tem ganhado destaque na economia do Recife é o da construção civil, com a realização de grandes projetos de infraestrutura e a expansão do mercado imobiliário. A cidade também tem investido em"
+ },
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Fear the Walking Dead (2.ª temporada)",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "A segunda temporada de Fear the Walking Dead, série dramática de horror da AMC, estreou em 10 de abril de 2016 e terminou em 2 de outubro do mesmo ano, com 15 episódios. Criada por Robert Kirkman e Dave Erickson, a produção funciona como uma série derivada de The Walking Dead e acompanha os primeiros momentos do colapso social causado por uma epidemia que transforma os mortos em criaturas agressivas. A narrativa começa pouco depois dos acontecimentos da temporada anterior. Com Los Angeles tomada pela violência, os sobreviventes embarcam no Abigail, um iate pertencente ao enigmático Victor Strand, na esperança de encontrar segurança no mar. O grupo inclui Madison Clark, seus filhos Nick e Alicia, Travis Manawa, sua companheira Liza e o filho dela, Chris. À medida que a viagem avança, a embarcação deixa de representar uma proteção confiável, e conflitos internos, escassez de recursos e encontros com outros sobreviventes ameaçam a coesão do grupo. A temporada amplia o cenário da série, levando a trama da costa da Califórnia ao México. Nesse percurso, os personagens enfrentam novas comunidades e diferentes respostas à catástrofe, enquanto tentam compreender as mudanças morais provocadas pela luta pela sobrevivência. Nick, em particular, aproxima-se de pessoas que desenvolveram maneiras próprias de conviver com os mortos, ao passo que Alicia e Chris lidam com experiências que alteram"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Curt Hawkins",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "Curt Hawkins, nascido Brian Joseph Myers em 20 de abril de 1985, é um lutador profissional americano conhecido por sua carreira tanto na WWE quanto em promoções independentes. Formado na escola de wrestling da WWE, conhecida como WWE Performance Center, Hawkins estreou na empresa em 2007 como parte do grupo The Spirit Squad, ao lado de lutadores como Kenny Dykstra e Mikey, incorporando personagens de cheerleaders masculinos. Essa passagem, embora curta, marcou o início de sua trajetória no cenário principal. Após a dissolução do Spirit Squad, Hawkins foi transferido para a ECW em 2008, onde competiu sob seu nome real antes de ser demitido em 2009. Sua carreira na WWE teve altos e baixos, incluindo uma passagem pela NXT e breves aparições no plantel principal, geralmente em papéis de lower-card. Em 2016, ele formou uma dupla com o também lutador Zack Ryder, conhecida como The Hype Bros, que alcançou relativo sucesso, participando de lutas pelo WWE Tag Team Championship. No entanto, a dupla se separou em 2018 quando Hawkins foi demitido novamente. Fora da WWE, Hawkins atuou em promoções independentes e na Impact Wrestling (então conhecida como TNA), onde conquistou o Impact World Tag Team Championship ao lado de Trevor Lee. Sua carreira também incluiu passagens por outras organizações menores, como a Ring of Honor e a Chikara. Ao longo"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "GE Aerospace",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "A GE Aerospace é uma das principais empresas do mundo no setor aeroespacial, fornecendo soluções inovadoras para a aviação comercial e militar, além de tecnologias para a exploração espacial. Com uma longa história que remonta ao início do século XX, a empresa tem sido fundamental no desenvolvimento da aviação moderna, tendo produzido alguns dos motores mais icônicos e confiáveis da história. A GE Aerospace é conhecida por sua capacidade de inovação e desenvolvimento de tecnologias de ponta, que são utilizadas em uma ampla gama de aplicações, desde aeronaves comerciais até satélites e veículos espaciais. Seus motores são projetados para serem eficientes, seguros e confiáveis, e são utilizados por algumas das maiores companhias aéreas do mundo. Além disso, a empresa tem um compromisso forte com a sustentabilidade e está trabalhando para reduzir o impacto ambiental de suas operações e produtos. Isso inclui o desenvolvimento de motores mais eficientes e que emitem menos gases de efeito estufa, bem como a exploração de novas tecnologias, como a propulsão híbrida-elétrica. A GE Aerospace também é uma importante parceira para os governos e as forças armadas de todo o mundo, fornecendo soluções para uma variedade de necessidades de defesa, incluindo motores para aeronaves militares e sistemas de propulsão para veículos espaciais. Com uma presença global e uma equipe de profissionais talentosos e experientes, a GE"
+ },
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Hipótese interdimensional",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "A hipótese interdimensional é uma ideia especulativa segundo a qual certos fenômenos, sobretudo relatos de objetos voadores não identificados e de encontros com entidades, poderiam envolver seres ou objetos provenientes de dimensões diferentes daquelas que percebemos. A expressão aparece principalmente em discussões sobre ufologia e cultura popular, mas não designa uma teoria científica única, formalizada ou amplamente aceita. Em física, dimensões adicionais são possibilidades consideradas por algumas teorias matemáticas, como certas versões da teoria das cordas. Nesses modelos, porém, dimensões extras costumam ser descritas como compactadas em escalas extremamente pequenas, e sua existência ainda não foi confirmada experimentalmente. Essa acepção técnica difere do uso popular da hipótese interdimensional, que geralmente imagina outros universos ou planos de realidade acessíveis a entidades capazes de atravessar entre eles. A proposta ganhou destaque em debates sobre fenômenos aéreos não identificados como alternativa à hipótese extraterrestre. Seus defensores argumentam que relatos de aparições súbitas, movimentos incomuns ou desaparecimentos poderiam ser compatíveis com visitantes que não viajam pelo espaço convencional, mas transitam entre realidades. Algumas interpretações também relacionam a hipótese a relatos de aparições religiosas, folclore sobre seres sobrenaturais ou experiências de abdução. Essas conexões, contudo, são conjecturais e variam bastante entre autores. A principal dificuldade da hipótese é a falta de evidências verificáveis que demonstrem a existência de tais dimensões habitáveis ou de meios para"
+ },
+ {
+  "label": "ai",
+  "model": "qwen/qwen3.8-flash",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Mariluz",
+  "meta": "qwen/qwen3.8-flash temperature=0.8 generated=2026-10-01",
+  "text": "Mariluz tem um nome que parece convite. É luz no meio do dia, mas também aquela claridade mansa que aparece quando a gente menos espera. Quem conhece Mariluz entende que a cidade, ou a pessoa, ou a ideia, depende de quem escuta, guarda um jeito próprio de transformar o comum em algo memorável. Não é um lugar de pressa. É um lugar de encontro: a padaria na esquina, o cheiro de café, o sorriso de quem já viu muito e ainda assim escolhe ser gentil. Mariluz ensina que a vida pode ser simples sem ser pequena. Há beleza no caminho entre a casa e o mercado, na conversa breve entre vizinhos, no modo como a tarde cai sobre os telhados e faz tudo parecer mais calmo. Talvez por isso o nome soe como esperança. Mariluz não promete milagres; promete presença. Mostra que existir pode ser um ato de resistência quando a gente continua acreditando na força de um abraço, de um conselho, de um gesto sem plateia. Há quem diga que Mariluz é um ponto no mapa. Outros juram que é um sentimento. E talvez seja isso: uma forma de enxergar o mundo com ternura, sem abrir mão da coragem. Se você ainda não encontrou Mariluz, procure nos detalhes. Ela pode estar na música que toca de longe, no livro"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Olduvaiense",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "O Olduvaiense, também conhecido como Cultura Olduvaiense ou Idade da Pedra Antiga Inferior, representa um dos primeiros estágios tecnológicos da humanidade, nomeada em referência ao desfiladeiro de Olduvai, na Tanzânia, onde os primeiros achados arqueológicos associados a essa cultura foram descobertos. Este período remonta a aproximadamente 2,6 milhões de anos atrás e estende-se até cerca de 1,7 milhão de anos, marcando uma fase crucial na evolução humana e no desenvolvimento de ferramentas de pedra. Os artefatos mais característicos do Olduvaiense são os seixos talhados, conhecidos como choppers e chopping-tools, que consistem em pedras simples lascadas para criar bordas afiadas, utilizadas provavelmente para cortar carne, esmagar ossos ou processar vegetais. Os principais sítios arqueológicos que forneceram evidências do Olduvaiense incluem Olduvai, na Tanzânia, Koobi Fora, no Quênia, e Gadeb, na Etiópia, entre outros. Esses locais revelaram não apenas ferramentas de pedra, mas também ossos de animais com marcas de corte, sugerindo que os hominídeos da época já praticavam a caça ou a coleta de carcaças abandonadas por predadores. Acredita-se que espécies como o Homo habilis e possivelmente o Australopithecus garhi tenham sido responsáveis pela produção desses artefatos, embora a atribuição exata ainda seja debatida entre os pesquisadores. O Olduvaiense é considerado uma fase inaugural do Paleolítico, pois representa a primeira evidência clara de comportamento tecnológico intencional entre os primeiros membros do"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Guerra Pírrica",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "A expressão \"Guerra Pírrica\" é usada para descrever um conflito ou empreendimento que, embora resulte em vitória, acarreta perdas tão significativas que a conquista se torna praticamente inútil. A origem desse termo remonta ao século III a.C., quando Pirro, rei do Epiro, enfrentou os romanos em duas batalhas memoráveis. Em 280 a.C., Pirro invadiu a Itália em apoio à cidade de Tarento, que estava em guerra contra Roma. Embora tenha saído vitorioso nas batalhas de Heracleia e Ásculo, as perdas foram tão pesadas que comprometeram significativamente a força militar de seu exército. A vitória de Pirro sobre os romanos foi obtida a um custo tão alto que ele próprio teria declarado, após a segunda batalha, que \"outra vitória como essa e voltaremos sozinhos para casa\". Essa frase sintetiza a essência da Guerra Pírrica: uma conquista que se assemelha a uma derrota, pois o vencedor sai enfraquecido a ponto de não poder desfrutar ou sequer manter o que conquistou. Ao longo da história, o termo \"Guerra Pírrica\" foi aplicado a diversas situações que refletem essa dinâmica paradoxal de vitória e derrota. Guerras prolongadas e custosas, disputas empresariais desgastantes e até mesmo relações pessoais desgastantes podem ser descritas como Guerras Pírricas se o resultado final for uma \"vitória\" que não compensa as perdas sofridas. A lição subjacente é que o verdadeiro valor"
+ },
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Chevrolet Chevelle",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "O Chevrolet Chevelle foi um automóvel de porte médio produzido pela Chevrolet, divisão da General Motors, entre 1964 e 1977. Apresentado no mercado norte-americano para a linha de 1964, ocupava uma posição intermediária entre modelos compactos, como o Chevy II, e carros maiores, como o Impala. Sua plataforma, chamada A-body, também serviu de base para veículos de outras marcas da GM, entre eles o Pontiac Tempest e o Oldsmobile Cutlass. A primeira geração, fabricada de 1964 a 1967, oferecia diversas carrocerias, incluindo sedã, perua, cupê, conversível e a chamada “hardtop”, sem coluna central entre as janelas laterais. As opções de motorização iam de motores de seis cilindros a V8 de maior cilindrada, permitindo que o modelo atendesse tanto a compradores interessados em transporte familiar quanto a quem buscava desempenho. A linha também incluía o Malibu, inicialmente uma versão mais equipada que se tornou uma das designações mais conhecidas da família Chevelle. A segunda geração, lançada em 1968, adotou carroceria redesenhada, com linhas mais curvilíneas e entre-eixos distintos conforme o tipo de carroceria. Nesse período, o Chevelle ganhou destaque no segmento de alto desempenho. O SS 396, equipado com um V8 de 396 polegadas cúbicas, tornou-se uma das versões mais célebres; em 1970, a Chevrolet também ofereceu o SS 454, com motor de 454 polegadas cúbicas. O desempenho anunciado variava conforme"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Daisuke Takahashi",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "Daisuke Takahashi é um ex-patinador artístico japonês, nascido em 16 de março de 1986, em Karuizawa, na prefeitura de Nagano. Ele é amplamente reconhecido como um dos patinadores mais talentosos de sua geração, destacando-se por sua técnica refinada, expressividade e versatilidade em programas curtos e longos. Takahashi começou a patinar aos oito anos de idade, inspirado por seu irmão mais velho, que também praticava o esporte. Seu treinador ao longo de grande parte de sua carreira foi Koji Okajima, que ajudou a moldar seu estilo fluido e elegante. Sua carreira internacional ganhou destaque quando conquistou a medalha de bronze no Campeonato Mundial Júnior de 2002, aos 16 anos. No entanto, foi em 2006 que ele se tornou uma figura proeminente ao vencer o Campeonato Mundial de Patinação Artística quando ainda era um adolescente. Takahashi continuou a brilhar em competições de alto nível, incluindo os Jogos Olímpicos de Inverno de 2010, em Vancouver, onde obteve a medalha de bronze atrás de Evan Lysacek e Evgeni Plushenko. Essa conquista o tornou o primeiro patinador japonês a ganhar uma medalha olímpica no individual masculino. Além de seu sucesso olímpico, Takahashi foi campeão do Grande Prêmio Final por duas vezes consecutivas, em 2008 e 2009, e conquistou múltiplas medalhas em campeonatos mundiais e nacionais. Seu programa mais memorável, \"Merry Christmas, Mr. Lawrence\", ao som"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "Evolve (álbum)",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "O álbum Evolve, lançado em 2017 pela banda norte-americana Imagine Dragons, marca uma nova etapa na trajetória da banda que já vinha conquistando o mundo com seu som único. Com uma mistura de rock alternativo, pop e elementos eletrônicos, o álbum apresenta uma sonoridade mais madura e diversificada em relação aos trabalhos anteriores da banda. As letras das músicas abordam temas como superação, resiliência e a busca por mudanças positivas, refletindo uma jornada de autodescoberta e crescimento. A banda trabalhou em colaboração com vários produtores, incluindo o renomado Alex da Kid, para criar um som que fosse ao mesmo tempo inovador e acessível a um público amplo. O resultado foi um álbum que não apenas agradou aos fãs existentes, mas também atraiu novos ouvintes. Singles como \"Believer\" e \"Thunder\" se tornaram sucessos estrondosos, alcançando o topo das paradas em várias partes do mundo e solidificando a posição da banda como uma das principais forças do rock contemporâneo. A energia contagiante e as letras inspiradoras das músicas do Evolve ressoaram profundamente junto ao público, tornando o álbum um marco na discografia da banda. Além disso, a produção impecável e a habilidade da banda em criar melodias cativantes contribuíram para o sucesso do álbum. Com Evolve, o Imagine Dragons provou mais uma vez sua capacidade de criar música que não só entretém,"
+ },
+ {
+  "label": "ai",
+  "model": "openai/gpt-6-luna",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Resta in Ascolto",
+  "meta": "openai/gpt-6-luna temperature=0.8 generated=2026-10-01",
+  "text": "“Resta in ascolto” é uma canção da cantora italiana Laura Pausini, lançada em 2004 como faixa-título de seu álbum de estúdio daquele ano. Composta por Pausini, Cheope e Daniel Vuletic, a música foi gravada em italiano e ganhou uma versão em espanhol, “Escucha atento”, incluída na edição hispânica do disco, intitulada Escucha. O álbum marcou uma etapa de renovação na carreira da artista, que até então era especialmente conhecida por baladas românticas de grande alcance popular. A letra descreve o fim de um relacionamento e o esforço de aceitar a separação. Em vez de se concentrar apenas na dor, a narradora dirige-se à pessoa amada com firmeza, pedindo que escute o que ficou por dizer. A ideia de “permanecer à escuta” funciona como imagem de atenção e despedida: a comunicação entre os dois está ameaçada, mas ainda existe a possibilidade de reconhecer os sentimentos que marcaram a relação. Esse tom combina vulnerabilidade emocional com uma postura de autonomia, característica recorrente em interpretações de Pausini. Musicalmente, a canção é uma balada pop construída em torno da voz expressiva da cantora, com arranjos que ampliam gradualmente a intensidade. A interpretação começa de modo contido e ganha força nos momentos de maior carga emocional, acompanhando a progressão da letra. Essa dinâmica tornou a faixa adequada tanto ao formato radiofônico quanto às apresentações ao"
+ },
+ {
+  "label": "ai",
+  "model": "mistralai/mistral-small-2603",
+  "domain": "encyclopedia",
+  "lang": "pt",
+  "topic": "Braz Paschoalin",
+  "meta": "mistralai/mistral-small-2603 temperature=0.8 generated=2026-10-01",
+  "text": "Braz Paschoalin foi um importante empresário e pioneiro do setor de telecomunicações no Brasil, nascido em 1926 na cidade de São Paulo. Formado em engenharia elétrica pela Escola Politécnica da Universidade de São Paulo (USP), dedicou grande parte de sua carreira ao desenvolvimento de infraestrutura tecnológica no país. Na década de 1950, atuou em empresas como a Companhia Telefônica Brasileira (CTB), onde desempenhou funções técnicas e administrativas, contribuindo para a expansão dos serviços de telefonia fixa em São Paulo e no Rio de Janeiro. Nos anos 1970, Paschoalin fundou a empresa de telecomunicações Promon, que se tornou uma das principais fornecedoras de soluções para o setor público e privado. Sob sua liderança, a Promon desenvolveu projetos inovadores, como sistemas de transmissão de dados e redes digitais, antecipando tendências que só seriam amplamente adotadas décadas depois. Além disso, atuou como consultor para órgãos governamentais, auxiliando na formulação de políticas públicas para a modernização das telecomunicações brasileiras. Braz Paschoalin também foi professor universitário, lecionando na USP e em outras instituições, onde transmitiu seus conhecimentos a gerações futuras de engenheiros e profissionais de tecnologia. Seu legado inclui a formação de uma geração de técnicos e executivos que ajudaram a moldar o mercado de telecomunicações no Brasil. Faleceu em 2010, deixando um impacto duradouro no setor, reconhecido até hoje por sua visão empreendedora e"
+ },
+ {
+  "label": "ai",
+  "model": "meta-llama/llama-4-maverick",
+  "domain": "blog",
+  "lang": "pt",
+  "topic": "T.O.P",
+  "meta": "meta-llama/llama-4-maverick temperature=0.8 generated=2026-10-01",
+  "text": "T.O.P é um dos nomes mais conhecidos do K-pop, e não é por acaso. Como integrante do grupo Big Bang, uma das bandas mais bem-sucedidas da Coreia do Sul, ele conquistou o coração de milhões de fãs ao redor do mundo. Com sua presença de palco cativante e seu talento multifacetado, T.O.P se destaca não apenas como rapper, mas também como ator e modelo. Seu nome verdadeiro é Choi Seung-hyun, e nasceu em Seul, Coreia do Sul, onde começou sua carreira artística ainda jovem. T.O.P começou sua trajetória no mundo do entretenimento como parte do grupo Big Bang, formado pela YG Entertainment, uma das principais agências de talentos da Coreia do Sul. Desde o início, ele se destacou por sua personalidade carismática e habilidades como rapper. Com o sucesso do Big Bang, T.O.P se tornou uma figura proeminente no cenário musical coreano, participando de hits memoráveis que conquistaram paradas musicais e corações de fãs. Além de sua carreira musical, T.O.P também se aventurou no mundo do cinema e da televisão. Ele fez sua estreia como ator em diversas produções coreanas, mostrando sua versatilidade e talento para interpretar diferentes papéis. Seu desempenho em filmes e dramas foi bem recebido pela crítica e pelo público, consolidando sua posição como um artista completo. A popularidade de T.O.P não se limita apenas à Coreia"
+ }
+]
