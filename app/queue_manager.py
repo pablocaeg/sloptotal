@@ -59,11 +59,14 @@ class _QueueItem:
 class QueueManager:
     """Manages per-endpoint async queues with capacity tracking."""
 
-    def __init__(self, max_snippet: int, max_quick: int, max_full: int):
+    def __init__(
+        self, max_snippet: int, max_quick: int, max_full: int, max_short: int = 2
+    ):
         self._capacities: dict[str, EndpointCapacity] = {
             "snippet": EndpointCapacity(max_concurrent=max_snippet, max_queue=50),
             "quick": EndpointCapacity(max_concurrent=max_quick, max_queue=50),
             "full": EndpointCapacity(max_concurrent=max_full, max_queue=20),
+            "short": EndpointCapacity(max_concurrent=max_short, max_queue=20),
         }
 
         # asyncio.PriorityQueue per endpoint

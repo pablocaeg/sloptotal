@@ -118,3 +118,15 @@ async def test_an_analysis_nobody_watches_is_still_marked_complete():
         ).fetchone()
     assert row["completed_at"] is not None
     assert report_id not in analyzer._pending
+
+
+async def test_a_short_text_starts_while_long_ones_hold_every_full_slot():
+    manager = await started_manager()
+    await manager.submit("full", {}, "long", analysis(asyncio.Event(), "r-long"))
+
+    short = await manager.submit(
+        "short", {}, "short", analysis(asyncio.Event(), "r-short")
+    )
+
+    assert short == {"status": "completed", "result": {"report_id": "r-short"}}
+    await manager.stop()

@@ -27,7 +27,13 @@ from app.database import (
     purge_expired_reports,
     REPORT_RETENTION_DAYS,
 )
-from app.analyzer import get_engine_list, shutdown_analyzer, _max_full, _max_snippet
+from app.analyzer import (
+    get_engine_list,
+    shutdown_analyzer,
+    _max_full,
+    _max_short,
+    _max_snippet,
+)
 from app.engine_status import get_health_summary, mark_failed, mark_loaded
 from app.queue_manager import QueueManager
 
@@ -66,6 +72,7 @@ async def lifespan(app: FastAPI):
         max_snippet=_max_snippet,
         max_quick=_max_snippet,
         max_full=_max_full,
+        max_short=_max_short,
     )
     await queue_manager.start()
     app.state.queue_manager = queue_manager

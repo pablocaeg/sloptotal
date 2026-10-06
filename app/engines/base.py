@@ -1,4 +1,8 @@
+import threading
 from abc import ABC, abstractmethod
+from collections import deque
+from typing import Callable
+
 from app.schemas import EngineResult
 
 MAX_WINDOWS = 8
@@ -23,6 +27,66 @@ def window_starts(
         return starts
     last = max(0, n_tokens - window)
     return [round(i * last / (max_windows - 1)) for i in range(max_windows)]
+
+
+class FairLock:
+    """A lock handed to waiting threads in arrival order.
+
+    threading.Lock makes no such promise: a thread scoring a long text, which
+    releases and retakes the lock between windows, can win it back again and
+    again while a short text waits.
+    """
+
+    def __init__(self) -> None:
+        self._guard = threading.Lock()
+        self._waiters: deque[threading.Event] = deque()
+        self._held = False
+
+    def __enter__(self) -> "FairLock":
+        with self._guard:
+            if not self._held and not self._waiters:
+                self._held = True
+                return self
+            turn = threading.Event()
+            self._waiters.append(turn)
+        turn.wait()
+        return self
+
+    def __exit__(self, *exc) -> None:
+        with self._guard:
+            if self._waiters:
+                self._waiters.popleft().set()
+            else:
+                self._held = False
+
+
+def score_in_windows(
+    text: str,
+    tokenizer,
+    score_chunk: Callable[[str], float],
+    lock: FairLock,
+    window: int = 510,
+    stride: int = 256,
+    max_windows: int = MAX_WINDOWS,
+) -> float:
+    """Mean score of a classifier over the windows of a text.
+
+    The model's lock is taken one window at a time, so a short text waits for
+    at most one window of a long one, not for the whole text.
+    """
+    with lock:
+        tokens = tokenizer.encode(text, add_special_tokens=False)
+    if len(tokens) <= window:
+        with lock:
+            return score_chunk(text)
+    scores = []
+    for start in window_starts(len(tokens), window, stride, max_windows):
+        ids = tokens[start : start + window]
+        if len(ids) < 20:
+            break
+        with lock:
+            scores.append(score_chunk(tokenizer.decode(ids, skip_special_tokens=True)))
+    return sum(scores) / len(scores) if scores else 0.0
 
 
 class BaseEngine(ABC):
