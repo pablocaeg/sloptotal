@@ -153,9 +153,18 @@ _full_executor = ThreadPoolExecutor(
     max_workers=int(os.getenv("SLOPTOTAL_FULL_WORKERS", str(_usable))),
     thread_name_prefix="full",
 )
+# Texts that fit in one window of the large models run in their own lane, so
+# they never wait behind the windows of a long text (benchmarks/perf/replay.py).
+SHORT_LANE_WORDS = int(os.getenv("SLOPTOTAL_SHORT_LANE_WORDS", "350"))
+_short_executor = ThreadPoolExecutor(
+    max_workers=int(os.getenv("SLOPTOTAL_SHORT_WORKERS", "4")),
+    thread_name_prefix="short",
+)
+_executors = {"full": _full_executor, "short": _short_executor}
 
 # --- HTTP-level concurrency guards (Phase 4) ---
 _max_full = int(os.getenv("SLOPTOTAL_MAX_CONCURRENT_FULL", "2"))
+_max_short = int(os.getenv("SLOPTOTAL_MAX_CONCURRENT_SHORT", "2"))
 _max_snippet = int(os.getenv("SLOPTOTAL_MAX_CONCURRENT_SNIPPET", "4"))
 _full_semaphore = asyncio.Semaphore(_max_full)
 _snippet_semaphore = asyncio.Semaphore(_max_snippet)
@@ -173,6 +182,7 @@ def shutdown_analyzer() -> None:
     _shutdown_event.set()
     _snippet_executor.shutdown(wait=True, cancel_futures=False)
     _full_executor.shutdown(wait=True, cancel_futures=False)
+    _short_executor.shutdown(wait=True, cancel_futures=False)
     cleanup_connections()
     log.info("Analyzer shutdown complete")
 
@@ -211,6 +221,11 @@ def get_engine_list_rich() -> list[dict]:
     ]
 
 
+def lane_for(text: str) -> str:
+    """The full-analysis lane a text runs in: "short" or "full"."""
+    return "short" if count_words(fit_to_limit(text)) <= SHORT_LANE_WORDS else "full"
+
+
 def fit_to_limit(text: str, limit: int = MAX_ANALYSED_CHARS) -> str:
     """Cut text longer than limit at the last whitespace before it."""
     if len(text) <= limit:
@@ -220,7 +235,11 @@ def fit_to_limit(text: str, limit: int = MAX_ANALYSED_CHARS) -> str:
 
 
 async def start_analysis(
-    text: str, source_type: str = "text", source: str = "", _queue_managed: bool = False
+    text: str,
+    source_type: str = "text",
+    source: str = "",
+    _queue_managed: bool = False,
+    lane: str = "full",
 ) -> tuple[str, bool]:
     """Start analysis and return (report_id, is_cached). Results stream via queue.
 
@@ -294,7 +313,7 @@ async def start_analysis(
     # Launch all engines using full executor
     loop = asyncio.get_event_loop()
     for key, engine in _engines:
-        future = loop.run_in_executor(_full_executor, _run_engine, engine, text)
+        future = loop.run_in_executor(_executors[lane], _run_engine, engine, text)
         future.add_done_callback(
             lambda f, k=key, q=queue, rid=report_id: _on_engine_done(f, k, q, rid)
         )
@@ -467,7 +486,7 @@ async def analyze_text(
 
 
 async def _analyze_text_inner(
-    text: str, source_type: str, source: str
+    text: str, source_type: str, source: str, lane: str = "full"
 ) -> AnalysisReport:
     input_chars = len(text)
     text = fit_to_limit(text)
@@ -485,7 +504,7 @@ async def _analyze_text_inner(
     futures = []
     for key, engine in _engines:
         futures.append(
-            (key, loop.run_in_executor(_full_executor, _run_engine, engine, text))
+            (key, loop.run_in_executor(_executors[lane], _run_engine, engine, text))
         )
 
     results: list[EngineResult] = []

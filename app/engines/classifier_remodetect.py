@@ -1,14 +1,18 @@
-import threading
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
-from app.engines.base import LARGE_MODEL_MAX_WINDOWS, BaseEngine, window_starts
+from app.engines.base import (
+    BaseEngine,
+    FairLock,
+    LARGE_MODEL_MAX_WINDOWS,
+    score_in_windows,
+)
 from app.schemas import EngineResult, score_to_engine_verdict
 from app.model_pool import LOAD_LOCK as _load_lock
 
 _MODEL_NAME = "hyunseoki/ReMoDetect-deberta"
 _model = None
 _tokenizer = None
-_lock = threading.Lock()
+_lock = FairLock()
 
 
 def _load_model():
@@ -68,23 +72,14 @@ class ClassifierReMoDetectEngine(BaseEngine):
                 description=self.description,
             )
 
-        with _lock:
-            tokens = tokenizer.encode(text, add_special_tokens=False)
-
-            if len(tokens) <= 510:
-                score = _score_chunk(text, model, tokenizer)
-            else:
-                window = 510
-                chunk_scores = []
-                for start in window_starts(
-                    len(tokens), window, window, LARGE_MODEL_MAX_WINDOWS
-                ):
-                    chunk_ids = tokens[start : start + window]
-                    if len(chunk_ids) < 20:
-                        break
-                    chunk_text = tokenizer.decode(chunk_ids, skip_special_tokens=True)
-                    chunk_scores.append(_score_chunk(chunk_text, model, tokenizer))
-                score = sum(chunk_scores) / len(chunk_scores) if chunk_scores else 0.0
+        score = score_in_windows(
+            text,
+            tokenizer,
+            lambda chunk: _score_chunk(chunk, model, tokenizer),
+            _lock,
+            stride=510,
+            max_windows=LARGE_MODEL_MAX_WINDOWS,
+        )
 
         return EngineResult(
             engine_name=self.name,

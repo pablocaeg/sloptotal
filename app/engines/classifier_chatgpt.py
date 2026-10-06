@@ -1,14 +1,13 @@
-import threading
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
-from app.engines.base import BaseEngine, window_starts
+from app.engines.base import BaseEngine, FairLock, score_in_windows
 from app.schemas import EngineResult, score_to_engine_verdict
 from app.model_pool import LOAD_LOCK as _load_lock
 
 _MODEL_NAME = "Hello-SimpleAI/chatgpt-detector-roberta"
 _model = None
 _tokenizer = None
-_lock = threading.Lock()
+_lock = FairLock()
 
 
 def _load_model():
@@ -80,24 +79,12 @@ class ClassifierChatGPTEngine(BaseEngine):
 
         ai_idx = _get_ai_label_index(model)
 
-        with _lock:
-            tokens = tokenizer.encode(text, add_special_tokens=False)
-
-            if len(tokens) <= 510:
-                score = _score_chunk(text, model, tokenizer, ai_idx)
-            else:
-                stride = 256
-                window = 510
-                chunk_scores = []
-                for start in window_starts(len(tokens), window, stride):
-                    chunk_ids = tokens[start : start + window]
-                    if len(chunk_ids) < 20:
-                        break
-                    chunk_text = tokenizer.decode(chunk_ids, skip_special_tokens=True)
-                    chunk_scores.append(
-                        _score_chunk(chunk_text, model, tokenizer, ai_idx)
-                    )
-                score = sum(chunk_scores) / len(chunk_scores) if chunk_scores else 0.0
+        score = score_in_windows(
+            text,
+            tokenizer,
+            lambda chunk: _score_chunk(chunk, model, tokenizer, ai_idx),
+            _lock,
+        )
 
         label_name = model.config.id2label.get(ai_idx, "AI")
 

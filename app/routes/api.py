@@ -28,6 +28,7 @@ from app.analyzer import (
     _quick_analyze_text_inner,
     _scan_snippets_batch_inner,
     _analyze_text_inner,
+    lane_for,
 )
 from app.database import (
     FeedbackNotReady,
@@ -450,13 +451,22 @@ async def api_analyze(request: Request, req: AnalyzeRequest):
 
         async def _execute(payload):
             report = await _analyze_text_inner(
-                payload["text"], payload["source_type"], payload["source"]
+                payload["text"],
+                payload["source_type"],
+                payload["source"],
+                payload["lane"],
             )
             return report.model_dump()
 
+        lane = lane_for(content)
         resp = await queue_manager.submit(
-            "full",
-            {"text": content, "source_type": source_type, "source": source},
+            lane,
+            {
+                "text": content,
+                "source_type": source_type,
+                "source": source,
+                "lane": lane,
+            },
             text_hash,
             _execute,
         )

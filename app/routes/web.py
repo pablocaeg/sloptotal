@@ -10,6 +10,7 @@ from starlette.responses import StreamingResponse
 from app.config import SCORE_CLEAN, SCORE_LIKELY_AI, SCORE_LOW_RISK, SCORE_SUSPICIOUS
 from app.schemas import WebAnalyzeRequest
 from app.analyzer import (
+    lane_for,
     start_analysis,
     wait_until_done,
     get_report,
@@ -143,14 +144,21 @@ async def api_web_analyze(request: Request, req: WebAnalyzeRequest):
                 source_type=payload["source_type"],
                 source=payload["source"],
                 _queue_managed=True,
+                lane=payload["lane"],
             )
             if cached:
                 return {"report_id": rid}
             return {"report_id": rid, "_hold": wait_until_done(rid)}
 
+        lane = lane_for(content)
         resp = await queue_manager.submit(
-            "full",
-            {"text": content, "source_type": source_type, "source": source},
+            lane,
+            {
+                "text": content,
+                "source_type": source_type,
+                "source": source,
+                "lane": lane,
+            },
             text_hash,
             _execute,
         )
