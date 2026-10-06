@@ -2,7 +2,7 @@ import threading
 import torch
 import torch.nn as nn
 from transformers import AutoTokenizer, AutoConfig, AutoModel, PreTrainedModel
-from app.engines.base import BaseEngine, window_starts
+from app.engines.base import LARGE_MODEL_MAX_WINDOWS, BaseEngine, window_starts
 from app.schemas import EngineResult, score_to_engine_verdict
 from app.model_pool import LOAD_LOCK as _load_lock
 
@@ -106,10 +106,11 @@ class ClassifierDesklibEngine(BaseEngine):
             if len(tokens) <= 510:
                 score = _score_chunk(text, model, tokenizer)
             else:
-                stride = 256
                 window = 510
                 chunk_scores = []
-                for start in window_starts(len(tokens), window, stride):
+                for start in window_starts(
+                    len(tokens), window, window, LARGE_MODEL_MAX_WINDOWS
+                ):
                     chunk_ids = tokens[start : start + window]
                     if len(chunk_ids) < 20:
                         break

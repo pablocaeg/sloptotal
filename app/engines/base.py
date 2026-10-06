@@ -2,6 +2,10 @@ from abc import ABC, abstractmethod
 from app.schemas import EngineResult
 
 MAX_WINDOWS = 8
+# Desklib, ReMoDetect and SuperAnnotate are the critical path of a full
+# analysis. Side-by-side windows, at most 4, halve their time on long texts and
+# moved 5 of 190 verdicts (benchmarks/perf: large_models.py, retime.py).
+LARGE_MODEL_MAX_WINDOWS = 4
 
 
 def window_starts(
