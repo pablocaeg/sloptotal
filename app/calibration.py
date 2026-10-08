@@ -13,7 +13,7 @@ import json
 import math
 from pathlib import Path
 
-from app.language import count_words, detect_language
+from app.language import count_words, detect_language, is_unspaced
 
 _HERE = Path(__file__).parent
 _CALIBRATION = json.loads((_HERE / "calibration.json").read_text())
@@ -26,7 +26,6 @@ CALIBRATION_VERSION = hashlib.sha256(
     )
 ).hexdigest()[:16]
 SHORT_TEXT_WORDS = 80
-UNSPACED_LANGUAGES = {"ja", "zh"}
 UNCERTAIN = (35.0, 65.0)
 CONFIDENT = (15.0, 80.0)
 
@@ -99,7 +98,7 @@ def calibrated_score(
         )
         z = _weighted(multilingual, engine_scores) + offset
         reference = multilingual["short_ref_words"]
-        if lang not in UNSPACED_LANGUAGES and 0 < words < reference:
+        if not is_unspaced(text) and 0 < words < reference:
             z -= multilingual["short_alpha"] * (1 / words - 1 / reference)
         score = 100 / (1 + math.exp(-z))
 

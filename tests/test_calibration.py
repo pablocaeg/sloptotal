@@ -114,3 +114,15 @@ def test_a_japanese_text_is_not_held_back_as_a_one_word_text():
 
     assert lang == "ja"
     assert score > 50
+
+
+def test_a_thai_text_is_not_held_back_as_a_short_text():
+    paragraph = (
+        "กรุงเทพมหานครเป็นเมืองหลวงและนครที่มีประชากรมากที่สุดของประเทศไทย "
+        "เป็นศูนย์กลางการปกครอง การศึกษา การคมนาคมขนส่ง การเงินการธนาคาร "
+        "การพาณิชย์ การสื่อสาร และความเจริญของประเทศ"
+    )
+    once, _, _ = calibrated_score(_all(0.5), paragraph)
+    repeated, _, _ = calibrated_score(_all(0.5), " ".join([paragraph] * 6))
+
+    assert once == repeated

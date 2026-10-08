@@ -1,6 +1,6 @@
 import pytest
 
-from app.language import count_words, detect_language
+from app.language import count_words, detect_language, is_unspaced
 
 SAMPLES = {
     "en": "I think the council should have voted on the plan before the summer, because it was clear that the budget would not be ready in time for the new school year.",
@@ -50,3 +50,9 @@ def test_chinese_and_japanese_are_counted_at_two_characters_a_word():
 
 def test_spaced_text_is_counted_by_spaces():
     assert count_words("Hello there,  world") == 3
+
+
+def test_thai_lao_khmer_and_burmese_count_as_unspaced():
+    assert is_unspaced("กรุงเทพมหานครเป็นเมืองหลวง")
+    assert is_unspaced("東京都は日本の首都である。")
+    assert not is_unspaced("Bangkok is the capital of Thailand.")
