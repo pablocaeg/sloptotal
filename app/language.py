@@ -34,6 +34,12 @@ _WORDS = {lang: set(words.split()) for lang, words in FUNCTION_WORDS.items()}
 _TOKEN = re.compile(r"[^\W\d_]+", re.UNICODE)
 _CJK = re.compile(r"[\u3040-\u30ff\u4e00-\u9fff]")
 _CJK_PUNCTUATION = re.compile(r"[\u3000-\u303f\uff00-\uffef]")
+# Chinese and Japanese, Thai, Lao, Myanmar and Khmer: scripts written without
+# spaces between words.
+_UNSPACED = re.compile(
+    r"[\u3040-\u30ff\u4e00-\u9fff\u0e00-\u0eff\u1000-\u109f\u1780-\u17ff]"
+)
+_LETTER = re.compile(r"[^\W\d_]")
 # The SlopBench corpus asks for "about 600 characters" in Chinese and Japanese
 # where it asks for "about 300 words" elsewhere.
 CJK_CHARACTERS_PER_WORD = 2
@@ -58,6 +64,12 @@ def _script_counts(text: str) -> Counter:
         elif ch.isalpha():
             counts["latin"] += 1
     return counts
+
+
+def is_unspaced(text: str) -> bool:
+    """Whether most of the text's letters are in a script without spaces between words."""
+    letters = len(_LETTER.findall(text))
+    return letters > 0 and len(_UNSPACED.findall(text)) > letters / 2
 
 
 def count_words(text: str) -> int:
