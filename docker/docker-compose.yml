@@ -11,6 +11,14 @@ services:
       - sloptotal-data:/app/data
     environment:
       - HF_HOME=/app/models
+
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      start_period: 10m
+      retries: 3
+
     restart: unless-stopped
 
   # Uncomment for NVIDIA GPU support:
