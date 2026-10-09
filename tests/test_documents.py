@@ -78,3 +78,16 @@ def test_parse_errors_preserve_the_original_cause(name):
     with pytest.raises(ValueError, match="Could not read") as caught:
         extract_document_text(name, b"invalid document")
     assert caught.value.__cause__ is not None
+
+
+def test_markdown_is_decoded_and_returned_as_text():
+    # Long enough to pass the 50-character minimum. Markdown syntax is returned as-is, not rendered.
+    md = "# Notes\n\n- first point\n- second point\n\nThis paragraph is long enough to pass the minimum."
+    assert extract_document_text("notes.md", md.encode("utf-8")) == md
+
+
+def test_pdf_without_extractable_text_is_rejected():
+    # Must be a valid PDF that parses but has no text; match= proves it was rejected for that
+    # reason and not because the file could not be read.
+    with pytest.raises(ValueError, match="No readable text"):
+        extract_document_text("blank.pdf", _pdf(""))
