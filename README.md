@@ -279,7 +279,28 @@ export SLOPTOTAL_POOL_TMR=2
 | `SLOPTOTAL_PROFILE` | auto | `lite`, `standard` or `performance` |
 | `SLOPTOTAL_RETENTION_DAYS` | `30` | Delete reports after N days (`0` keeps them) |
 | `SLOPTOTAL_ALLOW_PRIVATE_URLS` | off | Let URL scans reach private or intranet hosts (blocked by default) |
+| `SLOPTOTAL_DATA_DIR` | project-root `data/` | Directory for stored reports and the database |
+| `SLOPTOTAL_DB_NAME` | `sloptotal.db` | Database filename inside the data directory |
+| `SLOPTOTAL_DB_TIMEOUT` | `30.0` seconds | SQLite connection timeout |
+| `SLOPTOTAL_DB_BUSY_TIMEOUT` | `5000` milliseconds | SQLite busy timeout |
+| `SLOPTOTAL_CACHE_ENABLED` | `true` | Enable result caching (`true`, `1` or `yes`, case-insensitive) |
+| `SLOPTOTAL_DEVICE` | auto-detected | Override inference device with `cpu` or `cuda`; otherwise CUDA is used when available |
+| `SLOPTOTAL_RESERVED_CORES` | `2` | CPU cores reserved when calculating usable analyzer cores |
+| `SLOPTOTAL_SHORT_LANE_WORDS` | `350` | Word-count threshold for the short-text lane |
+| `SLOPTOTAL_SHORT_WORKERS` | `4` | Short-text worker count |
+| `SLOPTOTAL_MAX_CONCURRENT_SHORT` | `2` | Concurrent short-text scan limit enforced by the queue manager |
+| `SLOPTOTAL_MAX_CONCURRENT_SNIPPET` | `4` (`2` in lite) | Concurrent snippet scan limit |
+| `SLOPTOTAL_POOL_BERT_RAID` | `1` (see below) | BERT RAID model pool replicas |
+| `SLOPTOTAL_POOL_E5` | `1` (see below) | E5 model pool replicas |
+| `SLOPTOTAL_POOL_FAKESPOT` | `1` (see below) | Fakespot model pool replicas |
+| `SLOPTOTAL_POOL_TMR` | `1` (see below) | TMR model pool replicas |
 | `HF_HOME` | `./models` | Where model weights are cached |
+
+Startup profiles populate unset settings before the analyzer reads its fallback
+defaults. Explicit environment values take precedence. The lite profile sets
+the snippet concurrency limit to `2`; other profiles use `4`. On CPU, the
+performance profile sets all four classifier pools above to `2` when RAM is at least
+32 GB; otherwise these pools use `1`, including CUDA profiles.
 
 ## FAQ
 
