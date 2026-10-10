@@ -1,6 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="SlopTotal">
-  <!-- The SlopTotal mark: a drop of slop with a scan line through it, on the night ground. -->
-  <rect width="32" height="32" rx="7" fill="#101f4d"/>
-  <path d="M16 4.6C16 4.6 8.4 13.2 8.4 18a7.6 7.6 0 0 0 15.2 0C23.6 13.2 16 4.6 16 4.6Z" fill="#7d98e8"/>
-  <rect x="4.5" y="16.3" width="23" height="2.6" rx="1.3" fill="#ffffff"/>
+  <!-- The score dial: clean half, slop half, needle reading into the red. Shapes
+       checked at 16 px; no pivot dot, it merges with the needle at that size. -->
+  <rect width="32" height="32" rx="7" fill="#1f4ed8"/>
+  <path d="M5.5 22.5A10.5 10.5 0 0 1 16 12" fill="none" stroke="#ffffff" stroke-opacity=".55" stroke-width="4.6" stroke-linecap="round"/>
+  <path d="M16 12A10.5 10.5 0 0 1 26.5 22.5" fill="none" stroke="#ff6b6b" stroke-width="4.6" stroke-linecap="round"/>
+  <path d="M15 24L22 15" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round"/>
 </svg>
