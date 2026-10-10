@@ -49,15 +49,22 @@ def human_scores():
         row = json.loads(line)
         if row["label"] != "human" or row["id"] not in texts:
             continue
-        engines = {QUICK_ENGINES[k]: v for k, v in row["engines"].items() if k in QUICK_ENGINES}
-        scores[row["id"]] = (row["source"], calibration.quick_score(engines, texts[row["id"]])[0])
+        engines = {
+            QUICK_ENGINES[k]: v for k, v in row["engines"].items() if k in QUICK_ENGINES
+        }
+        scores[row["id"]] = (
+            row["source"],
+            calibration.quick_score(engines, texts[row["id"]])[0],
+        )
     return scores
 
 
 def test_classic_literature_is_rarely_called_ai(human_scores):
     # 1 of 87 measured (the old formula: 11). Literature before 1920 is the
     # slice where any "ai" verdict is an error by construction.
-    classics = [s for source, s in human_scores.values() if source == "classics-gutenberg"]
+    classics = [
+        s for source, s in human_scores.values() if source == "classics-gutenberg"
+    ]
     assert len(classics) == 87
     assert sum(quick_verdict(s) == "ai" for s in classics) <= 2
 
