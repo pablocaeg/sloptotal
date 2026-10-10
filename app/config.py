@@ -54,6 +54,14 @@ SCORE_LOW_RISK = 45
 SCORE_SUSPICIOUS = 55
 SCORE_LIKELY_AI = 80
 
+# The quick scan and the paragraph scan report clean / mixed / ai rather than the
+# five report bands, because the Chrome extension shows three states. These are
+# their edges, kept here so they cannot drift from the bands above without a test
+# noticing. A paragraph is counted as AI only when it is strictly above QUICK_AI_MIN,
+# matching the previous `p["score"] > 65` in paragraph_analyze.
+QUICK_CLEAN_MAX = 35
+QUICK_AI_MIN = 65
+
 # Minimum text length for analysis
 MIN_TEXT_LENGTH = 50
 

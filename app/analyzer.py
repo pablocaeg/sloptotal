@@ -13,7 +13,12 @@ from app.schemas import (
     score_to_engine_verdict,
 )
 from app.calibration import CALIBRATION_VERSION, calibrated_score
-from app.config import CACHE_ENABLED, MAX_ANALYSED_CHARS
+from app.config import (
+    CACHE_ENABLED,
+    MAX_ANALYSED_CHARS,
+    QUICK_AI_MIN,
+    QUICK_CLEAN_MAX,
+)
 from app.cache import compute_text_hash, is_cacheable_report
 from app.language import count_words
 from app.database import (
@@ -586,6 +591,19 @@ async def get_recent_reports(limit: int = 10) -> list[AnalysisReport]:
 # --- Quick Score API for Chrome Extension ---
 
 
+def quick_verdict(score: float) -> str:
+    """The three-state verdict the quick and paragraph scans report.
+
+    The edges live in ``app/config.py`` so they cannot drift from the report
+    bands unnoticed. ``score`` is on the 0-100 scale both callers use.
+    """
+    if score <= QUICK_CLEAN_MAX:
+        return "clean"
+    if score <= QUICK_AI_MIN:
+        return "mixed"
+    return "ai"
+
+
 def _human_signal_score(text: str) -> float:
     """Detect human-writing signals that ML models miss.
 
@@ -934,13 +952,7 @@ async def _quick_analyze_text_inner(text: str) -> dict:
     # Calculate calibrated score
     overall_score, confidence = _calculate_calibrated_score(results, text)
 
-    # Determine verdict based on calibrated score
-    if overall_score <= 35:
-        verdict = "clean"
-    elif overall_score <= 65:
-        verdict = "mixed"
-    else:
-        verdict = "ai"
+    verdict = quick_verdict(overall_score)
 
     elapsed_ms = (time.perf_counter() - start_time) * 1000
 
@@ -1039,14 +1051,8 @@ async def paragraph_analyze(text: str) -> dict:
         overall_score = 0
 
     overall_score = round(overall_score, 1)
-    ai_count = sum(1 for p in para_results if p["score"] > 65)
-
-    if overall_score <= 35:
-        overall_verdict = "clean"
-    elif overall_score <= 65:
-        overall_verdict = "mixed"
-    else:
-        overall_verdict = "ai"
+    ai_count = sum(1 for p in para_results if p["score"] > QUICK_AI_MIN)
+    overall_verdict = quick_verdict(overall_score)
 
     elapsed_ms = (time.perf_counter() - start_time) * 1000
 
