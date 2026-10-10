@@ -1,8 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="SlopTotal">
-  <!-- The score dial in ink: clean half, slop half in the red pen, needle reading into the red.
-       Shapes checked at 16 px; no pivot dot, it merges with the needle at that size. -->
-  <rect width="32" height="32" rx="7" fill="#1a1814"/>
-  <path d="M5.5 22.5A10.5 10.5 0 0 1 16 12" fill="none" stroke="#f3efe6" stroke-opacity=".55" stroke-width="4.6" stroke-linecap="round"/>
-  <path d="M16 12A10.5 10.5 0 0 1 26.5 22.5" fill="none" stroke="#e0533b" stroke-width="4.6" stroke-linecap="round"/>
-  <path d="M15 24L22 15" stroke="#f3efe6" stroke-width="3.2" stroke-linecap="round"/>
+  <!-- The score dial: clean half, slop half in the red pen, needle reading into the red.
+       Ink tile on light tab bars, paper tile on dark ones. Scaled up and lifted so the
+       dial is optically centred; checked at 16 px (no pivot dot: it merges with the needle). -->
+  <style>
+    .tile { fill: #1a1814; } .clean { stroke: #f3efe6; stroke-opacity: .5; } .needle { stroke: #f3efe6; }
+    @media (prefers-color-scheme: dark) {
+      .tile { fill: #f3efe6; } .clean { stroke: #1a1814; stroke-opacity: .35; } .needle { stroke: #1a1814; }
+    }
+  </style>
+  <rect class="tile" width="32" height="32" rx="7"/>
+  <g transform="translate(16 18.2) scale(1.16) translate(-16 -18.6)">
+    <path class="clean" d="M5.5 22.5A10.5 10.5 0 0 1 16 12" fill="none" stroke-width="4.4" stroke-linecap="round"/>
+    <path d="M16 12A10.5 10.5 0 0 1 26.5 22.5" fill="none" stroke="#e0533b" stroke-width="4.4" stroke-linecap="round"/>
+    <path class="needle" d="M15 24L22 15" stroke-width="3.2" stroke-linecap="round"/>
+  </g>
 </svg>
