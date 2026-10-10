@@ -4,55 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}SlopTotal{% endblock %}</title>
-    <meta name="description" content="{% block meta_description %}Free AI content detector. Analyse any text or URL with 23 independent detection engines running locally. No data sent to third parties.{% endblock %}">
-    <meta name="theme-color" content="#1a1a18">
-    <link rel="canonical" href="{% block canonical %}https://sloptotal.com{% endblock %}">
-    <meta property="og:title" content="{% block og_title %}SlopTotal — AI Content Forensics{% endblock %}">
-    <meta property="og:description" content="Scan suspicious text with 23 detection engines. Free, local, private.">
-    <meta property="og:type" content="website">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Instrument+Serif:ital@0;1&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
+    <meta name="description" content="{% block meta_description %}Self-hosted AI text detector. {{ engine_count }} open detection engines run on this server; nothing is sent to third parties.{% endblock %}">
+    <meta name="theme-color" content="#101f4d" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0e1a3e" media="(prefers-color-scheme: dark)">
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+    <meta name="robots" content="noindex">
+    <link rel="preload" href="/static/fonts/ibm-plex-sans.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/static/fonts/fonts.css">
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/system.css">
+    <link rel="stylesheet" href="/static/css/app.css">
 </head>
-<body>
-    <header>
-        <div class="header-inner">
-            <a href="/" class="logo" aria-label="SlopTotal home">
-                <span class="logo-slop">SLOP</span><span class="logo-total">TOTAL</span>
+<body class="st-root">
+    <header class="st-header">
+        <div class="st-header__inner">
+            <a href="/" class="st-logo" aria-label="SlopTotal home">
+                <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path class="st-logo__drop" d="M16 2.5C16 2.5 6 13.8 6 20a10 10 0 0 0 20 0C26 13.8 16 2.5 16 2.5Z"/><rect class="st-logo__scan" x="1.5" y="17.5" width="29" height="2.6" rx="1.3"/></svg>
+                <span class="st-logo__word"><b>Slop</b>Total</span>
             </a>
-            <nav class="header-nav" aria-label="Main">
-                <span class="nav-stat"><strong>23</strong> engines</span>
-                <span class="nav-divider"></span>
-                <span class="nav-stat">local analysis</span>
-                <span class="nav-divider"></span>
-                <span class="nav-stat">free &amp; private</span>
+            <nav class="st-header__nav" aria-label="Main">
+                <a href="/"{% if request.url.path == "/" %} aria-current="page"{% endif %}>Detector</a>
+                <a href="/docs">API</a>
+                <a href="https://github.com/pablocaeg/sloptotal" class="hide-sm">GitHub</a>
             </nav>
         </div>
     </header>
-    <div class="ticker" id="ticker" aria-label="Recent scans" style="display:none;">
-        <div class="ticker-label">
-            <span class="ticker-dot"></span>
-            Recent
-        </div>
-        <div class="ticker-track">
-            <div class="ticker-scroll" id="ticker-scroll"></div>
-        </div>
-    </div>
     <main>
         {% block content %}{% endblock %}
     </main>
-    <footer>
-        <div class="footer-inner">
-            <span class="footer-brand">SlopTotal</span>
-            <span class="footer-sep">&mdash;</span>
-            <span>23 independent detection engines</span>
-            <span class="footer-sep">&mdash;</span>
-            <span>all analysis runs locally on our servers</span>
-            <span class="footer-sep">&mdash;</span>
-            <span>&copy; 2025&ndash;2026</span>
+    <footer class="st-footer">
+        <div class="footer-line">
+            <span>Self-hosted SlopTotal. Every engine runs on this server; no text is sent to third parties.</span>
+            <span><a href="https://github.com/pablocaeg/sloptotal">Source</a> · MIT licence</span>
         </div>
     </footer>
-    <script src="/static/js/app.js"></script>
+    {% block scripts %}{% endblock %}
 </body>
 </html>

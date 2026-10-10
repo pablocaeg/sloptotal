@@ -1,98 +1,139 @@
 {% extends "base.html" %}
-{% block title %}Report {{ report.id }} — SlopTotal{% endblock %}
-{% block meta_description %}AI detection report for {{ report.id }}. Analysed with 21 engines.{% endblock %}
+{% block title %}Report {{ report.id }}: SlopTotal{% endblock %}
+{% block meta_description %}AI detection report {{ report.id }}, analysed with {{ report.engines_total }} engines.{% endblock %}
 {% block content %}
-<section class="report-header">
-    <div class="rh-gauge">
-        <svg class="gauge" viewBox="0 0 200 200" aria-hidden="true">
-            <circle class="gauge-track" cx="100" cy="100" r="85" />
-            <circle class="gauge-fill" id="gauge-fill" cx="100" cy="100" r="85"
-                    stroke-dasharray="0 534" data-score="0" />
-        </svg>
-        <div class="gauge-center">
-            <span class="gauge-number" id="gauge-number" data-score="0">0</span>
-            <span class="gauge-of">/&thinsp;100</span>
+<div class="band report-band">
+    <div class="measure">
+        <div class="report-head">
+            <div>
+                <h1>Report</h1>
+                <p class="report-status" aria-live="polite">
+                    <span class="report-status__dot is-live" id="status-dot" aria-hidden="true"></span>
+                    <span id="status-label">Scanning&hellip;</span>
+                    <span>&middot; <span id="report-date" data-created="{{ report.created_at.isoformat() }}"></span></span>
+                </p>
+            </div>
+            <div class="report-head__actions">
+                <button type="button" class="st-btn st-btn--secondary" id="copy-btn">Copy link</button>
+                <a class="st-btn st-btn--ghost" href="/api/report/{{ report.id }}" download="sloptotal-{{ report.id }}.json">Download JSON</a>
+                <a href="/" class="st-btn st-btn--primary">New scan</a>
+            </div>
         </div>
     </div>
-    <div class="rh-info">
-        <div class="rh-status" id="scan-status">
-            <span class="status-dot scanning"></span>
-            <span class="status-label">Scanning&hellip;</span>
-        </div>
-        <h1 class="verdict-text" id="verdict-text">Awaiting results</h1>
-        <p class="flagged-count" id="flagged-count">
-            <strong>0</strong> / {{ report.engines_total }} engines completed
-        </p>
-        <div class="meta-pills">
-            <span class="pill">{{ report.word_count }} words</span>
-            <span class="pill">{{ report.source_type|upper }}</span>
-            <span class="pill pill-id">{{ report.id }}</span>
-        </div>
-    </div>
-</section>
-
-{% if report.source_type == "url" %}
-<div class="source-url">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6.5 11.5L3.7 11.5a3.2 3.2 0 010-6.4h2.8M9.5 4.5h2.8a3.2 3.2 0 010 6.4H9.5M5.3 8h5.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-    {{ report.source }}
 </div>
-<section class="site-check" id="site-check" data-url="{{ report.source }}" aria-labelledby="site-heading" hidden>
-    <h2 id="site-heading" class="site-label">Site fingerprints</h2>
-    <p class="site-verdict"></p>
-    <ul class="site-evidence"></ul>
-    <p class="site-note">Checks for markers left by AI app builders (Lovable, v0, Bolt, Base44, Replit, Same). No marker does not mean hand-written code.</p>
-</section>
-{% endif %}
 
-<section class="engine-results" aria-labelledby="breakdown-heading">
-    <div class="section-header">
-        <h2 id="breakdown-heading">Engine Breakdown</h2>
-        <span class="progress-text" id="progress-text">0 / {{ report.engines_total }}</span>
-    </div>
-    <div class="results-list" id="engine-tbody">
-        {% for key, name, desc in engines %}
-        <div id="row-{{ key }}" class="engine-row engine-row-pending">
-            <div class="er-identity">
-                <span class="er-code">{{ key|upper }}</span>
-                <div class="er-names">
-                    <span class="engine-name">{{ name }}</span>
-                    <span class="engine-desc">{{ desc }}</span>
+<div class="measure report">
+    <section class="st-panel">
+        <div class="st-readout">
+            <div class="st-readout__head">
+                <div class="st-readout__score">
+                    <span class="st-readout__value" id="score-value">0.0</span>
+                    <span class="st-readout__max">/ 100</span>
+                </div>
+                <span class="st-verdict" id="verdict" hidden></span>
+            </div>
+            <div class="st-scale" id="scale" style="--score: 0" aria-hidden="true">
+                <div class="st-scale__track">
+                    <span class="st-scale__band st-scale__band--clean"></span>
+                    <span class="st-scale__band st-scale__band--low"></span>
+                    <span class="st-scale__band st-scale__band--suspicious"></span>
+                    <span class="st-scale__band st-scale__band--likely"></span>
+                    <span class="st-scale__band st-scale__band--slop"></span>
+                    <span class="st-scale__marker"></span>
+                </div>
+                <div class="st-scale__ticks">
+                    <span style="inset-inline-start: 0%">0</span>
+                    {% for b in bands %}<span style="inset-inline-start: {{ b }}%">{{ b|int }}</span>{% endfor %}
+                    <span style="inset-inline-start: 100%">100</span>
                 </div>
             </div>
-            <div class="er-result">
-                <span class="verdict-badge verdict-badge-pending" id="verdict-{{ key }}">
-                    <span class="mini-spinner"></span>
-                    PENDING
-                </span>
-                <div class="score-bar-container">
-                    <div class="score-bar" id="bar-{{ key }}" style="width: 0%"></div>
-                </div>
-                <span class="score-value" id="score-{{ key }}">&mdash;</span>
-            </div>
-            <div class="er-details details-cell" id="details-{{ key }}">
-                <span class="waiting-text">waiting&hellip;</span>
-            </div>
+            <p class="st-readout__summary" id="summary">0 of {{ report.engines_total }} engines finished.</p>
+            <ul class="st-readout__facts">
+                <li><b>{{ "{:,}".format(report.word_count) }}</b> word{{ "" if report.word_count == 1 else "s" }}</li>
+                {% if report.source_type == "url" %}<li class="report-source">{{ report.source }}</li>{% else %}<li>Pasted text</li>{% endif %}
+            </ul>
+        </div>
+    </section>
+
+    {% if notes %}
+    <div class="report-notes">
+        {% for note in notes %}
+        <div class="st-notice st-notice--warn">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M10 9v4.5M10 6.25v.01"/></svg>
+            <div>{{ note }}</div>
         </div>
         {% endfor %}
     </div>
-</section>
+    {% endif %}
 
-<section class="text-excerpt" aria-labelledby="excerpt-heading">
-    <h2 id="excerpt-heading">Analysed Text</h2>
-    <div class="excerpt-box">{{ report.text_excerpt }}</div>
-</section>
+    <section class="st-panel feedback" id="feedback" aria-labelledby="feedback-title" hidden>
+        <h2 class="feedback__title" id="feedback-title">Who actually wrote this text?</h2>
+        <p class="feedback__body">Your answer is saved on this server with the engine scores, never with your text, and shows where the engines go wrong.</p>
+        <div class="feedback__row">
+            <button type="button" class="st-btn st-btn--secondary" data-label="human" aria-pressed="false">A person</button>
+            <button type="button" class="st-btn st-btn--secondary" data-label="ai" aria-pressed="false">AI</button>
+            <button type="button" class="st-btn st-btn--secondary" data-label="mixed" aria-pressed="false">AI, edited by a person</button>
+            <button type="button" class="st-btn st-btn--secondary" data-label="unsure" aria-pressed="false">Not sure</button>
+        </div>
+        <p class="feedback__body" id="feedback-status" aria-live="polite"></p>
+    </section>
 
-<div class="report-actions">
-    <a href="/" class="btn btn-ghost">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        New Scan
-    </a>
-    <button class="btn btn-ghost" id="copy-btn">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M11 3H4.5A1.5 1.5 0 003 4.5V11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        Copy Link
-    </button>
+    {% if report.source_type == "url" %}
+    <section class="st-panel site-result" id="site-check" data-url="{{ report.source }}" aria-labelledby="site-heading" hidden>
+        <h2 class="report-section__title" id="site-heading">Website builder</h2>
+        <p class="site-result__verdict" id="site-verdict"></p>
+        <ul class="site-result__evidence" id="site-evidence"></ul>
+        <p class="site-result__note">Evidence, not a probability: finding no marker does not mean the site was built by hand.</p>
+    </section>
+    {% endif %}
+
+    <section class="report-section" aria-labelledby="breakdown-heading">
+        <div class="report-section__head">
+            <h2 id="breakdown-heading">Every engine's score</h2>
+            <span class="report-section__count" id="progress">0 / {{ report.engines_total }}</span>
+        </div>
+        <div class="st-panel st-panel--flush">
+            <table class="st-engines">
+                <thead>
+                    <tr>
+                        <th scope="col">Engine</th>
+                        <th scope="col" class="st-engine__family">Method</th>
+                        <th scope="col">AI likelihood</th>
+                        <th scope="col" style="text-align: end">Score</th>
+                    </tr>
+                </thead>
+                <tbody id="engine-rows">
+                    {% for eng in engines %}
+                    <tr id="row-{{ eng.key }}" data-score="-1">
+                        <td>
+                            {% if eng.url %}<a class="st-engine__name report-engine-link" href="{{ eng.url }}" target="_blank" rel="noopener noreferrer">{{ eng.name }}</a>{% else %}<span class="st-engine__name">{{ eng.name }}</span>{% endif %}
+                            <span class="st-engine__model">{{ eng.description }}</span>
+                        </td>
+                        <td class="st-engine__family">{{ eng.engine_type }}</td>
+                        <td style="width: 38%"><span class="st-engine__bar" id="bar-{{ eng.key }}" style="--v: 0"><i></i></span></td>
+                        <td class="st-engine__score st-engine__pending" id="score-{{ eng.key }}">Waiting</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="report-section">
+        <details class="report-text">
+            <summary>
+                <h2>The analysed text</h2>
+                <span class="report-section__count">{{ "{:,}".format(report.word_count) }} words</span>
+            </summary>
+            <div class="report-text__body">{{ report.text_excerpt }}</div>
+        </details>
+    </section>
 </div>
 
-<div id="report-data" data-report-id="{{ report.id }}" data-engines-total="{{ report.engines_total }}" data-bands="{{ bands|join(',') }}" style="display:none;"></div>
-<script src="/static/js/report.js"></script>
+<div id="report-data" hidden
+     data-report-id="{{ report.id }}"
+     data-engines-total="{{ report.engines_total }}"
+     data-bands="{{ bands|join(',') }}"
+     data-verdicts="{{ band_info|map(attribute='label')|join('|') }}"></div>
 {% endblock %}
+{% block scripts %}<script src="/static/js/report.js"></script>{% endblock %}

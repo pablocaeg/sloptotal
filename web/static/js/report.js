@@ -1,13 +1,15 @@
-(function() {
-    var container = document.getElementById("report-data");
-    if (!container) return;
+(function () {
+    var data = document.getElementById("report-data");
+    if (!data) return;
 
-    var reportId = container.dataset.reportId;
-    var totalEngines = parseInt(container.dataset.enginesTotal, 10);
-    var completed = 0;
-    // Verdict band edges come from app/config.py via the template, so colours
-    // always agree with the verdict text the server computed.
-    var bands = (container.dataset.bands || "30,45,55,80").split(",").map(Number);
+    var reportId = data.dataset.reportId;
+    var total = parseInt(data.dataset.enginesTotal, 10);
+    // Band edges and verdict names come from app/config.py via the template,
+    // so the colours always agree with the verdict the server computed.
+    var bands = (data.dataset.bands || "30,45,55,80").split(",").map(Number);
+    var verdicts = (data.dataset.verdicts || "").split("|");
+    var BANDS = ["clean", "low", "suspicious", "likely", "slop"];
+    var done = 0;
 
     function bandIndex(score) {
         for (var i = 0; i < bands.length; i++) {
@@ -16,140 +18,134 @@
         return bands.length;
     }
 
-    function getScoreColor(score) {
-        return ["var(--c-clean)", "var(--c-low)", "var(--c-warn)", "var(--c-danger)", "var(--c-slop)"][bandIndex(score)];
+    function setScore(score, flagged, finished) {
+        var b = bandIndex(score);
+        document.getElementById("score-value").textContent = score.toFixed(1);
+        document.getElementById("scale").style.setProperty("--score", score);
+        document.querySelectorAll(".st-scale__band").forEach(function (el, i) {
+            if (i === b) el.setAttribute("data-active", "");
+            else el.removeAttribute("data-active");
+        });
+        var badge = document.getElementById("verdict");
+        badge.className = "st-verdict st-verdict--" + BANDS[b];
+        badge.textContent = verdicts[b] || "";
+        badge.hidden = false;
+        document.getElementById("summary").textContent = finished
+            ? flagged + " of " + total + " engines flag this text on their own. The score weighs each engine by how accurate it measured."
+            : done + " of " + total + " engines finished.";
     }
 
-    function getBarColor(score) {
-        if (score < 0.4) return "var(--c-clean)";
-        if (score < 0.65) return "var(--c-warn)";
-        return "var(--c-slop)";
-    }
-
-    function getVerdictClass(score) {
-        return ["verdict-clean", "verdict-low", "verdict-suspicious", "verdict-likely", "verdict-slop"][bandIndex(score)];
-    }
-
-    function updateGauge(overall) {
-        var fill = document.getElementById("gauge-fill");
-        var num = document.getElementById("gauge-number");
-        var dashLen = (overall / 100) * 534;
-        fill.style.strokeDasharray = dashLen + " 534";
-        fill.style.stroke = getScoreColor(overall);
-        num.textContent = overall.toFixed(1);
-        num.style.color = getScoreColor(overall);
-    }
-
-    function updateVerdict(data) {
-        var el = document.getElementById("verdict-text");
-        el.textContent = data.overall_verdict;
-        el.className = "verdict-text " + getVerdictClass(data.overall_score);
-
-        var fc = document.getElementById("flagged-count");
-        if (data.done) {
-            fc.innerHTML = "<strong>" + data.engines_flagged + "</strong> / " + data.engines_total + " engines flagged this content";
-        } else {
-            fc.innerHTML = "<strong>" + data.engines_done + "</strong> / " + data.engines_total + " engines completed";
-        }
-    }
-
-    function setDone() {
-        var status = document.getElementById("scan-status");
-        status.innerHTML = '<span class="status-dot done"></span><span class="status-label">Complete</span>';
-        document.getElementById("progress-text").textContent = totalEngines + " / " + totalEngines;
-        document.body.classList.add("scan-complete");
-    }
-
-    function updateEngineRow(data) {
-        var row = document.getElementById("row-" + data.key);
+    function setRow(key, score, details) {
+        var row = document.getElementById("row-" + key);
         if (!row) return;
-
-        row.classList.remove("engine-row-pending");
-        row.classList.add("engine-row-done");
-
-        var badge = document.getElementById("verdict-" + data.key);
-        badge.className = "verdict-badge verdict-badge-" + data.verdict;
-        badge.textContent = data.verdict.toUpperCase();
-
-        var bar = document.getElementById("bar-" + data.key);
-        var pct = (data.score * 100).toFixed(1);
-        bar.style.width = pct + "%";
-        bar.style.background = getBarColor(data.score);
-
-        var scoreEl = document.getElementById("score-" + data.key);
-        scoreEl.textContent = pct + "%";
-
-        var details = document.getElementById("details-" + data.key);
-        details.textContent = data.details;
+        var v = score * 100;
+        var bar = document.getElementById("bar-" + key);
+        bar.style.setProperty("--v", v.toFixed(1));
+        bar.dataset.band = BANDS[bandIndex(v)];
+        var cell = document.getElementById("score-" + key);
+        cell.textContent = v.toFixed(1);
+        cell.classList.remove("st-engine__pending");
+        if (details) row.title = details;
+        if (row.dataset.score === "-1") done++;
+        row.dataset.score = v;
+        sortRows();
+        document.getElementById("progress").textContent = done + " / " + total;
     }
 
-    var evtSource = new EventSource("/api/stream/" + reportId);
+    function sortRows() {
+        var body = document.getElementById("engine-rows");
+        Array.prototype.slice.call(body.rows)
+            .sort(function (a, b) { return parseFloat(b.dataset.score) - parseFloat(a.dataset.score); })
+            .forEach(function (row) { body.appendChild(row); });
+    }
 
-    evtSource.onmessage = function(event) {
-        var data = JSON.parse(event.data);
+    function finish(report) {
+        var dot = document.getElementById("status-dot");
+        dot.classList.remove("is-live");
+        document.getElementById("status-label").textContent = "Complete";
+        if (report) setScore(report.overall_score, report.engines_flagged, true);
+        document.getElementById("feedback").hidden = false;
+    }
 
-        if (data.done) {
-            evtSource.close();
-            setDone();
-            fetch("/api/report/" + reportId)
-                .then(function(r) { return r.json(); })
-                .then(function(report) {
-                    updateGauge(report.overall_score);
-                    var el = document.getElementById("verdict-text");
-                    el.textContent = report.overall_verdict;
-                    el.className = "verdict-text " + getVerdictClass(report.overall_score);
-                    var fc = document.getElementById("flagged-count");
-                    fc.innerHTML = "<strong>" + report.engines_flagged + "</strong> / " + report.engines_total + " engines flagged this content";
-                });
+    function loadReport() {
+        return fetch("/api/report/" + reportId)
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .catch(function () { return null; });
+    }
+
+    var date = document.getElementById("report-date");
+    if (date && date.dataset.created) {
+        var iso = date.dataset.created;
+        var d = new Date(/Z|[+-]\d\d:\d\d$/.test(iso) ? iso : iso + "Z");
+        date.textContent = d.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+    }
+
+    var stream = new EventSource("/api/stream/" + reportId);
+    stream.onmessage = function (event) {
+        var msg = JSON.parse(event.data);
+        if (msg.done) {
+            stream.close();
+            loadReport().then(finish);
             return;
         }
-
-        completed++;
-        updateEngineRow(data);
-        updateGauge(data.overall_score);
-        updateVerdict(data);
-        document.getElementById("progress-text").textContent = completed + " / " + totalEngines;
+        setRow(msg.key, msg.score, msg.details);
+        setScore(msg.overall_score, msg.engines_flagged, false);
+    };
+    stream.onerror = function () {
+        stream.close();
+        loadReport().then(finish);
     };
 
-    evtSource.onerror = function() {
-        evtSource.close();
-        setDone();
-    };
-
-    document.getElementById("copy-btn").addEventListener("click", function() {
-        navigator.clipboard.writeText(window.location.href);
-        this.querySelector("svg").style.display = "none";
-        var orig = this.childNodes[this.childNodes.length - 1];
-        var oldText = orig.textContent;
-        orig.textContent = " Copied!";
-        var btn = this;
-        setTimeout(function() {
-            btn.querySelector("svg").style.display = "";
-            orig.textContent = oldText;
-        }, 2000);
+    // ---- Copy link ----
+    var copy = document.getElementById("copy-btn");
+    copy.addEventListener("click", function () {
+        navigator.clipboard.writeText(window.location.href).then(function () {
+            copy.textContent = "Copied";
+            setTimeout(function () { copy.textContent = "Copy link"; }, 2000);
+        });
     });
 
-    // ---- Site fingerprints (URL reports only) ----
-    var siteCard = document.getElementById("site-check");
-    if (siteCard) {
+    // ---- Feedback: who wrote this text? ----
+    var feedback = document.getElementById("feedback");
+    var status = document.getElementById("feedback-status");
+    feedback.querySelectorAll("[data-label]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            fetch("/api/report/" + reportId + "/feedback", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ label: btn.dataset.label }),
+            })
+                .then(function (r) {
+                    if (!r.ok) throw new Error();
+                    feedback.querySelectorAll("[data-label]").forEach(function (b) {
+                        b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+                    });
+                    status.textContent = "Thanks, your answer is saved.";
+                })
+                .catch(function () { status.textContent = "Could not save your answer. Please try again."; });
+        });
+    });
+
+    // ---- Website builder markers (URL reports only) ----
+    var site = document.getElementById("site-check");
+    if (site) {
         fetch("/api/scan/site", {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({url: siteCard.dataset.url, include_text: false})
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: site.dataset.url, include_text: false }),
         })
-            .then(function(r) { return r.ok ? r.json() : null; })
-            .then(function(d) {
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (d) {
                 if (!d || !d.site) return;
                 var s = d.site;
-                var title = siteCard.querySelector(".site-verdict");
-                title.textContent = s.verdict;
-                siteCard.classList.toggle("site-found", s.builders.length > 0);
-                var list = siteCard.querySelector(".site-evidence");
-                list.innerHTML = "";
-                s.builders.forEach(function(b) {
-                    b.evidence.forEach(function(ev) {
+                var names = s.builders.map(function (b) { return b.name; });
+                document.getElementById("site-verdict").textContent = s.verdict;
+                var list = document.getElementById("site-evidence");
+                list.textContent = "";
+                s.builders.forEach(function (b) {
+                    b.evidence.forEach(function (ev) {
                         var li = document.createElement("li");
-                        li.textContent = b.name + ": " + ev;
+                        li.textContent = (names.length > 1 ? b.name + ": " : "") + ev;
                         list.appendChild(li);
                     });
                 });
@@ -158,8 +154,8 @@
                     li.textContent = "Generator tag: " + s.generator;
                     list.appendChild(li);
                 }
-                siteCard.hidden = false;
+                site.hidden = false;
             })
-            .catch(function() {});
+            .catch(function () {});
     }
 })();
