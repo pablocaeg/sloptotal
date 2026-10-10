@@ -25,7 +25,7 @@ Instead of one number from one model, it shows you every model's opinion, and
 it publishes how accurate that is, failures included.
 
 <p align="center">
-  <img src="docs/assets/demo.gif" alt="Pasting AI-written text into SlopTotal and watching 23 detection engines report in real time" width="820">
+  <img src="docs/assets/demo.gif" alt="Trying the sample text on sloptotal.com: the calibrated score, the verdict band and every engine’s vote" width="820">
 </p>
 
 **Try it:** [sloptotal.com](https://sloptotal.com) · **Run it:** `docker run -p 8000:8000 ghcr.io/pablocaeg/sloptotal`
@@ -118,7 +118,7 @@ python scripts/smoke_test.py          # against http://localhost:8000
 ## Site check: detect sites built with AI app builders
 
 <p align="center">
-  <img src="docs/assets/site-check.jpg" alt="SlopTotal Site check identifying a website built with Lovable from its asset paths and scripts" width="760">
+  <img src="docs/assets/site-check.jpg" alt="SlopTotal’s website builder check identifying a site built with Lovable from its hosting, badge and scripts" width="760">
 </p>
 
 "Is this website vibe-coded?" checkers mostly score style (Tailwind class
@@ -225,29 +225,36 @@ The linguistic heuristics are weak on their own. They are kept because they fail
 
 ## Scoring
 
-The final score is **calibrated**, not a simple average, and every weight is
-derived from measurement rather than intuition. See
-[tests/eval/FINDINGS.md](tests/eval/FINDINGS.md) and
-[sloptotal.com/detect/ai-detector-ensemble/](https://sloptotal.com/detect/ai-detector-ensemble/).
+The overall score is a logistic model over the engine scores, fitted on
+[SlopBench](tests/eval/slopbench/). The fitted parameters are in
+[app/calibration.json](app/calibration.json), and every number in the fit's
+report, [tests/eval/slopbench/FINDINGS.md](tests/eval/slopbench/FINDINGS.md), is
+measured on kinds of writing the fit never saw.
 
-1. **Anchored on the unbiased classifiers** -- Desklib, SuperAnnotate, E5 and
-   ReMoDetect all score high AUC with no measurable bias against older prose.
-   Their consensus is blended 60/40 with the full weighted set.
-2. **Weights from measurement** -- each engine's share is proportional to
-   Somers' D (2*AUC - 1), scaled down by any bias it shows against archaic
-   writing. RAID-trained engines are damped because our corpus is RAID.
-3. **Confidence from agreement** -- a tight cluster across independent engine
-   families is trustworthy; one confident engine is not.
-4. **Skepticism, but only when earned** -- unanimous high classifier scores are
-   damped *only* when the text itself carries human markers (contractions,
-   first-person, slang). Applied unconditionally it fired on 69 of 70 AI samples
-   and 0 of 66 human ones, suppressing correct detections.
+1. **Weights from a fit, not by hand.** Each engine's score is turned into
+   log-odds and weighted by the model, with weights kept non-negative. An engine
+   earns weight only for what it adds once the others are known, so engines that
+   fail together do not count twice. In English, 8 of the 23 engines carry
+   weight (Structural, Desklib, Fakespot, SuperAnnotate, Formulaic, Readability,
+   Binoculars and Burstiness). The other 15 add nothing on top of them, and every
+   one is still shown in the report.
+2. **Bands set on human text.** The output is mapped so that 45 is where the top
+   5% of human texts begin, 55 the top 2% and 80 the top 0.5%.
+3. **Short texts held back.** Short English texts are pulled toward a neutral
+   score by `words / (words + 5)`; other languages use a fitted short-text term.
+   Scripts written without spaces (Chinese, Japanese, Thai and others) skip it.
+4. **Other languages.** A separate fit with a per-language offset, placed so 5%
+   of human text scores above 45, and a support status: supported for German,
+   Spanish, French, Italian, Japanese, Dutch, Polish, Portuguese and Russian;
+   experimental for Arabic and Korean; not yet reliable for Hindi, Turkish and
+   Chinese.
+5. **Confidence from the score.** Low under 80 words, in a language that is not
+   yet reliable, or between 35 and 65; medium in an experimental language or
+   between 15 and 80; high otherwise.
 
-Fakespot was previously the anchor, weighted 0.13. It is accurate on modern text
-(AUC 0.999) but scored pre-1920 human prose at 0.645 against 0.112 for modern
-human writing -- the largest bias of any engine -- and anchoring amplified it.
-Machiavelli scored 62.5. After demotion to 0.033, literary passages average 10.2
-and none is flagged.
+Up to v1.1 the score was a hand-weighted blend anchored on four classifiers.
+[tests/eval/FINDINGS.md](tests/eval/FINDINGS.md) keeps that history, including
+the Fakespot bias against pre-1920 prose that led to it.
 
 ## Configuration
 
