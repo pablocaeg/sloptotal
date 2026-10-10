@@ -1,0 +1,164 @@
+/* SlopTotal design tokens (light, dark, spacing, type). Kept in step with sloptotal.com. */
+:root, [data-theme="light"] {
+  --bg: #fcfcfd;
+  --surface: #f6f7f9;
+  --surface-raised: #ffffff;
+  --surface-hover: #eff0f3;
+  --border: #dfe0e6;
+  --border-control: #8b8d98;
+  --text: #1c2024;
+  --text-muted: #60646c;
+  --ink: #1c2024;
+  --on-ink: #fcfcfd;
+  --link: #1f4ed8;
+  --focus: #1f4ed8;
+  --accent-soft: #e9edfb;
+  --brand: #1f4ed8;
+  --brand-hover: #1a42b8;
+  --brand-soft: #e9edfb;
+  --on-brand: #ffffff;
+  --night: #101f4d;
+  --night-hover: #23315b;
+  --night-line: #364369;
+  --night-text: #ffffff;
+  --night-muted: #c1c5d1;
+  --night-accent: #7d98e8;
+  --verdict-clean-text: #1b7a4f;
+  --verdict-clean-fill: #2b9a66;
+  --verdict-clean-soft: #e9f6ee;
+  --verdict-low-text: #4f7a28;
+  --verdict-low-fill: #6c9a35;
+  --verdict-low-soft: #eff5e3;
+  --verdict-suspicious-text: #9a5b00;
+  --verdict-suspicious-fill: #b88000;
+  --verdict-suspicious-soft: #fdf3d8;
+  --verdict-likely-text: #b54400;
+  --verdict-likely-fill: #e05a12;
+  --verdict-likely-soft: #fdeedf;
+  --verdict-slop-text: #ce2c31;
+  --verdict-slop-fill: #dc3e42;
+  --verdict-slop-soft: #fdebec;
+  --shadow-popover: 0 8px 24px rgba(28,32,36,0.12), 0 1px 2px rgba(28,32,36,0.08);
+}
+[data-theme="dark"] {
+  --bg: #111113;
+  --surface: #18191b;
+  --surface-raised: #1f2023;
+  --surface-hover: #26282b;
+  --border: #2f3236;
+  --border-control: #6c717a;
+  --text: #edeef0;
+  --text-muted: #b0b4ba;
+  --ink: #edeef0;
+  --on-ink: #111113;
+  --link: #8aa6f5;
+  --focus: #8aa6f5;
+  --accent-soft: #16224a;
+  --brand: #8aa6f5;
+  --brand-hover: #a3b9f7;
+  --brand-soft: #16224a;
+  --on-brand: #0b1024;
+  --night: #0e1a3e;
+  --night-hover: #1d2a52;
+  --night-line: #353f5d;
+  --night-text: #ffffff;
+  --night-muted: #c1c5d1;
+  --night-accent: #8aa6f5;
+  --verdict-clean-text: #3dd68c;
+  --verdict-clean-fill: #30a46c;
+  --verdict-clean-soft: #132d21;
+  --verdict-low-text: #a9d66a;
+  --verdict-low-fill: #8fbf4a;
+  --verdict-low-soft: #1d2914;
+  --verdict-suspicious-text: #ffca16;
+  --verdict-suspicious-fill: #e8b024;
+  --verdict-suspicious-soft: #302008;
+  --verdict-likely-text: #ff8b3e;
+  --verdict-likely-fill: #f76b15;
+  --verdict-likely-soft: #331e0b;
+  --verdict-slop-text: #ff9592;
+  --verdict-slop-fill: #e5484d;
+  --verdict-slop-soft: #3b1219;
+  --shadow-popover: 0 8px 24px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.4);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111113;
+    --surface: #18191b;
+    --surface-raised: #1f2023;
+    --surface-hover: #26282b;
+    --border: #2f3236;
+    --border-control: #6c717a;
+    --text: #edeef0;
+    --text-muted: #b0b4ba;
+    --ink: #edeef0;
+    --on-ink: #111113;
+    --link: #8aa6f5;
+    --focus: #8aa6f5;
+    --accent-soft: #16224a;
+    --brand: #8aa6f5;
+    --brand-hover: #a3b9f7;
+    --brand-soft: #16224a;
+    --on-brand: #0b1024;
+    --night: #0e1a3e;
+    --night-hover: #1d2a52;
+    --night-line: #353f5d;
+    --night-text: #ffffff;
+    --night-muted: #c1c5d1;
+    --night-accent: #8aa6f5;
+    --verdict-clean-text: #3dd68c;
+    --verdict-clean-fill: #30a46c;
+    --verdict-clean-soft: #132d21;
+    --verdict-low-text: #a9d66a;
+    --verdict-low-fill: #8fbf4a;
+    --verdict-low-soft: #1d2914;
+    --verdict-suspicious-text: #ffca16;
+    --verdict-suspicious-fill: #e8b024;
+    --verdict-suspicious-soft: #302008;
+    --verdict-likely-text: #ff8b3e;
+    --verdict-likely-fill: #f76b15;
+    --verdict-likely-soft: #331e0b;
+    --verdict-slop-text: #ff9592;
+    --verdict-slop-fill: #e5484d;
+    --verdict-slop-soft: #3b1219;
+    --shadow-popover: 0 8px 24px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.4);
+  }
+}
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 48px;
+  --space-9: 64px;
+  --space-10: 96px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-full: 999px;
+  --width-text: 680px;
+  --width-page: 1120px;
+  --header-height: 56px;
+  --font-sans: "IBM Plex Sans", "Noto Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-wordmark: "Instrument Serif", Georgia, serif;
+  --font-wordmark-mono: "DM Mono", ui-monospace, monospace;
+}
+.display { font-family: var(--font-sans); font-size: 44px; line-height: 50px; font-weight: 600; letter-spacing: -0.022em; }
+.h1 { font-family: var(--font-sans); font-size: 32px; line-height: 40px; font-weight: 600; letter-spacing: -0.018em; }
+.h2 { font-family: var(--font-sans); font-size: 24px; line-height: 32px; font-weight: 600; letter-spacing: -0.012em; }
+.h3 { font-family: var(--font-sans); font-size: 18px; line-height: 26px; font-weight: 600; letter-spacing: -0.006em; }
+.body-lg { font-family: var(--font-sans); font-size: 18px; line-height: 28px; font-weight: 400; }
+.body { font-family: var(--font-sans); font-size: 16px; line-height: 26px; font-weight: 400; }
+.body-sm { font-family: var(--font-sans); font-size: 14px; line-height: 22px; font-weight: 400; }
+.label { font-family: var(--font-sans); font-size: 14px; line-height: 20px; font-weight: 500; }
+.caption { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.01em; }
+.score { font-family: var(--font-sans); font-size: 56px; line-height: 56px; font-weight: 600; letter-spacing: -0.03em; }
+.stat { font-family: var(--font-sans); font-size: 32px; line-height: 40px; font-weight: 600; letter-spacing: -0.025em; }
+.data { font-family: var(--font-mono); font-size: 14px; line-height: 20px; font-weight: 400; }
+.data-sm { font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 400; }
+.wordmark-slop { font-family: var(--font-wordmark); font-size: 26px; line-height: 26px; font-weight: 400; letter-spacing: 0.02em; font-style: italic; }
+.wordmark-total { font-family: var(--font-wordmark-mono); font-size: 13px; line-height: 13px; font-weight: 500; letter-spacing: 0.15em; }

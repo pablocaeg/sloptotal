@@ -1,265 +1,159 @@
 {% extends "base.html" %}
-{% block title %}SlopTotal — Free AI Content Detector | 23 Detection Engines{% endblock %}
-{% block meta_description %}Detect AI-generated text with 23 independent engines. Paste text or a URL for instant forensic analysis. Free, private, runs locally. No data sent to third parties.{% endblock %}
+{% block title %}SlopTotal: AI text detector{% endblock %}
 {% block content %}
-<section class="hero" aria-labelledby="hero-heading">
-    <div class="hero-badge">AI Content Forensics</div>
-    <h1 id="hero-heading">
-        <span class="hero-line-1">Analyse suspicious text</span>
-        <span class="hero-line-2">with <em>23 detection engines.</em></span>
-    </h1>
-    <p class="hero-sub">
-        Paste a URL or text. Get a detailed forensic report from 23 independent AI detectors
-        &mdash; statistical, neural, and linguistic &mdash; all running locally.
-    </p>
+<div class="band home-band">
+<section class="measure home-hero">
+    <h1 class="display">Is this text written by AI?</h1>
+    <p class="home-hero__lead">{{ engines|length }} open AI detectors read your text. You get one calibrated score and every engine's vote.</p>
 </section>
 
-{% if error %}
-<div class="error-banner" role="alert">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.5v4M8 10.5v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-    {{ error }}
-</div>
-{% endif %}
-
-<div id="queue-overlay" class="queue-overlay" style="display:none;" role="status" aria-live="polite">
-    <div class="queue-card">
-        <div class="queue-spinner-ring">
-            <svg class="queue-ring" viewBox="0 0 80 80">
-                <circle class="queue-ring-track" cx="40" cy="40" r="34" />
-                <circle class="queue-ring-fill" cx="40" cy="40" r="34" />
-            </svg>
-            <span class="queue-position" id="queue-position">1</span>
+<div class="measure">
+    <div id="tool-notice" class="tool-notice" role="alert"{% if not error %} hidden{% endif %}>
+        <div class="st-notice st-notice--warn">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M10 9v4.5M10 6.25v.01"/></svg>
+            <div id="tool-notice-text">{{ error }}</div>
         </div>
-        <div class="queue-info">
-            <h3 class="queue-title" id="queue-title">In the queue</h3>
-            <p class="queue-desc" id="queue-desc">Your analysis will start shortly.</p>
-            <div class="queue-meta">
-                <span class="queue-wait" id="queue-wait"></span>
-            </div>
-        </div>
-        <button type="button" class="queue-cancel" id="queue-cancel" title="Cancel">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </button>
-    </div>
-</div>
-
-<div class="input-card input-card--hero">
-    <div class="tabs" role="tablist">
-        <button class="tab active" data-tab="url-tab" role="tab" aria-selected="true" aria-controls="url-tab" id="tab-url">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6.5 11.5L3.7 11.5a3.2 3.2 0 010-6.4h2.8M9.5 4.5h2.8a3.2 3.2 0 010 6.4H9.5M5.3 8h5.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-            URL
-        </button>
-        <button class="tab" data-tab="text-tab" role="tab" aria-selected="false" aria-controls="text-tab" id="tab-text">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M3 7h10M3 10h7M3 13h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-            Text
-        </button>
-        <button class="tab" data-tab="site-tab" role="tab" aria-selected="false" aria-controls="site-tab" id="tab-site">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 6h12M5.5 9.5l-1 1 1 1M10.5 9.5l1 1-1 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Site check
-        </button>
-        <div class="tab-indicator"></div>
     </div>
 
-    <form id="analyze-form" method="post" action="/analyze">
-        <div id="url-tab" class="tab-content active" role="tabpanel" aria-labelledby="tab-url">
-            <label for="url-input" class="sr-only">URL to analyse</label>
-            <input type="url" name="url" id="url-input" placeholder="https://example.com/article"
-                   autocomplete="off" />
-        </div>
-        <div id="text-tab" class="tab-content" role="tabpanel" aria-labelledby="tab-text">
-            <label for="text-input" class="sr-only">Text to analyse</label>
-            <textarea name="text" id="text-input" rows="6"
-                      placeholder="Paste the text you want to analyse..."></textarea>
-            <div class="upload-row">
-                <label class="upload-btn" for="file-input">
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 11V3M4.5 6.5L8 3l3.5 3.5M3 13h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    Upload a file
-                </label>
-                <input type="file" id="file-input" accept=".pdf,.docx,.txt,.md" class="sr-only" />
-                <span class="upload-status" id="upload-status">PDF, Word (.docx) or plain text</span>
-            </div>
-        </div>
-        <div id="site-tab" class="tab-content" role="tabpanel" aria-labelledby="tab-site">
-            <label for="site-input" class="sr-only">Website to check</label>
-            <input type="text" id="site-input" placeholder="example.com"
-                   autocomplete="off" inputmode="url" />
-            <p class="site-tab-hint">Was it built with Lovable, v0, Bolt, Base44 or Replit? Checks the markers those builders leave, and scores the page copy if it has any.</p>
-        </div>
-        <div class="form-bottom">
-            <button type="submit" id="submit-btn">
-                <span class="btn-text">
-                    Run Analysis
-                    <svg class="btn-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </span>
-                <span class="btn-loading" style="display:none;">
-                    <span class="spinner"></span>
-                    Submitting&hellip;
-                </span>
+    <div class="st-tool">
+        <div class="st-tabs" role="tablist" aria-label="What to analyse">
+            <button type="button" class="st-tab" role="tab" id="tab-text" aria-controls="panel-text" aria-selected="true" data-tab="text">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M3 4h10M3 7h10M3 10h7M3 13h4"/></svg>Text
             </button>
-            <span class="form-hint">Free &amp; private. Every engine runs on this server; nothing is sent to third parties.</span>
+            <button type="button" class="st-tab" role="tab" id="tab-document" aria-controls="panel-document" aria-selected="false" tabindex="-1" data-tab="document">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M4 1.75h5.25L12.5 5v9.25h-8.5z"/><path d="M9 1.75V5.25h3.5"/></svg>Document
+            </button>
+            <button type="button" class="st-tab" role="tab" id="tab-url" aria-controls="panel-url" aria-selected="false" tabindex="-1" data-tab="url">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M6.5 11.5H3.7a3.2 3.2 0 010-6.4h2.8M9.5 4.5h2.8a3.2 3.2 0 010 6.4H9.5M5.3 8h5.4"/></svg>Web page
+            </button>
+            <button type="button" class="st-tab" role="tab" id="tab-site" aria-controls="panel-site" aria-selected="false" tabindex="-1" data-tab="site">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M2 6h12"/></svg>Website builder
+            </button>
         </div>
-    </form>
+
+        <form id="analyze-form" method="post" action="/analyze" class="st-tool__body" novalidate>
+            <div id="panel-text" class="tool-panel" role="tabpanel" aria-labelledby="tab-text">
+                <label for="text-input" class="sr-only">Text to analyse</label>
+                <textarea name="text" id="text-input" class="st-textarea" rows="8" placeholder="Paste the text you want to check"></textarea>
+            </div>
+
+            <div id="panel-document" class="tool-panel" role="tabpanel" aria-labelledby="tab-document" hidden>
+                <label class="tool-drop" id="drop-zone" for="file-input">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7.5 8.5 12 4l4.5 4.5M4 16v3.25h16V16"/></svg>
+                    <span>Drop a file here, or <span class="tool-drop__choose">choose a file</span></span>
+                    <span class="tool-drop__types" id="upload-status">.pdf, .docx, .txt or .md, up to 10 MB</span>
+                    <input type="file" id="file-input" accept=".pdf,.docx,.txt,.md" class="sr-only">
+                </label>
+            </div>
+
+            <div id="panel-url" class="tool-panel" role="tabpanel" aria-labelledby="tab-url" hidden>
+                <div class="st-field">
+                    <label for="url-input" class="st-field__label">Address of the page to analyse</label>
+                    <input type="url" name="url" id="url-input" class="st-input" placeholder="https://example.com/article" autocomplete="off" disabled>
+                    <p class="st-field__hint">SlopTotal fetches the page, keeps the main text and scores it.</p>
+                </div>
+            </div>
+
+            <div id="panel-site" class="tool-panel" role="tabpanel" aria-labelledby="tab-site" hidden>
+                <div class="st-field">
+                    <label for="site-input" class="st-field__label">Website to check</label>
+                    <input type="text" id="site-input" class="st-input" placeholder="example.com" autocomplete="off" inputmode="url">
+                    <p class="st-field__hint">Was it built with Lovable, v0, Bolt, Base44 or Replit? SlopTotal looks for the markers those builders leave in the sites they deploy.</p>
+                </div>
+            </div>
+
+            <div class="st-tool__bar">
+                <span class="st-tool__meta" id="tool-meta" aria-live="polite"></span>
+                <div class="tool-actions">
+                    <button type="button" class="st-btn st-btn--secondary" id="sample-btn">Try a sample</button>
+                    <button type="submit" class="st-btn st-btn--primary" id="submit-btn">Analyse text</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <p class="home-privacy">Every engine runs on this server. Your text is not sent to OpenAI or any other API.</p>
+
+    <section class="st-panel site-result" id="site-result" aria-live="polite" hidden>
+        <p class="site-result__host" id="site-result-host"></p>
+        <h2 class="site-result__verdict" id="site-result-verdict"></h2>
+        <ul class="site-result__evidence" id="site-result-evidence"></ul>
+        <p class="site-result__text" id="site-result-text"></p>
+        <button type="button" class="st-btn st-btn--secondary" id="site-result-full" hidden>Run the full {{ engines|length }}-engine report on this page</button>
+        <p class="site-result__note">Evidence, not a probability: finding no marker does not mean the site was built by hand.</p>
+    </section>
+</div>
 </div>
 
-<section class="site-check site-check--home" id="site-result" aria-live="polite" hidden>
-    <h2 class="site-label" id="site-result-host"></h2>
-    <p class="site-verdict"></p>
-    <ul class="site-evidence"></ul>
-    <p class="site-text"></p>
-    <button type="button" class="btn btn-ghost site-full" hidden>Run the full 23-engine report on this page &rarr;</button>
-    <p class="site-note">Evidence, not a probability: no marker does not mean the code was written by hand.</p>
+<div id="queue-overlay" class="queue-overlay" role="dialog" aria-modal="true" aria-labelledby="queue-title" hidden>
+    <div class="queue-card">
+        <h2 id="queue-title">In the queue</h2>
+        <p id="queue-desc">All engines are busy. Your report opens as soon as it is your turn.</p>
+        <div class="queue-progress" aria-hidden="true"><i></i></div>
+        <p class="queue-meta" id="queue-wait"></p>
+        <button type="button" class="st-btn st-btn--secondary" id="queue-cancel">Cancel</button>
+    </div>
+</div>
+
+<section class="measure section" aria-labelledby="how-heading">
+    <div class="section-head"><h2 id="how-heading">How it works</h2></div>
+    <div class="home-how">
+        <div>
+            <h3>{{ engines|length }} engines read the text</h3>
+            <p>Neural classifiers trained on AI text, statistical tests that measure how predictable each word is, and checks for the phrasing AI models overuse.</p>
+        </div>
+        <div>
+            <h3>One calibrated score</h3>
+            <p>The engines' votes are combined by a model fitted on SlopBench, so a score of {{ bands[2]|int }} means the same thing in every report: fewer than 2 in 100 human texts score that high.</p>
+        </div>
+        <div>
+            <h3>Every vote shown</h3>
+            <p>You see each engine's score next to the total. When the engines disagree, the report says so.</p>
+        </div>
+    </div>
 </section>
 
-<section class="engines-section" aria-labelledby="engines-heading">
-    <div class="section-header">
-        <h2 id="engines-heading">Detection Engines</h2>
-        <span class="engine-count">{{ engines|length }}</span>
+<section class="measure section" aria-labelledby="score-heading">
+    <div class="section-head">
+        <h2 id="score-heading">Reading the score</h2>
+        <p>The bands are placed by how often human-written text reaches them, so a high score is rare for a person's writing.</p>
     </div>
-    <p class="engines-desc">Each engine uses a different methodology. Results are weighted and combined into a single forensic score.</p>
-    <div class="engine-grid">
-        {% for eng in engines %}
-        {% if eng.url %}
-        <a href="{{ eng.url }}" target="_blank" rel="noopener" class="engine-card" style="--i:{{ loop.index0 }}">
-            <span class="ec-code">{{ eng.code }}</span>
-            <span class="ec-name">{{ eng.name }}</span>
-            <span class="ec-type">{{ eng.engine_type }}</span>
-            <span class="ec-link" aria-hidden="true">&nearr;</span>
-        </a>
-        {% else %}
-        <div class="engine-card" style="--i:{{ loop.index0 }}">
-            <span class="ec-code">{{ eng.code }}</span>
-            <span class="ec-name">{{ eng.name }}</span>
-            <span class="ec-type">{{ eng.engine_type }}</span>
-        </div>
-        {% endif %}
+    <ul class="bands" role="list">
+        {% set edges = [0] + bands + [100] %}
+        {% for b in band_info %}
+        <li>
+            <span class="bands__range">{{ edges[loop.index0]|int }}&ndash;{{ edges[loop.index]|int }}</span>
+            <div>
+                <span class="st-verdict st-verdict--{{ b.key }}">{{ b.label }}</span>
+                <p>{{ b.desc }}</p>
+            </div>
+        </li>
         {% endfor %}
-    </div>
+    </ul>
 </section>
 
-<section class="how-section" aria-labelledby="how-heading">
-    <h2 id="how-heading">How It Works</h2>
-    <div class="how-steps">
-        <div class="how-step">
-            <div class="step-num">01</div>
-            <h3>Submit</h3>
-            <p>Paste text directly or provide a URL. We extract the article content automatically.</p>
-        </div>
-        <div class="how-step">
-            <div class="step-num">02</div>
-            <h3>Analyse</h3>
-            <p>23 engines run in parallel &mdash; neural classifiers, statistical tests, and linguistic heuristics.</p>
-        </div>
-        <div class="how-step">
-            <div class="step-num">03</div>
-            <h3>Report</h3>
-            <p>Results stream in real-time. Each engine votes independently. A calibrated, weighted score produces the final verdict.</p>
-        </div>
+<section class="measure section" aria-labelledby="engines-heading">
+    <div class="section-head">
+        <h2 id="engines-heading">The engines</h2>
+        <p>Each engine uses a different method. Some carry weight in the score, all are shown in every report.</p>
+    </div>
+    <div class="st-panel st-panel--flush">
+        <table class="st-engines">
+            <thead>
+                <tr><th scope="col">Engine</th><th scope="col" class="st-engine__family">Method</th></tr>
+            </thead>
+            <tbody>
+                {% for eng in engines %}
+                <tr>
+                    <td>
+                        {% if eng.url %}<a class="st-engine__name report-engine-link" href="{{ eng.url }}" target="_blank" rel="noopener noreferrer">{{ eng.name }}</a>{% else %}<span class="st-engine__name">{{ eng.name }}</span>{% endif %}
+                        <span class="st-engine__model">{{ eng.description }}</span>
+                    </td>
+                    <td class="st-engine__family">{{ eng.engine_type }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </section>
-
-<section class="slop-section" aria-labelledby="slop-heading">
-    <div class="slop-header">
-        <div class="slop-label">Reference</div>
-        <h2 id="slop-heading">What is <em>&ldquo;slop&rdquo;</em>?</h2>
-    </div>
-    <div class="slop-content">
-        <div class="slop-main">
-            <p>
-                <strong>Slop</strong> is internet shorthand for low-effort, AI-generated content
-                published at scale &mdash; articles, comments, reviews, and social posts churned out
-                by language models with little or no human editing.
-            </p>
-            <p>
-                The term emerged in 2024 as LLM-generated text began flooding search results,
-                product reviews, LinkedIn feeds, and news sites. Unlike thoughtful AI-assisted
-                writing, slop is characterised by its formulaic structure, hollow confidence,
-                and lack of genuine insight.
-            </p>
-            <p>
-                SlopTotal doesn&rsquo;t judge <em>all</em> AI use. Humans editing AI drafts,
-                using AI for brainstorming, or collaborating with AI tools is not slop.
-                What we detect is the telltale fingerprint of text that was generated wholesale
-                and published without meaningful human involvement.
-            </p>
-        </div>
-        <div class="slop-signals">
-            <h3>Common slop signals</h3>
-            <ul>
-                <li>
-                    <span class="signal-icon signal-icon--phrase"></span>
-                    <div>
-                        <strong>Formulaic phrases</strong>
-                        <span>&ldquo;In today&rsquo;s rapidly evolving landscape&rdquo;, &ldquo;It&rsquo;s important to note&rdquo;, &ldquo;delve into&rdquo;</span>
-                    </div>
-                </li>
-                <li>
-                    <span class="signal-icon signal-icon--structure"></span>
-                    <div>
-                        <strong>Rigid structure</strong>
-                        <span>Numbered lists, &ldquo;Firstly / Secondly / Moreover&rdquo; stacking, five-paragraph essay format</span>
-                    </div>
-                </li>
-                <li>
-                    <span class="signal-icon signal-icon--tone"></span>
-                    <div>
-                        <strong>Hedging &amp; filler</strong>
-                        <span>Excessive qualifiers, hollow conclusions, saying a lot while conveying little</span>
-                    </div>
-                </li>
-                <li>
-                    <span class="signal-icon signal-icon--stats"></span>
-                    <div>
-                        <strong>Statistical fingerprints</strong>
-                        <span>Low perplexity, uniform burstiness, predictable token distributions</span>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </div>
-</section>
-
-<section class="score-section" aria-labelledby="score-heading">
-    <div class="section-header">
-        <h2 id="score-heading">Reading Your Score</h2>
-    </div>
-    <p class="score-desc">The overall score represents the probability that the text was AI-generated, calibrated across all engines.</p>
-    <div class="score-guide">
-        <div class="sg-item sg-clean">
-            <div class="sg-range">0&ndash;25</div>
-            <div class="sg-info">
-                <strong>Likely Human</strong>
-                <span>Low AI signals across engines. The text shows patterns consistent with human authorship.</span>
-            </div>
-        </div>
-        <div class="sg-item sg-low">
-            <div class="sg-range">25&ndash;50</div>
-            <div class="sg-info">
-                <strong>Probably Human</strong>
-                <span>Minor signals detected. Could be formal writing, AI-assisted editing, or a false positive on polished text.</span>
-            </div>
-        </div>
-        <div class="sg-item sg-warn">
-            <div class="sg-range">50&ndash;65</div>
-            <div class="sg-info">
-                <strong>Mixed / Uncertain</strong>
-                <span>Engines disagree. May be AI-assisted, heavily edited AI output, or formal human writing that triggers classifiers.</span>
-            </div>
-        </div>
-        <div class="sg-item sg-danger">
-            <div class="sg-range">65&ndash;80</div>
-            <div class="sg-info">
-                <strong>Likely AI</strong>
-                <span>Strong signals from multiple engines. High probability of substantial AI generation with limited human editing.</span>
-            </div>
-        </div>
-        <div class="sg-item sg-slop">
-            <div class="sg-range">80&ndash;100</div>
-            <div class="sg-info">
-                <strong>Almost Certainly AI</strong>
-                <span>Broad consensus across engines. The text has clear statistical and linguistic markers of unedited AI output.</span>
-            </div>
-        </div>
-    </div>
-</section>
-
 {% endblock %}
+{% block scripts %}<script src="/static/js/app.js"></script>{% endblock %}

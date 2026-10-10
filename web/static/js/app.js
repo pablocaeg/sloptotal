@@ -1,133 +1,248 @@
-document.addEventListener("DOMContentLoaded", () => {
-    // ---- Tab switching with animation ----
-    const tabs = document.querySelectorAll(".tab");
-    const tabContents = document.querySelectorAll(".tab-content");
+(function () {
+    var form = document.getElementById("analyze-form");
+    if (!form) return;
 
-    tabs.forEach(tab => {
-        tab.addEventListener("click", () => {
-            tabs.forEach(t => {
-                t.classList.remove("active");
-                t.setAttribute("aria-selected", "false");
-            });
-            tabContents.forEach(tc => tc.classList.remove("active"));
-            tab.classList.add("active");
-            tab.setAttribute("aria-selected", "true");
+    var SAMPLE = "In today’s fast-paced digital landscape, effective communication has never been more important. Whether you are collaborating with a remote team or engaging with customers across the globe, the ability to convey ideas clearly can make all the difference. Moreover, clear communication fosters trust, enhances productivity, and ultimately drives success. By embracing best practices such as active listening, concise messaging, and regular feedback, organizations can unlock their full potential. In conclusion, investing in communication skills is not just a nice-to-have; it is a strategic imperative that empowers individuals and teams to thrive in an ever-evolving world.";
+    var SHORT_WORDS = 80;
+    var SUBMIT = { text: "Analyse text", document: "Analyse text", url: "Analyse page", site: "Check website" };
 
-            const panel = document.getElementById(tab.dataset.tab);
-            panel.classList.add("active");
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"][data-tab]'));
+    var textInput = document.getElementById("text-input");
+    var urlInput = document.getElementById("url-input");
+    var siteInput = document.getElementById("site-input");
+    var meta = document.getElementById("tool-meta");
+    var submit = document.getElementById("submit-btn");
+    var sampleBtn = document.getElementById("sample-btn");
+    var current = "text";
+    var queueAbort = null;
 
-            // Focus the input in the new tab
-            const input = panel.querySelector("input, textarea");
-            if (input) input.focus();
-
-            // Clear inactive inputs
-            ["url-tab", "text-tab", "site-tab"].forEach(function(id) {
-                if (id === tab.dataset.tab) return;
-                var field = document.getElementById(id).querySelector("input:not([type=file]), textarea");
-                if (field) field.value = "";
-            });
+    // ---- Tabs (arrow keys move between them, as in the WAI-ARIA pattern) ----
+    function selectTab(name, focus) {
+        current = name;
+        tabs.forEach(function (tab) {
+            var on = tab.dataset.tab === name;
+            tab.setAttribute("aria-selected", on ? "true" : "false");
+            tab.tabIndex = on ? 0 : -1;
+            document.getElementById(tab.getAttribute("aria-controls")).hidden = !on;
+            if (on && focus) tab.focus();
+        });
+        // Only the active field is submitted.
+        urlInput.disabled = name !== "url";
+        textInput.disabled = name !== "text";
+        submit.textContent = SUBMIT[name];
+        sampleBtn.hidden = name !== "text";
+        hideNotice();
+        updateMeta();
+    }
+    tabs.forEach(function (tab, i) {
+        tab.addEventListener("click", function () { selectTab(tab.dataset.tab, false); });
+        tab.addEventListener("keydown", function (e) {
+            var next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+            if (next === undefined) return;
+            e.preventDefault();
+            selectTab(tabs[(next + tabs.length) % tabs.length].dataset.tab, true);
         });
     });
 
-    // ---- Queue-aware form submission ----
-    const form = document.getElementById("analyze-form");
-    let queueAbort = null;
+    // ---- Word count ----
+    function countWords(text) {
+        // CJK and Thai have no spaces: count their characters one by one.
+        var dense = (text.match(/[぀-ヿ㐀-鿿가-힯฀-๿]/g) || []).length;
+        var spaced = text.replace(/[぀-ヿ㐀-鿿가-힯฀-๿]/g, " ").trim();
+        return dense + (spaced ? spaced.split(/\s+/).length : 0);
+    }
+    function updateMeta() {
+        if (current !== "text") { meta.textContent = ""; return; }
+        var n = countWords(textInput.value);
+        meta.textContent = n === 0 ? "Paste at least 80 words for a reliable score."
+            : n.toLocaleString() + (n === 1 ? " word" : " words") + (n < SHORT_WORDS ? ". Under 80 words the score is a weak signal." : "");
+    }
+    textInput.addEventListener("input", updateMeta);
 
-    if (form) {
-        form.addEventListener("submit", function(e) {
+    sampleBtn.addEventListener("click", function () {
+        textInput.value = SAMPLE;
+        updateMeta();
+        textInput.focus();
+    });
+
+    // Ctrl+Enter or Cmd+Enter submits from any field.
+    form.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
+            form.requestSubmit();
+        }
+    });
 
-            const siteTab = document.getElementById("site-tab");
-            if (siteTab && siteTab.classList.contains("active")) {
-                runSiteCheck(document.getElementById("site-input").value.trim());
-                return;
-            }
+    // ---- Notices ----
+    var notice = document.getElementById("tool-notice");
+    function showNotice(message) {
+        document.getElementById("tool-notice-text").textContent = message;
+        notice.hidden = false;
+    }
+    function hideNotice() { notice.hidden = true; }
 
-            const btn = document.getElementById("submit-btn");
-            btn.disabled = true;
-            btn.querySelector(".btn-text").style.display = "none";
-            btn.querySelector(".btn-loading").style.display = "inline-flex";
+    function busy(on) {
+        submit.disabled = on;
+        submit.setAttribute("aria-busy", on ? "true" : "false");
+    }
 
-            // Gather form data
-            const urlInput = document.getElementById("url-input");
-            const textInput = document.getElementById("text-input");
-            const body = {};
-            if (urlInput && urlInput.value.trim()) {
-                body.url = urlInput.value.trim();
-            } else if (textInput && textInput.value.trim()) {
-                body.text = textInput.value.trim();
-            }
-
-            queueAbort = new AbortController();
-
-            fetch("/api/web/analyze", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body),
-                signal: queueAbort.signal,
+    // ---- Documents: extract the text on the server, then show it in the Text tab ----
+    var fileInput = document.getElementById("file-input");
+    var drop = document.getElementById("drop-zone");
+    var uploadStatus = document.getElementById("upload-status");
+    var TYPES_HINT = uploadStatus.textContent;
+    function readFile(file) {
+        if (!file) return;
+        uploadStatus.textContent = "Reading " + file.name + "…";
+        var body = new FormData();
+        body.append("file", file);
+        fetch("/api/extract", { method: "POST", body: body })
+            .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+            .then(function (res) {
+                if (!res.ok || !res.d.text) throw new Error(res.d && res.d.error);
+                uploadStatus.textContent = TYPES_HINT;
+                textInput.value = res.d.text;
+                selectTab("text", false);
+                meta.textContent = "Loaded " + file.name + ". Check the text, then analyse it.";
+                textInput.focus();
             })
-            .then(function(resp) {
-                if (resp.status === 200) {
-                    return resp.json().then(function(data) {
-                        // Immediate — redirect to report
-                        window.location.href = "/report/" + data.report_id;
-                    });
-                }
-                if (resp.status === 202) {
-                    return resp.json().then(function(data) {
-                        // Queued — show queue overlay and start polling
-                        showQueueOverlay(data);
-                        startQueuePolling(data.ticket_id);
-                    });
-                }
-                // Error responses
-                return resp.json().then(function(data) {
-                    showFormError(data.error || "Something went wrong. Please try again.");
-                    resetButton();
+            .catch(function (err) {
+                uploadStatus.textContent = TYPES_HINT;
+                showNotice((err && err.message) || "That file could not be read. Use a .pdf, .docx, .txt or .md file under 10 MB.");
+            })
+            .finally(function () { fileInput.value = ""; });
+    }
+    fileInput.addEventListener("change", function () { readFile(fileInput.files && fileInput.files[0]); });
+    ["dragenter", "dragover"].forEach(function (type) {
+        drop.addEventListener(type, function (e) { e.preventDefault(); drop.classList.add("is-dragging"); });
+    });
+    ["dragleave", "drop"].forEach(function (type) {
+        drop.addEventListener(type, function () { drop.classList.remove("is-dragging"); });
+    });
+    drop.addEventListener("drop", function (e) {
+        e.preventDefault();
+        readFile(e.dataTransfer.files && e.dataTransfer.files[0]);
+    });
+
+    // ---- Submit ----
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        hideNotice();
+        if (current === "document") { fileInput.click(); return; }
+        if (current === "site") { runSiteCheck(siteInput.value.trim()); return; }
+
+        var body = {};
+        if (current === "url") {
+            var url = urlInput.value.trim();
+            if (!/^https?:\/\/\S+\.\S+/.test(url)) { showNotice("Enter the address of a page, starting with https://"); urlInput.focus(); return; }
+            body.url = url;
+        } else {
+            if (!textInput.value.trim()) { showNotice("Paste some text to analyse."); textInput.focus(); return; }
+            body.text = textInput.value.trim();
+        }
+
+        busy(true);
+        queueAbort = new AbortController();
+        fetch("/api/web/analyze", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+            signal: queueAbort.signal,
+        })
+            .then(function (resp) {
+                return resp.json().then(function (data) {
+                    if (resp.status === 200) { window.location.href = "/report/" + data.report_id; return; }
+                    if (resp.status === 202) { showQueue(data); pollQueue(data.ticket_id); return; }
+                    showNotice(data.error || "Something went wrong. Please try again.");
+                    busy(false);
                 });
             })
-            .catch(function(err) {
+            .catch(function (err) {
                 if (err.name === "AbortError") return;
-                showFormError("Could not reach the server. Is it running?");
-                resetButton();
+                showNotice("Could not reach the server. Is it running?");
+                busy(false);
             });
-        });
-    }
+    });
 
+    // ---- Queue ----
+    var overlay = document.getElementById("queue-overlay");
+    function showQueue(data) { updateQueue(data); overlay.hidden = false; document.getElementById("queue-cancel").focus(); }
+    function hideQueue() { overlay.hidden = true; }
+    function updateQueue(data) {
+        var pos = data.position || 1;
+        var title = document.getElementById("queue-title");
+        var desc = document.getElementById("queue-desc");
+        var wait = document.getElementById("queue-wait");
+        if (data.status === "processing") {
+            title.textContent = "Processing…";
+            desc.textContent = "Your analysis is running now.";
+            wait.textContent = "";
+            return;
+        }
+        title.textContent = pos === 1 ? "You’re next" : "Position #" + pos + " in queue";
+        desc.textContent = "All engines are busy. Your report opens as soon as it is your turn.";
+        wait.textContent = "Estimated wait: ~" + Math.ceil((data.estimated_wait_ms || 5000) / 1000) + "s";
+    }
+    function pollQueue(ticketId) {
+        var attempts = 0;
+        function poll() {
+            if (++attempts > 240) {
+                hideQueue(); busy(false);
+                showNotice("The queue timed out. Please try again.");
+                return;
+            }
+            fetch("/api/queue/ticket/" + ticketId, { signal: queueAbort.signal })
+                .then(function (resp) {
+                    if (resp.status === 404) { hideQueue(); busy(false); showNotice("The queue ticket expired. Please try again."); return; }
+                    return resp.json().then(function (data) {
+                        if (resp.status === 200 && data.report_id) { window.location.href = "/report/" + data.report_id; return; }
+                        updateQueue(data);
+                        setTimeout(poll, 500);
+                    });
+                })
+                .catch(function (err) { if (err.name !== "AbortError") setTimeout(poll, 1000); });
+        }
+        setTimeout(poll, 500);
+    }
+    document.getElementById("queue-cancel").addEventListener("click", function () {
+        if (queueAbort) queueAbort.abort();
+        hideQueue();
+        busy(false);
+        submit.focus();
+    });
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && !overlay.hidden) document.getElementById("queue-cancel").click();
+    });
+
+    // ---- Website builder check ----
     function runSiteCheck(url) {
-        if (!url) { showFormError("Enter a website to check."); return; }
-        var btn = document.getElementById("submit-btn");
-        btn.disabled = true;
-        btn.querySelector(".btn-text").style.display = "none";
-        btn.querySelector(".btn-loading").style.display = "inline-flex";
-        var existing = document.querySelector(".error-banner");
-        if (existing) existing.remove();
+        if (!url) { showNotice("Enter a website to check."); siteInput.focus(); return; }
+        busy(true);
         fetch("/api/scan/site", {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({url: url})
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: url }),
         })
-            .then(function(r) { return r.json().then(function(d) { return {ok: r.ok, d: d}; }); })
-            .then(function(res) {
-                if (!res.ok) { showFormError(res.d.error || "Could not check that site."); return; }
-                renderSiteResult(res.d);
+            .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+            .then(function (res) {
+                if (!res.ok) { showNotice(res.d.error || res.d.detail || "Could not check that site."); return; }
+                renderSite(res.d);
             })
-            .catch(function() { showFormError("Could not reach the server. Is it running?"); })
-            .finally(resetButton);
+            .catch(function () { showNotice("Could not reach the server. Is it running?"); })
+            .finally(function () { busy(false); });
     }
-
-    function renderSiteResult(d) {
+    function renderSite(d) {
         var box = document.getElementById("site-result");
         var s = d.site;
-        box.classList.toggle("site-found", s.builders.length > 0);
-        box.querySelector("#site-result-host").textContent = new URL(d.final_url).hostname;
-        box.querySelector(".site-verdict").textContent = s.verdict;
-        var list = box.querySelector(".site-evidence");
-        list.innerHTML = "";
-        s.builders.forEach(function(b) {
-            b.evidence.forEach(function(ev) {
+        var several = s.builders.length > 1;
+        document.getElementById("site-result-host").textContent = new URL(d.final_url).hostname;
+        document.getElementById("site-result-verdict").textContent = s.verdict;
+        var list = document.getElementById("site-result-evidence");
+        list.textContent = "";
+        s.builders.forEach(function (b) {
+            b.evidence.forEach(function (ev) {
                 var li = document.createElement("li");
-                li.textContent = b.name + ": " + ev;
+                li.textContent = (several ? b.name + ": " : "") + ev;
                 list.appendChild(li);
             });
         });
@@ -136,262 +251,24 @@ document.addEventListener("DOMContentLoaded", () => {
             li.textContent = "Generator tag: " + s.generator;
             list.appendChild(li);
         }
-        var t = box.querySelector(".site-text");
-        var full = box.querySelector(".site-full");
+        var text = document.getElementById("site-result-text");
+        var full = document.getElementById("site-result-full");
         if (d.text) {
-            var words = {clean: "reads as human-written", mixed: "shows mixed signals", ai: "reads as AI-generated"};
-            t.textContent = "Page copy (" + d.text.word_count + " words) " + (words[d.text.verdict] || "was scored")
-                + " on the quick 4-engine scan.";
+            var reads = { clean: "reads as human-written", mixed: "shows mixed signals", ai: "reads as AI-generated" };
+            text.textContent = "The page copy (" + d.text.word_count + " words) " + (reads[d.text.verdict] || "was scored") + " on the quick scan.";
             full.hidden = false;
-            full.onclick = function() {
-                document.getElementById("tab-url").click();
-                document.getElementById("url-input").value = d.final_url;
-                document.getElementById("analyze-form").requestSubmit();
+            full.onclick = function () {
+                selectTab("url", false);
+                urlInput.value = d.final_url;
+                form.requestSubmit();
             };
         } else {
-            t.textContent = "The page has too little server-rendered text to score its copy.";
+            text.textContent = "The page has too little server-rendered text to score its copy.";
             full.hidden = true;
         }
         box.hidden = false;
-        box.scrollIntoView({behavior: "smooth", block: "nearest"});
+        box.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
 
-    function resetButton() {
-        var btn = document.getElementById("submit-btn");
-        if (!btn) return;
-        btn.disabled = false;
-        btn.querySelector(".btn-text").style.display = "inline-flex";
-        btn.querySelector(".btn-loading").style.display = "none";
-    }
-
-    function showFormError(message) {
-        // Remove existing error banner
-        var existing = document.querySelector(".error-banner");
-        if (existing) existing.remove();
-
-        var banner = document.createElement("div");
-        banner.className = "error-banner";
-        banner.setAttribute("role", "alert");
-        banner.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.5v4M8 10.5v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> '
-            + message.replace(/</g, "&lt;");
-
-        var card = document.querySelector(".input-card--hero");
-        if (card) card.parentElement.insertBefore(banner, card);
-    }
-
-    function showQueueOverlay(data) {
-        var overlay = document.getElementById("queue-overlay");
-        if (!overlay) return;
-
-        var pos = data.position || 1;
-        var wait = data.estimated_wait_ms || 5000;
-
-        document.getElementById("queue-position").textContent = pos;
-        document.getElementById("queue-title").textContent =
-            pos === 1 ? "You\u2019re next" : "Position #" + pos + " in queue";
-        document.getElementById("queue-desc").textContent =
-            "Your analysis will start shortly.";
-
-        var waitSec = Math.ceil(wait / 1000);
-        document.getElementById("queue-wait").textContent =
-            "Estimated wait: ~" + waitSec + "s";
-
-        overlay.style.display = "flex";
-    }
-
-    function hideQueueOverlay() {
-        var overlay = document.getElementById("queue-overlay");
-        if (overlay) overlay.style.display = "none";
-    }
-
-    function updateQueueOverlay(data) {
-        var pos = data.position || 1;
-        var wait = data.estimated_wait_ms || 3000;
-
-        document.getElementById("queue-position").textContent = pos;
-        document.getElementById("queue-title").textContent =
-            pos === 1 ? "You\u2019re next" : "Position #" + pos + " in queue";
-
-        if (data.status === "processing") {
-            document.getElementById("queue-title").textContent = "Processing\u2026";
-            document.getElementById("queue-desc").textContent =
-                "Your analysis is running now.";
-            document.getElementById("queue-wait").textContent = "";
-        } else {
-            var waitSec = Math.ceil(wait / 1000);
-            document.getElementById("queue-wait").textContent =
-                "Estimated wait: ~" + waitSec + "s";
-        }
-    }
-
-    function startQueuePolling(ticketId) {
-        var attempts = 0;
-        var maxAttempts = 120; // 60 seconds at 500ms
-
-        function poll() {
-            if (attempts >= maxAttempts) {
-                hideQueueOverlay();
-                showFormError("Queue timed out. Please try again.");
-                resetButton();
-                return;
-            }
-            attempts++;
-
-            fetch("/api/queue/ticket/" + ticketId, { signal: queueAbort.signal })
-                .then(function(resp) {
-                    if (resp.status === 200) {
-                        // Result ready — should contain report_id
-                        return resp.json().then(function(data) {
-                            if (data.report_id) {
-                                window.location.href = "/report/" + data.report_id;
-                            } else {
-                                // Unexpected format — try again
-                                setTimeout(poll, 500);
-                            }
-                        });
-                    }
-                    if (resp.status === 202) {
-                        return resp.json().then(function(data) {
-                            updateQueueOverlay(data);
-                            setTimeout(poll, 500);
-                        });
-                    }
-                    if (resp.status === 404) {
-                        hideQueueOverlay();
-                        showFormError("Queue ticket expired. Please try again.");
-                        resetButton();
-                    }
-                })
-                .catch(function(err) {
-                    if (err.name === "AbortError") return;
-                    // Network error — retry
-                    setTimeout(poll, 1000);
-                });
-        }
-
-        setTimeout(poll, 500);
-    }
-
-    // Cancel button
-    var cancelBtn = document.getElementById("queue-cancel");
-    if (cancelBtn) {
-        cancelBtn.addEventListener("click", function() {
-            if (queueAbort) queueAbort.abort();
-            hideQueueOverlay();
-            resetButton();
-        });
-    }
-
-    // ---- Recent scans ticker ----
-    (function initTicker() {
-        const ticker = document.getElementById("ticker");
-        const scroll = document.getElementById("ticker-scroll");
-        if (!ticker || !scroll) return;
-
-        function scoreClass(s) {
-            if (s <= 20) return "ti-clean";
-            if (s <= 40) return "ti-low";
-            if (s <= 60) return "ti-warn";
-            if (s <= 80) return "ti-danger";
-            return "ti-slop";
-        }
-
-        function buildItems(reports) {
-            return reports.map(function(r) {
-                var src = r.source.length > 55 ? r.source.substring(0, 55) + "\u2026" : r.source;
-                return '<a href="/report/' + r.id + '" class="ticker-item">'
-                    + '<span class="ti-score ' + scoreClass(r.overall_score) + '">' + r.overall_score.toFixed(1) + '</span>'
-                    + '<span class="ti-source">' + src.replace(/</g, "&lt;") + '</span>'
-                    + '<span class="ti-verdict">' + r.overall_verdict + '</span>'
-                    + '<span class="ti-time">' + r.created_at + '</span>'
-                    + '</a>';
-            }).join("");
-        }
-
-        fetch("/api/recent")
-            .then(function(r) { return r.json(); })
-            .then(function(reports) {
-                if (!reports.length) return;
-                // Duplicate items for seamless loop
-                var html = buildItems(reports);
-                scroll.innerHTML = html + html;
-                // Adjust speed: ~4s per item
-                var dur = Math.max(reports.length * 4, 16);
-                scroll.style.animationDuration = dur + "s";
-                ticker.style.display = "flex";
-            })
-            .catch(function() {});
-    })();
-
-    // ---- Intersection Observer for scroll animations ----
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add("in-view");
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll(".how-step, .engine-card").forEach(el => {
-        observer.observe(el);
-    });
-
-    // ---- Score bar coloring on report page ----
-    document.querySelectorAll(".score-bar").forEach(bar => {
-        const score = parseFloat(bar.dataset.score);
-        if (score < 0.4) bar.style.background = "var(--c-clean)";
-        else if (score < 0.65) bar.style.background = "var(--c-warn)";
-        else bar.style.background = "var(--c-slop)";
-    });
-
-    // ---- Gauge coloring ----
-    const gaugeFill = document.querySelector(".gauge-fill");
-    if (gaugeFill) {
-        const score = parseFloat(gaugeFill.dataset.score);
-        let color;
-        if (score <= 20) color = "var(--c-clean)";
-        else if (score <= 40) color = "var(--c-low)";
-        else if (score <= 60) color = "var(--c-warn)";
-        else if (score <= 80) color = "var(--c-danger)";
-        else color = "var(--c-slop)";
-        gaugeFill.style.stroke = color;
-    }
-
-    const gaugeNumber = document.querySelector(".gauge-number");
-    if (gaugeNumber) {
-        const score = parseFloat(gaugeNumber.dataset.score);
-        let color;
-        if (score <= 20) color = "var(--c-clean)";
-        else if (score <= 40) color = "var(--c-low)";
-        else if (score <= 60) color = "var(--c-warn)";
-        else if (score <= 80) color = "var(--c-danger)";
-        else color = "var(--c-slop)";
-        gaugeNumber.style.color = color;
-    }
-});
-
-// ---- File upload: extract text server-side, then analyse it like pasted text ----
-(function() {
-    var input = document.getElementById("file-input");
-    if (!input) return;
-    var status = document.getElementById("upload-status");
-    var textarea = document.getElementById("text-input");
-    input.addEventListener("change", function() {
-        var file = input.files && input.files[0];
-        if (!file) return;
-        status.textContent = "Reading " + file.name + "\u2026";
-        var body = new FormData();
-        body.append("file", file);
-        fetch("/api/extract", {method: "POST", body: body})
-            .then(function(r) { return r.json().then(function(d) { return {ok: r.ok, d: d}; }); })
-            .then(function(res) {
-                if (!res.ok) { status.textContent = res.d.error || "Could not read that file."; return; }
-                textarea.value = res.d.text;
-                status.textContent = file.name + " \u00b7 " + res.d.word_count + " words";
-                textarea.dispatchEvent(new Event("input"));
-            })
-            .catch(function() { status.textContent = "Upload failed. Try again."; })
-            .finally(function() { input.value = ""; });
-    });
+    selectTab("text", false);
 })();
