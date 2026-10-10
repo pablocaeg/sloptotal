@@ -73,7 +73,10 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .band .st-notice { color: var(--text); }
 
 /* ---------- Home ---------- */
-.home-band { padding-bottom: var(--space-9); }
+.home-band {
+    padding-bottom: var(--space-9);
+    background: radial-gradient(55% 70% at 50% 0%, rgba(51, 88, 255, 0.3), transparent 72%), var(--night);
+}
 .home-hero { padding-block: var(--space-9) var(--space-6); display: grid; gap: var(--space-4); }
 .home-hero h1 { text-wrap: balance; color: var(--night-text); }
 .home-hero__lead { font-size: 18px; line-height: 28px; color: var(--night-muted); max-width: 56ch; }
