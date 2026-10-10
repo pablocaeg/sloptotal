@@ -69,13 +69,13 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .band { background: var(--night); color: var(--night-text); }
 .band :focus-visible { outline-color: var(--night-accent); }
 .band .st-tool :focus-visible, .band .st-panel :focus-visible { outline-color: var(--focus); }
-.band .st-tool, .band .st-panel { border-color: transparent; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 16px 48px rgba(0, 0, 0, 0.32); color: var(--text); }
+.band .st-tool, .band .st-panel { color: var(--text); }
 .band .st-notice { color: var(--text); }
 
 /* ---------- Home ---------- */
 .home-band {
     padding-bottom: var(--space-9);
-    background: radial-gradient(55% 70% at 50% 0%, rgba(51, 88, 255, 0.3), transparent 72%), var(--night);
+    background: var(--bg);
 }
 .home-hero { padding-block: var(--space-9) var(--space-6); display: grid; gap: var(--space-4); }
 .home-hero h1 { text-wrap: balance; color: var(--night-text); }
@@ -164,7 +164,7 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .report-band .st-btn--secondary:hover, .report-band .st-btn--ghost:hover { background: var(--night-hover); }
 .report-band .st-btn--ghost { color: var(--night-text); }
 .report-band .report-head { padding-top: var(--space-7); }
-.report > .st-panel:first-child { border-color: transparent; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 16px 48px rgba(16, 31, 77, 0.22); }
+.report > .st-panel:first-child { box-shadow: var(--paper-shadow); }
 .report-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-2); }
 .report-head h1 { font-size: 32px; line-height: 40px; font-weight: 600; letter-spacing: -0.018em; }
 .report-head__actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
@@ -202,3 +202,10 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .feedback__body { font-size: 14px; line-height: 22px; color: var(--text-muted); max-width: 60ch; }
 .feedback__row { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
 .feedback .st-btn[aria-pressed="true"] { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
+
+/* ---------- Manuscript type, as on sloptotal.com ---------- */
+h1, .display, .section-head h2, .report-head h1, .st-readout__value, .site-result__verdict, .feedback__title { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.015em; }
+.display { font-size: 60px; line-height: 64px; }
+a:hover { color: var(--pen-text); }
+::selection { background: var(--marker); color: var(--ink); }
+@media (max-width: 720px) { .display { font-size: 40px; line-height: 46px; } }
