@@ -391,6 +391,7 @@ The roadmap is in [TODO.md](docs/TODO.md).
 Contributions are welcome, especially new engines with measurements. Start with
 [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
+- [Good first issues](https://github.com/pablocaeg/sloptotal/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22): small tasks that name the files to change
 - [Report a bug](https://github.com/pablocaeg/sloptotal/issues/new?template=bug_report.yml)
 - [Request a feature](https://github.com/pablocaeg/sloptotal/issues/new?template=feature_request.yml)
 - [Propose a new engine](https://github.com/pablocaeg/sloptotal/issues/new?template=new_engine.yml)
