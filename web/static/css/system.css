@@ -18,18 +18,17 @@
 }
 
 /* ---------- Logo ---------- */
-.st-logo { direction: ltr; display: inline-flex; align-items: center; gap: var(--space-2); color: var(--text); text-decoration: none; flex: none; }
-.st-logo svg { width: 26px; height: 26px; flex: none; overflow: visible; }
-.st-logo__drop { fill: var(--brand); }
-.st-logo__scan { fill: currentColor; transform-box: fill-box; transform-origin: center; }
+.st-logo { direction: ltr; display: inline-flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; flex: none; }
+.st-logo svg { width: 28px; height: 28px; flex: none; }
+.st-logo__needle { transform-origin: 15px 24px; }
 .st-logo__word { font: 400 20px/1 "IBM Plex Sans", system-ui, sans-serif; letter-spacing: -0.025em; }
 .st-logo__word b { font-weight: 600; }
-.st-logo--sm svg { width: 22px; height: 22px; }
+.st-logo--sm svg { width: 24px; height: 24px; }
 .st-logo--sm .st-logo__word { font-size: 18px; }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .st-logo:hover .st-logo__scan { animation: st-logo-scan 900ms ease-in-out; }
+  .st-logo:hover .st-logo__needle { animation: st-logo-needle 800ms cubic-bezier(.3,.7,.3,1); }
 }
-@keyframes st-logo-scan { 0%, 100% { transform: translateY(0); } 35% { transform: translateY(-9px); } 70% { transform: translateY(5px); } }
+@keyframes st-logo-needle { 0% { transform: rotate(0); } 30% { transform: rotate(-95deg); } 100% { transform: rotate(0); } }
 
 /* ---------- Wordmark ---------- */
 .st-wordmark {
@@ -353,7 +352,6 @@ td.st-engine__family::first-letter { text-transform: uppercase; }
 .st-header { position: sticky; top: 0; z-index: 20; background: var(--night); border-bottom: 1px solid var(--night-line); color: var(--night-text); }
 .st-header :focus-visible { outline-color: var(--night-accent); }
 .st-header .st-logo { color: var(--night-text); }
-.st-header .st-logo__drop, .st-footer .st-logo__drop { fill: var(--night-accent); }
 .st-header .st-star { background: transparent; border-color: var(--night-line); color: var(--night-text); }
 .st-header .st-star:hover { background: var(--night-hover); }
 .st-header .st-star__count { border-color: var(--night-line); }
