@@ -6,11 +6,7 @@ Thank you for your interest in contributing! SlopTotal is open source and welcom
 
 ### Good First Issues
 
-- Adding linguistic patterns to existing heuristic engines
-- Improving test coverage
-- Documentation improvements
-- Accessibility fixes
-- Bug reports with reproduction steps
+The [good first issues](https://github.com/pablocaeg/sloptotal/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) are small, self-contained tasks. Each one names the files to change and how to test the result. Comment on the one you want and it will be assigned to you.
 
 ### Engine Contributions
 
