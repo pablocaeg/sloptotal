@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-05",
+  "version": "2026-10-10",
   "source": "tests/eval/slopbench (fit.py, fit_multilingual.py)",
   "multilingual": {
     "short_alpha": 81.9,
@@ -142,6 +142,45 @@
       ],
       [
         6.1993,
+        100.0
+      ]
+    ]
+  },
+  "quick": {
+    "intercept": -0.5795,
+    "weights": {
+      "classifier_fakespot": 0.5705,
+      "classifier_tmr": 0.0225,
+      "classifier_bert_raid": 0.0,
+      "classifier_e5": 0.0,
+      "linguistic": 0.1145,
+      "formulaic": 0.1132
+    },
+    "length_k": 30.0,
+    "length_neutral": -1.9,
+    "band_knots": [
+      [
+        -6.776,
+        0.0
+      ],
+      [
+        -0.776,
+        30.0
+      ],
+      [
+        0.3466,
+        45.0
+      ],
+      [
+        0.8174,
+        55.0
+      ],
+      [
+        1.1213,
+        80.0
+      ],
+      [
+        5.1213,
         100.0
       ]
     ]
