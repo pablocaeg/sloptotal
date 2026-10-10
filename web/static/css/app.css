@@ -209,3 +209,5 @@ h1, .display, .section-head h2, .report-head h1, .st-readout__value, .site-resul
 a:hover { color: var(--pen-text); }
 ::selection { background: var(--marker); color: var(--ink); }
 @media (max-width: 720px) { .display { font-size: 40px; line-height: 46px; } }
+.report-text__body { font-family: var(--font-display); font-size: 18px; line-height: 31px; }
+.report-text__body mark { color: inherit; background: linear-gradient(transparent 56%, var(--marker) 56%); padding: 0 1px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
