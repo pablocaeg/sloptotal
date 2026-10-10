@@ -59,7 +59,31 @@
             .forEach(function (row) { body.appendChild(row); });
     }
 
+    // Highlight the stock phrases the Linguistic Markers engine quoted.
+    function highlightMarkers(report) {
+        var body = document.querySelector(".report-text__body");
+        if (!body || !report || !report.engine_results) return;
+        var lm = report.engine_results.filter(function (e) { return e.engine_name === "Linguistic Markers"; })[0];
+        var markers = lm && lm.details ? (lm.details.match(/"([^"]+)"/g) || []).map(function (m) { return m.slice(1, -1); }) : [];
+        if (!markers.length) return;
+        var pattern = new RegExp("(" + markers.map(function (m) { return m.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }).join("|") + ")", "gi");
+        var text = body.textContent;
+        body.textContent = "";
+        text.split(pattern).forEach(function (part, i) {
+            if (i % 2 === 1) {
+                var mark = document.createElement("mark");
+                mark.textContent = part;
+                body.appendChild(mark);
+            } else {
+                body.appendChild(document.createTextNode(part));
+            }
+        });
+        var details = body.closest("details");
+        if (details) details.open = true;
+    }
+
     function finish(report) {
+        highlightMarkers(report);
         var dot = document.getElementById("status-dot");
         dot.classList.remove("is-live");
         document.getElementById("status-label").textContent = "Complete";
