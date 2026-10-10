@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+- The quick and paragraph scores (`/api/quick-score`, `/api/paragraph-score`,
+  used by the Chrome extension) are now calibrated on SlopBench like the full
+  report: a logistic fit over the quick engines, with short texts pulled toward
+  the middle and the band edges at measured human false-positive rates
+  (`tests/eval/slopbench/fit_quick.py`). The old hand-weighted formula called
+  12.5% of human texts AI, 35% of TOEFL essays and 11 of 87 classic books; the
+  fit calls 1.4% of human texts AI and 1 of 87 classics (#100).
+
 ## [1.2.0] - 2026-10-10
 
 ### Added

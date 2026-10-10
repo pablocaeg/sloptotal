@@ -102,17 +102,39 @@ def calibrated_score(
             z -= multilingual["short_alpha"] * (1 / words - 1 / reference)
         score = 100 / (1 + math.exp(-z))
 
-    support = language_support(lang)
+    return round(score, 1), _confidence(score, words, language_support(lang)), lang
+
+
+def _confidence(score: float, words: int, support: str) -> str:
+    """Never above "low" for a short text, a score in the uncertain middle, or a
+    language whose detection is not supported."""
     if (
         words < SHORT_TEXT_WORDS
         or support == "unsupported"
         or UNCERTAIN[0] <= score <= UNCERTAIN[1]
     ):
-        confidence = "low"
-    elif support == "experimental" or not (
-        score < CONFIDENT[0] or score >= CONFIDENT[1]
-    ):
-        confidence = "medium"
-    else:
-        confidence = "high"
-    return round(score, 1), confidence, lang
+        return "low"
+    if support == "experimental" or not (score < CONFIDENT[0] or score >= CONFIDENT[1]):
+        return "medium"
+    return "high"
+
+
+def quick_score(engine_scores: dict[str, float], text: str) -> tuple[float, str]:
+    """0-100 score and confidence for the quick path (/api/quick-score and
+    /api/paragraph-score), from its four classifiers and two heuristics.
+
+    The same model as the full report, fitted on SlopBench over only the engines
+    the quick path runs (tests/eval/slopbench/fit_quick.py): short texts are
+    pulled toward a neutral score and the band edges sit where a measured share
+    of human text begins. There is no separate non-English fit for this path,
+    so its confidence follows the language's support like the full report's.
+    """
+    quick = _CALIBRATION["quick"]
+    words = count_words(text)
+    z = _weighted(quick, engine_scores)
+    k = quick["length_k"]
+    reliability = words / (words + k) if k else 1.0
+    z = reliability * z + (1 - reliability) * quick["length_neutral"]
+    score = _interpolate(z, quick["band_knots"])
+    support = language_support(detect_language(text))
+    return round(score, 1), _confidence(score, words, support)
