@@ -93,18 +93,23 @@
 .st-star {
   display: inline-flex;
   align-items: stretch;
-  border: 1px solid var(--border-control);
-  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
   overflow: hidden;
   font: 500 14px/20px var(--font-sans);
   color: var(--text);
   text-decoration: none;
   background: var(--surface-raised);
+  box-shadow: 0 1px 0 var(--border);
+  transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
 }
-.st-star > span { display: inline-flex; align-items: center; gap: var(--space-2); padding: 0 var(--space-3); min-height: 32px; }
-.st-star svg { width: 16px; height: 16px; }
-.st-star__count { border-inline-start: 1px solid var(--border); font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-weight: 400; }
-.st-star:hover { background: var(--surface-hover); }
+.st-star > span { display: inline-flex; align-items: center; gap: 7px; padding: 0 14px; min-height: 34px; }
+.st-star svg { width: 16px; height: 16px; flex: none; }
+.st-star__count { border-inline-start: 1px solid var(--border); font-variant-numeric: tabular-nums; font-weight: 600; }
+.st-star__icon path { fill: transparent; stroke: currentColor; stroke-width: 1.3; transition: fill 160ms ease, stroke 160ms ease; }
+.st-star:hover { color: var(--text); border-color: var(--border-control); box-shadow: 0 1px 0 var(--border), 0 6px 16px -10px rgba(60, 40, 10, 0.45); transform: translateY(-1px); }
+.st-star:hover .st-star__icon path { fill: var(--marker); stroke: #b88000; }
+@media (prefers-reduced-motion: reduce) { .st-star:hover { transform: none; } }
 
 /* ---------- Link ---------- */
 .st-link { color: var(--link); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
@@ -193,11 +198,25 @@
   /* Ruled paper: one rule under every line of text. */
   background: repeating-linear-gradient(transparent 0 29px, var(--border) 29px 30px);
   background-attachment: local;
-  background-position: 0 6px;
+  background-origin: content-box;
+  background-clip: content-box;
+  background-position: 0 0;
   padding: 6px 4px 0;
+  min-height: 188px;
+  resize: none;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-control) transparent;
+  caret-color: var(--pen);
 }
 .st-tool__body .st-textarea:hover { border-color: transparent; }
-.st-tool__body .st-textarea:focus-visible { outline-offset: 4px; border-radius: 2px; }
+/* The whole sheet is the field: focus shows on the sheet, not as a box inside it. */
+.st-tool__body .st-textarea:focus-visible { outline: none; }
+.st-tool:has(.st-textarea:focus-visible) {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--pen) 22%, transparent), var(--paper-shadow);
+}
+.st-tool { transition: border-color 160ms ease, box-shadow 160ms ease; }
 .st-tool__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; }
 .st-tool__meta { flex: 1 1 200px; min-width: 0; font: 400 14px/22px var(--font-sans); color: var(--text-muted); }
 
@@ -367,9 +386,6 @@ td.st-engine__family::first-letter { text-transform: uppercase; }
 .st-header { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); color: var(--text); }
 .st-header :focus-visible { outline-color: var(--night-accent); }
 .st-header .st-logo { color: var(--night-text); }
-.st-header .st-star { background: transparent; border-color: var(--night-line); color: var(--night-text); }
-.st-header .st-star:hover { background: var(--night-hover); }
-.st-header .st-star__count { border-color: var(--night-line); }
 .st-header summary.st-btn--ghost { color: var(--night-text); }
 .st-header summary.st-btn--ghost:hover, .st-header details[open] > summary.st-btn--ghost { background: var(--night-hover); }
 .st-header__inner {
@@ -399,7 +415,7 @@ td.st-engine__family::first-letter { text-transform: uppercase; }
 }
 @media (max-width: 600px) {
   .st-header__lang-label { display: none; }
-  .st-header .st-star > span:first-child { padding-inline: var(--space-2); }
+  .st-header .st-star > span { padding-inline: 10px; }
   .st-header .st-star__label { display: none; }
 }
 

@@ -57,11 +57,23 @@
         meta.textContent = n === 0 ? "Paste at least 80 words for a reliable score."
             : n.toLocaleString() + (n === 1 ? " word" : " words") + (n < SHORT_WORDS ? ". Under 80 words the score is a weak signal." : "");
     }
-    textInput.addEventListener("input", updateMeta);
+    // The text box grows a ruled line at a time (6 to 12 lines), so the last
+    // line is never cut in half.
+    function fitText() {
+        var cs = getComputedStyle(textInput);
+        var line = parseFloat(cs.lineHeight) || 30;
+        var pad = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+        var borders = parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth);
+        textInput.style.height = "auto";
+        var lines = Math.min(12, Math.max(6, Math.ceil((textInput.scrollHeight - pad) / line)));
+        textInput.style.height = lines * line + pad + borders + "px";
+    }
+    textInput.addEventListener("input", function () { updateMeta(); fitText(); });
 
     sampleBtn.addEventListener("click", function () {
         textInput.value = SAMPLE;
         updateMeta();
+        fitText();
         textInput.focus();
     });
 
