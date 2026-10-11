@@ -29,6 +29,18 @@ FUNCTION_WORDS = {
     "vi": "và của là có được trong cho những với này không người các một đã",
     "sv": "och att det som är för med på inte av till har om ett jag",
     "da": "og at det som er for med på ikke af til har om et jeg",
+    # Finnish, Czech and Hungarian have no fit either, and without them text in
+    # these languages fell through to whichever language shares a few short
+    # words: Czech read as Polish (a *supported* language, so it was scored
+    # under the Polish calibration rather than reported as unsupported).
+    # Word lists are the most frequent function words from the OPUS/OpenSubtitles
+    # frequency lists at https://github.com/hermitdave/FrequencyWords, keeping
+    # the forms that are closed-class and at least two letters.
+    "fi": "ja on ei että se oli hän mutta kuin niin myös kun jos tai vain ovat ole tämä siitä",
+    # Czech shares ale/do/jako/na/to with Polish, so the list leans on the forms
+    # Polish does not have (je, že, jsou, které, při, podle).
+    "cs": "je že se na to do ale jako byl jsou nebo pro jeho které který při podle také už",
+    "hu": "az és hogy nem is egy de van csak már még meg ha mint volt vagy ami után által lehet",
 }
 _WORDS = {lang: set(words.split()) for lang, words in FUNCTION_WORDS.items()}
 _TOKEN = re.compile(r"[^\W\d_]+", re.UNICODE)

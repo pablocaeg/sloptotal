@@ -1,5 +1,6 @@
 import pytest
 
+from app.calibration import language_support
 from app.language import count_words, detect_language, is_unspaced
 
 SAMPLES = {
@@ -56,3 +57,67 @@ def test_thai_lao_khmer_and_burmese_count_as_unspaced():
     assert is_unspaced("กรุงเทพมหานครเป็นเมืองหลวง")
     assert is_unspaced("東京都は日本の首都である。")
     assert not is_unspaced("Bangkok is the capital of Thailand.")
+
+
+# Issue #87: Finnish, Czech and Hungarian had no FUNCTION_WORDS entry, so they
+# fell through to whichever language shared a few short words. Czech read as
+# Polish, which is a *supported* language, so Czech text was scored under the
+# Polish calibration instead of being reported as unsupported.
+UNCALIBRATED_SENTENCES = {
+    "fi": (
+        "Kaupunginvaltuusto hyväksyi suunnitelman useiden kuukausien keskustelun "
+        "jälkeen, ja asukkaat sanoivat että heiltä ei ollut kysytty mitään tästä "
+        "asiasta lainkaan ennen päätöstä, joka tehtiin hyvin nopeasti."
+    ),
+    "cs": (
+        "Zastupitelstvo schválilo plán po několika měsících diskuse a obyvatelé "
+        "řekli, že se jich na to nikdo nezeptal před tím rozhodnutím, které bylo "
+        "přijato velmi rychle a bez jejich vědomí."
+    ),
+    "hu": (
+        "A képviselő-testület több hónapos vita után elfogadta a tervet, és a "
+        "lakók azt mondták, hogy senki nem kérdezte meg őket erről a döntésről, "
+        "amelyet nagyon gyorsan hoztak meg."
+    ),
+}
+
+
+@pytest.mark.parametrize("lang", sorted(UNCALIBRATED_SENTENCES))
+def test_finnish_czech_and_hungarian_are_detected(lang):
+    text = UNCALIBRATED_SENTENCES[lang]
+    assert count_words(text) >= 25
+    assert detect_language(text) == lang
+
+
+@pytest.mark.parametrize("lang", sorted(UNCALIBRATED_SENTENCES))
+def test_finnish_czech_and_hungarian_are_unsupported(lang):
+    """They have no fit, so they must be reported rather than scored."""
+    assert language_support(detect_language(UNCALIBRATED_SENTENCES[lang])) == (
+        "unsupported"
+    )
+
+
+def test_czech_is_not_mistaken_for_polish():
+    """The regression that mattered: pl is calibrated, so a wrong pl here meant
+    Czech text was scored under the Polish fit instead of flagged."""
+    assert detect_language(UNCALIBRATED_SENTENCES["cs"]) != "pl"
+
+
+def test_polish_is_still_polish():
+    text = (
+        "Rada miasta zatwierdziła plan po kilku miesiącach dyskusji, a mieszkańcy "
+        "powiedzieli, że nikt ich o to nie zapytał przed podjęciem decyzji, która "
+        "została przyjęta bardzo szybko."
+    )
+    assert detect_language(text) == "pl"
+    assert language_support("pl") == "supported"
+
+
+def test_dutch_is_still_dutch():
+    """hu shares de/is/van with nl, so the Hungarian list must not outvote it."""
+    text = (
+        "De gemeenteraad heeft het plan na enkele maanden van discussie "
+        "goedgekeurd, en de bewoners zeiden dat niemand hen daarover had gevraagd "
+        "voordat het besluit werd genomen."
+    )
+    assert detect_language(text) == "nl"
