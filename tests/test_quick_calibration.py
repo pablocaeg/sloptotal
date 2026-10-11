@@ -72,3 +72,52 @@ def test_classic_literature_is_rarely_called_ai(human_scores):
 def test_few_human_texts_are_called_ai(human_scores):
     called = [s for _, s in human_scores.values() if s > QUICK_AI_MIN]
     assert len(called) / len(human_scores) < 0.03
+
+
+# Issue #113: the behaviour documented on quick_score() -- short texts pulled
+# toward neutral, confidence following the language's support -- was untested.
+
+_LONG_SENTENCE = (
+    "The committee approved the plan after several months of debate, and "
+    "residents said afterwards that nobody had asked them about it. "
+)
+_STRONG = {key: 0.97 for key in QUICK_ENGINES.values()}
+
+
+def _words(n: int) -> str:
+    """The same prose at a chosen length, so only the length varies."""
+    return " ".join((_LONG_SENTENCE.split() * 40)[:n])
+
+
+def test_a_short_text_is_pulled_toward_the_middle():
+    short_score, _ = calibration.quick_score(_STRONG, _words(20))
+    long_score, _ = calibration.quick_score(_STRONG, _words(300))
+    assert abs(short_score - 50) < abs(long_score - 50)
+
+
+def test_a_short_text_gets_low_confidence():
+    _, confidence = calibration.quick_score(_STRONG, _words(20))
+    assert confidence == "low"
+
+
+def test_an_unsupported_language_never_gets_more_than_low_confidence():
+    # Same text as test_an_unknown_language_never_gets_more_than_low_confidence
+    # in tests/test_calibration.py: long enough to clear SHORT_TEXT_WORDS, and
+    # detected as "other".
+    text = " ".join(
+        ["Lorem ipsum dolor sit amet consectetur adipiscing elit sed eiusmod tempor."]
+        * 8
+    )
+    assert calibration.language_support(calibration.detect_language(text)) == (
+        "unsupported"
+    )
+    _, confidence = calibration.quick_score(_STRONG, text)
+    assert confidence == "low"
+
+
+@pytest.mark.parametrize("engine_score", [0.0, 1.0])
+def test_the_score_stays_on_the_0_to_100_scale(engine_score):
+    scores = {key: engine_score for key in QUICK_ENGINES.values()}
+    score, confidence = calibration.quick_score(scores, _words(300))
+    assert 0.0 <= score <= 100.0
+    assert confidence in {"low", "medium", "high"}
