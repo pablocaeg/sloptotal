@@ -8,7 +8,9 @@ import httpx
 import pytest
 from fastapi.testclient import TestClient
 
+from app.config import MIN_TEXT_LENGTH
 from app.database import init_database
+from app.documents import extract_document_text
 from app.main import app
 
 
@@ -30,7 +32,49 @@ def test_engines_endpoint_lists_all_engines(client):
 def test_rejects_short_text(client, path):
     r = client.post(path, json={"text": "too short"})
     assert r.status_code == 400
-    assert "50 characters" in r.json()["error"]
+    assert f"{MIN_TEXT_LENGTH} characters" in r.json()["error"]
+
+
+# Issue #84: the length checks used a literal 50, so moving MIN_TEXT_LENGTH
+# would have left them behind. These pin the boundary to the constant.
+# Only the rejection path is exercised: accepting a text runs inference, which
+# this module deliberately does not start.
+@pytest.mark.parametrize(
+    "path", ["/api/analyze", "/api/quick-score", "/api/paragraph-score"]
+)
+def test_one_character_short_is_rejected(client, path):
+    r = client.post(path, json={"text": "a" * (MIN_TEXT_LENGTH - 1)})
+    assert r.status_code == 400
+    assert f"{MIN_TEXT_LENGTH} characters" in r.json()["error"]
+
+
+@pytest.mark.parametrize("path", ["/api/quick-score", "/api/paragraph-score"])
+def test_the_length_boundary_tracks_a_changed_min_text_length(
+    client, path, monkeypatch
+):
+    """Raising the constant moves the boundary and the message with it.
+
+    A text that was long enough before is now rejected, which is what a
+    hard-coded 50 could not do.
+    """
+    monkeypatch.setattr("app.routes.api.MIN_TEXT_LENGTH", 500)
+    r = client.post(path, json={"text": "a" * 200})
+    assert r.status_code == 400
+    assert "500 characters" in r.json()["error"]
+
+
+def test_extract_document_text_follows_min_text_length(monkeypatch):
+    """Uploads use the same constant, not their own copy of 50."""
+    with pytest.raises(ValueError, match="No readable text found"):
+        extract_document_text("short.txt", b"a" * (MIN_TEXT_LENGTH - 1))
+
+    assert extract_document_text("ok.txt", b"a" * MIN_TEXT_LENGTH) == (
+        "a" * MIN_TEXT_LENGTH
+    )
+
+    monkeypatch.setattr("app.documents.MIN_TEXT_LENGTH", 500)
+    with pytest.raises(ValueError, match="No readable text found"):
+        extract_document_text("short.txt", b"a" * 200)
 
 
 @pytest.mark.parametrize("path", ["/api/analyze", "/api/quick-score"])

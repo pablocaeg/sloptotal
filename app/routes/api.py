@@ -42,6 +42,7 @@ from app.scraper import (
     extract_text_with_metadata,
     fetch_page,
 )
+from app.config import MIN_TEXT_LENGTH
 from app.language import count_words
 from app.site_fingerprints import detect_builders
 from app.documents import MAX_UPLOAD_BYTES, extract_document_text
@@ -65,9 +66,10 @@ async def api_quick_score(request: Request, req: AnalyzeRequest):
             content = await extract_text_from_url(req.url.strip())
         elif req.text:
             content = req.text.strip()
-            if len(content) < 50:
+            if len(content) < MIN_TEXT_LENGTH:
                 return JSONResponse(
-                    {"error": "Text must be at least 50 characters."}, status_code=400
+                    {"error": f"Text must be at least {MIN_TEXT_LENGTH} characters."},
+                    status_code=400,
                 )
         else:
             return JSONResponse(
@@ -117,9 +119,10 @@ async def api_paragraph_score(req: AnalyzeRequest):
             content = await extract_text_from_url(req.url.strip())
         elif req.text:
             content = req.text.strip()
-            if len(content) < 50:
+            if len(content) < MIN_TEXT_LENGTH:
                 return JSONResponse(
-                    {"error": "Text must be at least 50 characters."}, status_code=400
+                    {"error": f"Text must be at least {MIN_TEXT_LENGTH} characters."},
+                    status_code=400,
                 )
         else:
             return JSONResponse(
@@ -222,7 +225,7 @@ async def api_scan_urls(req: UrlScanRequest):
                 "fetch_ms": round(fetch_ms, 1),
             }
 
-        if page.char_count < 50:
+        if page.char_count < MIN_TEXT_LENGTH:
             return {
                 "type": "error",
                 "id": item.id,
@@ -448,9 +451,10 @@ async def api_analyze(request: Request, req: AnalyzeRequest):
             content = await extract_text_from_url(req.url.strip())
             source_type, source = "url", req.url.strip()
         elif req.text:
-            if len(req.text.strip()) < 50:
+            if len(req.text.strip()) < MIN_TEXT_LENGTH:
                 return JSONResponse(
-                    {"error": "Text must be at least 50 characters."}, status_code=400
+                    {"error": f"Text must be at least {MIN_TEXT_LENGTH} characters."},
+                    status_code=400,
                 )
             content = req.text.strip()
             source_type, source = "text", content[:100]

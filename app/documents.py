@@ -6,6 +6,8 @@ pasted text, so uploads follow exactly the same analysis and retention path.
 
 import io
 
+from app.config import MIN_TEXT_LENGTH
+
 MAX_UPLOAD_BYTES = 10 * 1024 * 1024
 SUPPORTED = (".pdf", ".docx", ".txt", ".md")
 
@@ -37,7 +39,7 @@ def extract_document_text(filename: str, data: bytes) -> str:
     else:
         raise ValueError("Supported files: " + ", ".join(SUPPORTED))
     text = text.strip()
-    if len(text) < 50:
+    if len(text) < MIN_TEXT_LENGTH:
         raise ValueError(
             "No readable text found. Scanned PDFs (images of pages) are not supported."
         )
