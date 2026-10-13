@@ -13,13 +13,14 @@ construction), CPU latency per text, and parameter count.
 
 import json
 import sys
+import os
 import time
 import random
 
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
-from app.engines.classifier_bert_raid import ClassifierBERTRaidEngine
-from app.engines.classifier_e5 import ClassifierE5Engine
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 from app.engines.classifier_fakespot import ClassifierFakespotEngine
 
 # (model id, how to turn logits into P(AI))
@@ -35,8 +36,8 @@ CANDIDATES = [
 
 MIN_WORDS = 20
 MAX_WORDS = 80
-CLASSICS_COUNT = 26
 EARLYBIRD_MODEL = "noumenon-labs/Earlybird-fast"
+
 
 def truncate_to_word_range(text, rng):
     """Return a reproducible contiguous snippet containing 20 to 80 words."""
@@ -71,6 +72,7 @@ def score_all(model_id, head, texts):
                 out.append(torch.softmax(logits, -1)[1].item())
     return out, (time.perf_counter() - t0) * 1000 / len(texts), params
 
+
 def run_earlybird(snippets):
     tokenizer = AutoTokenizer.from_pretrained(EARLYBIRD_MODEL)
     model = AutoModelForSequenceClassification.from_pretrained(EARLYBIRD_MODEL)
@@ -90,46 +92,47 @@ def run_earlybird(snippets):
 
 
 def run_baseline(engine, snippets):
+    snippets = [text[:500] for text in snippets]
     engine.analyze_batch(snippets[:1])
     started = time.perf_counter()
     scores = engine.analyze_batch(snippets)
     ms_per_text = (time.perf_counter() - started) * 1000 / len(snippets)
     return scores, ms_per_text
 
-def score_with_different_model(texts, modern):
-    modern_count = modern
+
+def score_with_different_model(texts, modern, CLASSICS_COUNT):
+    modern_count = len(modern)
     rng = random.Random(0)
     snippets = [truncate_to_word_range(row["text"], rng) for row in texts]
-    models = [("Earlybird", run_earlybird(snippets))]
-    for name, engine in (
-        ("BERT-RAID", ClassifierBERTRaidEngine()),
-        ("E5", ClassifierE5Engine()),
-        ("Fakespot", ClassifierFakespotEngine()),
-    ):
-        models.append((name, run_baseline(engine, snippets)))
+    models = [
+        ("Earlybird", run_earlybird(snippets)),
+        ("Fakespot", run_baseline(ClassifierFakespotEngine(), snippets)),
+    ]
+
     ai_labels = [row["label"] == "ai" for row in modern]
     print(f"{'Model':<12} {'AUC':>7} {'Classics >0.5':>16} {'ms/text':>10}")
     for name, (scores, ms_per_text) in models:
         modern_scores = scores[:modern_count]
         classics_scores = scores[modern_count:]
-        ai_scores = [score for score, is_ai in zip(modern_scores, ai_labels) if is_ai]
-        human_scores = [score for score, is_ai in zip(modern_scores, ai_labels) if not is_ai]
+        ai_scores = [score for score, is_ai in zip(modern_scores, ai_labels, strict = False) if is_ai]
+        human_scores = [
+            score for score, is_ai in zip(modern_scores, ai_labels, strict = False) if not is_ai
+        ]
         print(
             f"{name:<12} {auc(ai_scores, human_scores):>7.3f} "
             f"{sum(score > 0.5 for score in classics_scores):>7}/{CLASSICS_COUNT:<8} "
             f"{ms_per_text:>10.1f}"
         )
-    
+
+
 def main():
     modern = json.load(open(sys.argv[1]))
     classics = json.load(open(sys.argv[2]))
-    
-    if len(classics) != CLASSICS_COUNT:
-            raise ValueError(f"Expected {CLASSICS_COUNT} classics, got {len(classics)}")
+    CLASSICS_COUNT = len(classics)
     texts = [r["text"] for r in modern] + [r["text"] for r in classics]
     torch.set_num_threads(6)
-    score_with_different_model(texts, modern)
-    
+    score_with_different_model(modern + classics, modern, CLASSICS_COUNT)
+
     results = {}
     for model_id, head in CANDIDATES:
         try:
@@ -142,8 +145,14 @@ def main():
         hu = [s for s, r in zip(m, modern) if r["label"] == "human"]
         domains = {}
         for d in sorted({r["domain"] for r in modern}):
-            da = [s for s, r in zip(m, modern) if r["domain"] == d and r["label"] == "ai"]
-            dh = [s for s, r in zip(m, modern) if r["domain"] == d and r["label"] == "human"]
+            da = [
+                s for s, r in zip(m, modern) if r["domain"] == d and r["label"] == "ai"
+            ]
+            dh = [
+                s
+                for s, r in zip(m, modern)
+                if r["domain"] == d and r["label"] == "human"
+            ]
             domains[d] = round(auc(da, dh), 3)
         results[model_id] = {
             "auc": round(auc(ai, hu), 3),
