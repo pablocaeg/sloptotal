@@ -179,6 +179,14 @@ python examples/python_client.py "Paste at least 50 characters of text here..." 
 The response lists every engine with its score, verdict and a plain-language
 detail line, plus `overall_score` (0-100) and `overall_verdict`.
 
+From Node 18+, [`examples/node_client.mjs`](examples/node_client.mjs) uses the
+built-in `fetch` to analyse a text and print the overall score, the verdict and
+the five engines scoring highest. Pass `--base` to point it at another server:
+
+```bash
+node examples/node_client.mjs "Paste at least 50 characters of text here..." --base http://localhost:8000
+```
+
 ## Detection Engines
 
 Every engine links to its page on sloptotal.com, which carries its measured scores against both corpora. AUC below is the probability the engine ranks a random AI passage above a random human one: 1.0 is perfect, 0.5 is a coin flip.
