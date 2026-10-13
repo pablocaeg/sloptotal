@@ -122,11 +122,43 @@
 
     // ---- Copy link ----
     var copy = document.getElementById("copy-btn");
+    // navigator.clipboard only exists on secure origins (HTTPS or localhost),
+    // so on a LAN address we select a read-only field and let the user copy it.
+    function showCopied() {
+        copy.textContent = "Copied";
+        setTimeout(function () { copy.textContent = "Copy link"; }, 2000);
+    }
+    function selectLinkForManualCopy(url) {
+        var input = document.getElementById("copy-fallback");
+        if (!input) {
+            input = document.createElement("input");
+            input.id = "copy-fallback";
+            input.type = "text";
+            input.readOnly = true;
+            input.setAttribute("aria-label", "Report link");
+            copy.parentNode.insertBefore(input, copy.nextSibling);
+        }
+        input.value = url;
+        input.focus();
+        input.select();
+        var ok = false;
+        try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+        if (ok) {
+            input.remove();
+            showCopied();
+        } else {
+            copy.textContent = "Press Ctrl+C to copy";
+        }
+    }
     copy.addEventListener("click", function () {
-        navigator.clipboard.writeText(window.location.href).then(function () {
-            copy.textContent = "Copied";
-            setTimeout(function () { copy.textContent = "Copy link"; }, 2000);
-        });
+        var url = window.location.href;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(showCopied, function () {
+                selectLinkForManualCopy(url);
+            });
+        } else {
+            selectLinkForManualCopy(url);
+        }
     });
 
     // ---- Feedback: who wrote this text? ----
