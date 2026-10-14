@@ -12,10 +12,10 @@ construction), CPU latency per text, and parameter count.
 """
 
 import json
-import sys
 import os
-import time
 import random
+import sys
+import time
 
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
@@ -92,7 +92,6 @@ def run_earlybird(snippets):
 
 
 def run_baseline(engine, snippets):
-    snippets = [text[:500] for text in snippets]
     engine.analyze_batch(snippets[:1])
     started = time.perf_counter()
     scores = engine.analyze_batch(snippets)
@@ -114,9 +113,9 @@ def score_with_different_model(texts, modern, CLASSICS_COUNT):
     for name, (scores, ms_per_text) in models:
         modern_scores = scores[:modern_count]
         classics_scores = scores[modern_count:]
-        ai_scores = [score for score, is_ai in zip(modern_scores, ai_labels, strict = False) if is_ai]
+        ai_scores = [score for score, is_ai in zip(modern_scores, ai_labels, strict=False) if is_ai]
         human_scores = [
-            score for score, is_ai in zip(modern_scores, ai_labels, strict = False) if not is_ai
+            score for score, is_ai in zip(modern_scores, ai_labels, strict=False) if not is_ai
         ]
         print(
             f"{name:<12} {auc(ai_scores, human_scores):>7.3f} "

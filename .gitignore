@@ -45,11 +45,3 @@ models/
 # OS
 .DS_Store
 Thumbs.db
-
-#Folder
-raid
-
-#Json file
-corpus_classics.json
-corpus_raid.json
-out.json
