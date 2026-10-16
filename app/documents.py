@@ -28,15 +28,21 @@ def extract_document_text(filename: str, data: bytes) -> str:
         text = "\n\n".join(p.strip() for p in pages if p.strip())
     elif name.endswith(".docx"):
         from docx import Document
+        from docx.text.paragraph import Paragraph
 
         try:
             doc = Document(io.BytesIO(data))
         except Exception as exc:
             raise ValueError("Could not read that Word document.") from exc
-        parts = [p.text.strip() for p in doc.paragraphs if p.text.strip()]
-        for table in doc.tables:
+        parts = []
+        for block in doc.iter_inner_content():
+            if isinstance(block, Paragraph):
+                paragraph_text = block.text.strip()
+                if paragraph_text:
+                    parts.append(paragraph_text)
+                continue
             seen_cells = set()
-            for row in table.rows:
+            for row in block.rows:
                 for cell in row.cells:
                     if cell._tc not in seen_cells:
                         seen_cells.add(cell._tc)

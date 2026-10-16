@@ -136,3 +136,72 @@ def test_pdf_without_extractable_text_is_rejected():
     # reason and not because the file could not be read.
     with pytest.raises(ValueError, match="No readable text"):
         extract_document_text("blank.pdf", _pdf(""))
+
+
+def test_docx_preserves_interleaved_paragraph_and_table_order():
+    doc = Document()
+    doc.add_paragraph("Introduction before the first table.")
+    doc.add_table(rows=1, cols=1).cell(0, 0).text = "First table contents."
+    doc.add_paragraph("Explanation between the two tables.")
+    doc.add_table(rows=1, cols=1).cell(0, 0).text = "Second table contents."
+    doc.add_paragraph("Conclusion after the second table.")
+    buf = io.BytesIO()
+    doc.save(buf)
+
+    assert extract_document_text("interleaved.docx", buf.getvalue()) == "\n\n".join(
+        [
+            "Introduction before the first table.",
+            "First table contents.",
+            "Explanation between the two tables.",
+            "Second table contents.",
+            "Conclusion after the second table.",
+        ]
+    )
+
+
+def test_docx_preserves_a_table_before_the_first_paragraph():
+    doc = Document()
+    doc.add_table(rows=1, cols=1).cell(0, 0).text = "Opening table with context."
+    doc.add_paragraph("Following paragraph with the explanation of that table.")
+    buf = io.BytesIO()
+    doc.save(buf)
+
+    assert extract_document_text("table-first.docx", buf.getvalue()) == (
+        "Opening table with context.\n\n"
+        "Following paragraph with the explanation of that table."
+    )
+
+
+@pytest.mark.parametrize(
+    ("merge_end", "expected_cells"),
+    [
+        (
+            (0, 1),
+            ["Merged cell contents.", "Lower left contents.", "Lower right contents."],
+        ),
+        (
+            (1, 0),
+            ["Merged cell contents.", "Upper right contents.", "Lower right contents."],
+        ),
+    ],
+    ids=["horizontal-merge", "vertical-merge"],
+)
+def test_docx_extracts_merged_cells_once_in_document_order(merge_end, expected_cells):
+    doc = Document()
+    doc.add_paragraph("Paragraph before the merged table.")
+    table = doc.add_table(rows=2, cols=2)
+    table.cell(0, 1).text = "Upper right contents."
+    table.cell(1, 0).text = "Lower left contents."
+    table.cell(1, 1).text = "Lower right contents."
+    table.cell(0, 0).merge(table.cell(*merge_end)).text = "Merged cell contents."
+    doc.add_paragraph("Paragraph after the merged table.")
+    buf = io.BytesIO()
+    doc.save(buf)
+
+    assert extract_document_text("merged.docx", buf.getvalue()) == "\n\n".join(
+        [
+            "Paragraph before the merged table.",
+            *expected_cells,
+            "Paragraph after the merged table.",
+        ]
+    )
