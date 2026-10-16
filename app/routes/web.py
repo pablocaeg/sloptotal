@@ -233,23 +233,48 @@ async def api_web_analyze(request: Request, req: WebAnalyzeRequest):
 @router.get("/report/{report_id}", response_class=HTMLResponse)
 async def report_page(request: Request, report_id: str):
     templates = request.app.state.templates
+
     if not report_id or len(report_id) > 12 or not report_id.isalnum():
-        raise HTTPException(status_code=400, detail="Invalid report ID")
+        return templates.TemplateResponse(
+            request,
+            "not_found.html",
+            {
+                "status_code": 400,
+                "error_message": "This report ID is invalid.",
+            },
+            status_code=400,
+        )
 
     report = await get_report(report_id)
+
     if not report:
-        raise HTTPException(status_code=404, detail="Report not found")
-    engines = get_engine_list_rich()
+        return templates.TemplateResponse(
+            request,
+            "not_found.html",
+            {
+                "status_code": 404,
+                "error_message": (
+                    "This report does not exist or has expired. "
+                    "Reports are deleted after 30 days."
+                ),
+            },
+            status_code=404,
+        )
+
+    engines = get_engine_list()
+
     return templates.TemplateResponse(
         request,
         "report.html",
         {
             "report": report,
             "engines": engines,
-            "engine_count": len(engines),
-            "bands": BANDS,
-            "band_info": BAND_INFO,
-            "notes": _report_notes(report),
+            "bands": [
+                SCORE_CLEAN,
+                SCORE_LOW_RISK,
+                SCORE_SUSPICIOUS,
+                SCORE_LIKELY_AI,
+            ],
         },
     )
 
