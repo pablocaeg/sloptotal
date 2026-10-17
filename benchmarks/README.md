@@ -7,6 +7,7 @@ their reports to `benchmarks/results/`. Run them from the repository root.
 | Script | Measures |
 |---|---|
 | `bench_engines.py`, `bench_full.py`, `bench_realistic.py` | Per-engine latency and snippet accuracy, in-process |
+| `bench_engine_costs.py` | Memory after load and median latency of each of the 23 engines, one fresh process per engine; its results are in [`docs/MODELS.md`](../docs/MODELS.md) |
 | `bench_snippets.py` | Snippet-scan throughput, the browser-extension workload |
 | `load_test.py` | CLI load generator (`--url`, `--concurrency`) |
 | `concurrency_test.py`, `realistic_load_test.py` | Queue behaviour under concurrent and realistic mixed traffic |

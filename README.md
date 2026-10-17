@@ -277,6 +277,8 @@ can be overridden with environment variables; see [`.env.example`](.env.example)
 | Standard | 8 GB | 4 cores | None | Default for most laptops |
 | Performance | 16 GB+ | 6+ cores | CUDA optional | Pool replicas, max throughput |
 
+What each engine costs in memory and time, measured on one machine, is in [docs/MODELS.md](docs/MODELS.md).
+
 **High-RAM CPU servers (e.g. 64 GB, no GPU):** you automatically get the `performance` profile. With no CUDA, all inference stays on CPU but you can run more concurrent workers and model pool replicas:
 
 ```bash
