@@ -1,0 +1,40 @@
+name: SlopTotal AI text check
+description: Score docs, posts or any text files with 23 AI detectors and fail the job when one reads as machine-written.
+author: pablocaeg
+branding:
+  icon: search
+  color: red
+
+inputs:
+  files:
+    description: Space-separated files or glob patterns to check, e.g. "docs/**/*.md CHANGELOG.md"
+    required: true
+  fail-above:
+    description: Fail when a file scores above this (0-100). 55 is "likely AI". Leave empty to only report.
+    required: false
+    default: ""
+  server:
+    description: SlopTotal API URL. Defaults to the public API; point it at your own server to keep text in-house.
+    required: false
+    default: "https://api.sloptotal.com"
+
+outputs:
+  results:
+    description: JSON list with each file's score, verdict and report URL
+    value: ${{ steps.check.outputs.results }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v7
+      with:
+        python-version: "3.12"
+    - shell: bash
+      run: pip install --quiet "${{ github.action_path }}/client"
+    - id: check
+      shell: bash
+      env:
+        FILES: ${{ inputs.files }}
+        FAIL_ABOVE: ${{ inputs.fail-above }}
+        SLOPTOTAL_URL: ${{ inputs.server }}
+      run: python "${{ github.action_path }}/client/action_check.py"

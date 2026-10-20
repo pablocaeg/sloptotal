@@ -6,6 +6,8 @@
   <a href="https://github.com/pablocaeg/sloptotal/actions/workflows/ci.yml?query=branch%3Amaster"><img src="https://img.shields.io/github/actions/workflow/status/pablocaeg/sloptotal/ci.yml?branch=master&event=push&label=CI" alt="CI status"></a>
   <a href="https://github.com/pablocaeg/sloptotal/releases"><img src="https://img.shields.io/github/v/release/pablocaeg/sloptotal?color=b5282e" alt="Latest release"></a>
   <a href="https://github.com/pablocaeg/sloptotal/pkgs/container/sloptotal"><img src="https://img.shields.io/badge/docker-ghcr.io-1a1a18?logo=docker&logoColor=white" alt="Docker image"></a>
+  <a href="client/README.md#mcp-server-for-claude-cursor-and-other-agents"><img src="https://img.shields.io/badge/MCP-server-1a1a18" alt="MCP server"></a>
+  <a href="client/README.md#github-action"><img src="https://img.shields.io/badge/GitHub%20Action-ready-1a1a18?logo=githubactions&logoColor=white" alt="GitHub Action"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-3d3b37" alt="Python 3.10+">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2d8a4e" alt="MIT license"></a>
   <a href="https://sloptotal.com"><img src="https://img.shields.io/badge/live%20demo-sloptotal.com-b5282e" alt="Live demo"></a>
@@ -30,6 +32,30 @@ it publishes how accurate that is, failures included.
 
 **Try it:** [sloptotal.com](https://sloptotal.com) · **Run it:** `docker run -p 8000:8000 ghcr.io/pablocaeg/sloptotal`
 
+## Use it from the terminal, CI or your AI agent
+
+One package gives you a CLI, an MCP server and a GitHub Action, against the
+public API or your own server. No install needed with [uv](https://docs.astral.sh/uv/):
+
+```bash
+uvx --from "git+https://github.com/pablocaeg/sloptotal#subdirectory=client" sloptotal check essay.md
+```
+
+```
+essay.md   72.4  Likely AI-generated  (412 words)
+  top engines: Desklib DeBERTa 0.99, SuperAnnotate 0.95, Fakespot 0.93
+  report: https://sloptotal.com/report/?id=3f9c1a7b2d4e
+```
+
+| | |
+|---|---|
+| **CLI** | `sloptotal check docs/*.md --fail-above 55` exits 1 when a file reads as AI; `--json` for every engine's score; `sloptotal site example.com` for AI app builder fingerprints |
+| **MCP server** | `claude mcp add sloptotal -- uvx --from "git+https://github.com/pablocaeg/sloptotal#subdirectory=client" sloptotal mcp` gives Claude, Cursor, VS Code and other agents three read-only tools: `analyze_text`, `analyze_url`, `check_site` |
+| **GitHub Action** | `uses: pablocaeg/sloptotal@master` with `files: "docs/**/*.md"` scores files in CI, writes a summary table and can fail above a threshold |
+| **Python** | `SlopTotal().analyze(text=...)` returns the score, verdict, engines and report link |
+
+Setup for every MCP client, pre-commit and the Action: [client/README.md](client/README.md).
+
 ## Features
 
 - **23 detection engines, one calibrated score.** DeBERTa and RoBERTa
@@ -47,6 +73,8 @@ it publishes how accurate that is, failures included.
   reports deleted after 30 days.
 - **CPU-only is fine.** Auto-detects your hardware; 4 GB RAM is enough for the
   lite profile, a GPU is optional.
+- **CLI, MCP server and GitHub Action** for checking text from the terminal, in
+  CI or from Claude, Cursor and other AI agents. [Above](#use-it-from-the-terminal-ci-or-your-ai-agent).
 - **JSON API and a [Chrome extension](https://github.com/pablocaeg/sloptotal-extension)**
   that marks AI-looking results in Google Search and LinkedIn.
 

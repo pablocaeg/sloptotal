@@ -1,0 +1,24 @@
+name: Action self-test
+
+on:
+  pull_request:
+    branches: [master]
+    paths: [action.yml, client/**]
+
+permissions:
+  contents: read
+
+jobs:
+  action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - id: sloptotal
+        uses: ./
+        with:
+          files: client/README.md
+      - shell: bash
+        env:
+          RESULTS: ${{ steps.sloptotal.outputs.results }}
+        run: |
+          python -c "import json, os; rows = json.loads(os.environ['RESULTS']); assert rows and 0 <= rows[0]['score'] <= 100, rows; print(rows)"
