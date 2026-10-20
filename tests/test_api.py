@@ -96,8 +96,29 @@ def test_form_rejects_short_text(client):
     assert "at least 50 characters" in r.text
 
 
-def test_unknown_report_is_404(client):
-    assert client.get("/report/abc123").status_code == 404
+def test_unknown_report_returns_html_404(client):
+    response = client.get("/report/abc123")
+
+    assert response.status_code == 404
+    assert "text/html" in response.headers["content-type"]
+    assert "This report does not exist or has expired." in response.text
+    assert "Return to homepage" in response.text
+
+
+def test_invalid_report_id_returns_html_400(client):
+    response = client.get("/report/abc-123")
+
+    assert response.status_code == 400
+    assert "text/html" in response.headers["content-type"]
+    assert "This report ID is invalid." in response.text
+
+
+def test_missing_api_report_still_returns_json(client):
+    response = client.get("/api/stream/abc123")
+
+    assert response.status_code == 404
+    assert "application/json" in response.headers["content-type"]
+    assert response.json()["detail"] == "Report not found"
 
 
 def test_health(client):

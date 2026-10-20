@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Report Not Found — SlopTotal{% endblock %}
+
+{% block meta_description %}
+This report does not exist or has expired.
+{% endblock %}
+
+{% block content %}
+<section class="error-page">
+    <div class="error-page__content">
+        <p class="error-page__code">
+            Error {{ status_code }}
+        </p>
+
+        <h1>
+            {% if status_code == 400 %}
+                Invalid report link
+            {% else %}
+                Report not found
+            {% endif %}
+        </h1>
+
+        <p>{{ error_message }}</p>
+
+        <a href="/" class="error-page__link">
+            Return to homepage
+        </a>
+    </div>
+</section>
+{% endblock %}
