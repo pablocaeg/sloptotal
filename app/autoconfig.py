@@ -4,10 +4,10 @@ Hardware auto-detection and optimal configuration for SlopTotal.
 Self-hosted users run one command; this module detects CPU, RAM, GPU
 and configures the server optimally. Explicit env vars always override.
 
-Profiles:
-  lite        — <8GB RAM, no GPU. 4 fast engines only. Minimal footprint.
-  standard    — 8-16GB RAM or CPU-only. All 21 engines, no replicas.
-  performance — 16GB+ RAM or GPU. All engines, pool replicas or CUDA.
+Profiles (concurrency and pool replicas; every profile runs all engines):
+  lite        - <8GB RAM, no GPU. Minimal concurrency.
+  standard    - 8-16GB RAM or CPU-only. All engines, no replicas.
+  performance - 16GB+ RAM or GPU. All engines, pool replicas or CUDA.
 """
 
 import logging
@@ -132,9 +132,6 @@ def compute_config(hw: dict, profile: str) -> dict:
     # Reserved cores
     config["SLOPTOTAL_RESERVED_CORES"] = "2"
 
-    # Lite mode flag — used by analyzer to skip heavy engines
-    config["SLOPTOTAL_LITE"] = "1" if profile == "lite" else "0"
-
     return config
 
 
@@ -195,12 +192,15 @@ def format_banner(hw: dict, profile: str, config: dict) -> str:
     else:
         lines.append("    GPU:  none detected")
 
+    # Lazy import: analyzer engines import get_device from this module.
+    from app.analyzer import _engines
+
     lines.extend(
         [
             "",
             f"  Profile: {profile}",
             f"  Device:  {config.get('device', 'cpu')}",
-            f"  Engines: {'4 (lite mode)' if config.get('SLOPTOTAL_LITE') == '1' else '21 (full)'}",
+            f"  Engines: {len(_engines)}",
         ]
     )
 

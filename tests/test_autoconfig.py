@@ -65,3 +65,21 @@ def test_compute_config_worker_counts(
     config = compute_config(hw, profile)
     assert int(config["SLOPTOTAL_SNIPPET_WORKERS"]) == expected_snippet_workers
     assert int(config["SLOPTOTAL_FULL_WORKERS"]) == expected_full_workers
+
+
+@pytest.mark.parametrize("profile", ["lite", "standard", "performance"])
+def test_banner_engine_count_matches_analyzer(profile):
+    from app.analyzer import _engines
+    from app.autoconfig import format_banner
+
+    hw = {
+        "cpu_count": 4,
+        "ram_gb": 8.0,
+        "cuda_available": False,
+        "gpu_name": None,
+        "gpu_vram_gb": 0.0,
+    }
+    config = compute_config(hw, profile)
+    assert "SLOPTOTAL_LITE" not in config
+    banner = format_banner(hw, profile, config)
+    assert f"Engines: {len(_engines)}" in banner
