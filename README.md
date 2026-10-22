@@ -47,8 +47,9 @@ it publishes how accurate that is, failures included.
   the harness and the raw per-sample scores.
 - **Private by default.** Self-hosted, no third-party AI APIs, no tracking,
   reports deleted after 30 days.
-- **CPU-only is fine.** Auto-detects your hardware; 4 GB RAM is enough for the
-  lite profile, a GPU is optional.
+- **CPU-only is fine.** Auto-detects your hardware; a GPU is optional. Loaded
+  models need about 8.3 GB of RAM (an estimate; see
+  [docs/MODELS.md](docs/MODELS.md)).
 - **JSON API and a [Chrome extension](https://github.com/pablocaeg/sloptotal-extension)**
   that marks AI-looking results in Google Search and LinkedIn.
 
@@ -95,9 +96,10 @@ classifiers which top the RAID benchmark drop to AUC 0.75 on current models.
 docker run -p 8000:8000 -v sloptotal-models:/app/models ghcr.io/pablocaeg/sloptotal
 ```
 
-Open <http://localhost:8000>. The first scan downloads about 2 GB of models into
-the `sloptotal-models` volume, so later starts are quick. To build from source
-instead, run `docker compose -f docker/docker-compose.yml up`.
+Open <http://localhost:8000>. The first scan downloads about 9 GB of models
+(see [docs/MODELS.md](docs/MODELS.md)) into the `sloptotal-models` volume, so
+later starts are quick. To build from source instead, run
+`docker compose -f docker/docker-compose.yml up`.
 
 ### From source
 
@@ -273,13 +275,16 @@ the Fakespot bias against pre-1920 prose that led to it.
 SlopTotal detects CPU, RAM and GPU at startup and picks a profile. Everything
 can be overridden with environment variables; see [`.env.example`](.env.example).
 
-| Profile | RAM | CPU | GPU | Notes |
-|---------|-----|-----|-----|-------|
-| Lite | 4 GB | 2 cores | None | All engines, slower |
-| Standard | 8 GB | 4 cores | None | Default for most laptops |
-| Performance | 16 GB+ | 6+ cores | CUDA optional | Pool replicas, max throughput |
+| Profile | When chosen (RAM) | CPU | GPU | Notes |
+|---------|-------------------|-----|-----|-------|
+| Lite | below 8 GB | 2 cores | None | Fewer workers; still loads every model |
+| Standard | 8 GB or more | 4 cores | None | Default for most laptops |
+| Performance | 16 GB or more | 6+ cores | CUDA optional | Pool replicas, max throughput |
 
-What each engine costs in memory and time, measured on one machine, is in [docs/MODELS.md](docs/MODELS.md).
+Profiles change workers and replicas, not which engines run. Every profile loads
+all models: about 8.3 GB of RAM once loaded (an estimate) and about 9 GB on
+disk. Per-engine memory and latency, measured on one machine, are in
+[docs/MODELS.md](docs/MODELS.md).
 
 **High-RAM CPU servers (e.g. 64 GB, no GPU):** you automatically get the `performance` profile. With no CUDA, all inference stays on CPU but you can run more concurrent workers and model pool replicas:
 
