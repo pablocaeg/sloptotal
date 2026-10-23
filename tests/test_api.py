@@ -275,6 +275,51 @@ def test_scan_stats_shows_no_texts_or_urls(client):
     assert "private" not in r.text
 
 
+@pytest.mark.parametrize("path", ["/api/recent", "/api/scan/stats"])
+def test_public_endpoints_return_no_submitted_content(client, path):
+    """/api/recent and /api/scan/stats are unauthenticated, so neither may carry
+    a submitted text, a scanned URL or a report id, whatever fields they gain."""
+    from app.database import log_scan_sync, mark_report_complete
+
+    text = "canary-text-1234"
+    url = "https://canary.example/canary-url-1234"
+    report_id = uuid4().hex[:12]
+    asyncio.run(
+        create_report(
+            report_id=report_id,
+            text_hash=uuid4().hex * 2,
+            source_type="text",
+            source=url,
+            text_excerpt=text,
+            word_count=2,
+            engines_total=23,
+        )
+    )
+    asyncio.run(mark_report_complete(report_id))
+    log_scan_sync(
+        scan_type="url",
+        text_excerpt=text,
+        text_hash=uuid4().hex * 2,
+        chars=len(text),
+        score=50.0,
+        indicator="yellow",
+        confidence="low",
+        bert=0.5,
+        e5=0.5,
+        tmr=0.5,
+        fakespot=0.5,
+        source_url=url,
+    )
+
+    r = client.get(path)
+    assert r.status_code == 200
+    # The report is completed and the scan is logged, so there is something
+    # here to leak: an empty body would pass the checks below for nothing.
+    assert r.json()
+    for secret in (text, url, "canary-url-1234", report_id):
+        assert secret not in r.text
+
+
 def test_health_does_not_show_the_database_path(client):
     r = client.get("/health")
     assert r.status_code == 200
