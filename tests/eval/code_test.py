@@ -57,4 +57,4 @@ if rows:
         f"\n{len(rows)} human stdlib modules: "
         f"{len(flagged)} scored >=60 'Likely AI', {len(susp)} scored 40-60 'Suspicious'"
     )
-    json.dump(rows, open("code_test_results.json", "w"), indent=1)
+    json.dump(rows, open("code_test_results.json", "w", encoding="utf-8"), indent=1)

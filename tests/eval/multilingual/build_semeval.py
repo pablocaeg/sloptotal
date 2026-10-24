@@ -68,7 +68,7 @@ def main() -> None:
             )
             if len(rows) >= n:
                 break
-        (OUT / f"semeval-{lang}.json").write_text(json.dumps(rows, ensure_ascii=False, indent=1))
+        (OUT / f"semeval-{lang}.json").write_text(json.dumps(rows, ensure_ascii=False, indent=1), encoding="utf-8")
         models = sorted({r["model"] for r in rows})
         print(f"{lang}: {len(rows)} samples ({', '.join(models)})", flush=True)
 

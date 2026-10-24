@@ -51,7 +51,7 @@ def rate(xs: np.ndarray) -> str:
 
 
 def main() -> None:
-    rows = [json.loads(line) for line in open(sys.argv[1]) if line.strip()]
+    rows = [json.loads(line) for line in open(sys.argv[1], encoding="utf-8") if line.strip()]
     for r in rows:
         r["y"] = 1 if r["label"] == "ai" else 0
         r["source"] = f"{r['lang']}:{r['label']}"
@@ -121,7 +121,7 @@ def main() -> None:
 
 def fit_short_alpha(path: str, engines: list[str], theta: np.ndarray, shift: dict[str, float]) -> float:
     """The shift strength that keeps TARGET_FPR of short human text above 45."""
-    rows = [json.loads(line) for line in open(path) if line.strip()]
+    rows = [json.loads(line) for line in open(path, encoding="utf-8") if line.strip()]
     rows = [r for r in rows if r["lang"] in shift]
     z = theta[0] + matrix(rows, engines) @ theta[1:] + np.array([shift[r["lang"]] for r in rows])
     human = np.array([r["label"] != "ai" for r in rows])

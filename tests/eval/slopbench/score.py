@@ -32,7 +32,7 @@ def key(row: dict) -> str:
 def samples() -> list[dict]:
     rows = []
     for path in sorted(CORPUS.glob("*.jsonl")):
-        rows += [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+        rows += [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
     return rows
 
 
@@ -69,11 +69,11 @@ def score(client: httpx.Client, row: dict) -> dict | None:
 
 def main() -> None:
     out = Path(sys.argv[1])
-    done = {json.loads(line)["key"] for line in out.read_text().splitlines() if line.strip()} if out.exists() else set()
+    done = {json.loads(line)["key"] for line in out.read_text(encoding="utf-8").splitlines() if line.strip()} if out.exists() else set()
     todo = [row for row in samples() if key(row) not in done]
     print(f"{len(done)} already scored, {len(todo)} to go", flush=True)
     started = time.time()
-    with httpx.Client(timeout=600) as client, ThreadPoolExecutor(WORKERS) as pool, out.open("a") as f:
+    with httpx.Client(timeout=600) as client, ThreadPoolExecutor(WORKERS) as pool, out.open("a", encoding="utf-8") as f:
         for i, result in enumerate(pool.map(lambda row: score(client, row), todo), 1):
             if result:
                 f.write(json.dumps(result, ensure_ascii=False) + "\n")

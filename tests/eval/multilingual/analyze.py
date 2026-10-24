@@ -35,7 +35,7 @@ def fmt(value: float | None) -> str:
 
 
 def main() -> None:
-    rows = [json.loads(line) for line in open(sys.argv[1]) if line.strip()]
+    rows = [json.loads(line) for line in open(sys.argv[1], encoding="utf-8") if line.strip()]
     by_lang: dict[str, list[dict]] = defaultdict(list)
     for row in rows:
         by_lang[row["lang"]].append(row)

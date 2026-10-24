@@ -146,7 +146,7 @@ def main() -> None:
     for lang in langs:
         rows = build(lang, n)
         path = OUT / f"wikipedia-{lang}.json"
-        path.write_text(json.dumps(rows, ensure_ascii=False, indent=1))
+        path.write_text(json.dumps(rows, ensure_ascii=False, indent=1), encoding="utf-8")
         print(f"{lang}: {len(rows)} samples -> {path.name}", flush=True)
 
 

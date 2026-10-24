@@ -62,6 +62,6 @@ for m in AI_MODELS:
             break
     print(f"{m}: {n}")
 
-json.dump(corpus, open("corpus.json", "w"), indent=1)
+json.dump(corpus, open("corpus.json", "w", encoding="utf-8"), indent=1)
 h = sum(1 for c in corpus if c["label"] == "human")
 print(f"\ntotal={len(corpus)}  human={h}  ai={len(corpus)-h}")

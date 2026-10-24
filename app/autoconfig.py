@@ -28,7 +28,7 @@ def detect_hardware() -> dict:
     except ImportError:
         # Fallback: read /proc/meminfo on Linux
         try:
-            with open("/proc/meminfo") as f:
+            with open("/proc/meminfo", encoding="utf-8") as f:
                 for line in f:
                     if line.startswith("MemTotal"):
                         ram_gb = round(int(line.split()[1]) / (1024**2), 1)
