@@ -235,4 +235,4 @@ for name, src in SAMPLES.items():
 
 caught = [r for r in rows if r[1] >= 60]
 print(f"\n{len(rows)} genuine LLM code samples: {len(caught)} caught at >=60 'Likely AI'")
-json.dump(rows, open("code_sensitivity_results.json", "w"), indent=1)
+json.dump(rows, open("code_sensitivity_results.json", "w", encoding="utf-8"), indent=1)

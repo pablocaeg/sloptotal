@@ -16,7 +16,7 @@ from pathlib import Path
 from app.language import count_words, detect_language, is_unspaced
 
 _HERE = Path(__file__).parent
-_CALIBRATION = json.loads((_HERE / "calibration.json").read_text())
+_CALIBRATION = json.loads((_HERE / "calibration.json").read_text(encoding="utf-8"))
 # Fingerprint of everything that turns engine scores into the overall score;
 # a cached report is reused only when it was scored under the same one.
 CALIBRATION_VERSION = hashlib.sha256(

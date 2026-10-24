@@ -30,7 +30,7 @@ def key(text: str) -> str:
 def samples() -> list[dict]:
     rows = []
     for path in sorted(CORPUS.glob("*.json")):
-        for row in json.loads(path.read_text()):
+        for row in json.loads(path.read_text(encoding="utf-8")):
             rows.append({**row, "source": path.stem, "key": key(row["text"])})
     return rows
 
@@ -67,11 +67,11 @@ def main() -> None:
     out = Path(sys.argv[1])
     done = set()
     if out.exists():
-        done = {json.loads(line)["key"] for line in out.read_text().splitlines() if line.strip()}
+        done = {json.loads(line)["key"] for line in out.read_text(encoding="utf-8").splitlines() if line.strip()}
     todo = [row for row in samples() if row["key"] not in done]
     print(f"{len(done)} already scored, {len(todo)} to go", flush=True)
     started = time.time()
-    with httpx.Client(timeout=600) as client, ThreadPoolExecutor(max_workers=WORKERS) as pool, out.open("a") as f:
+    with httpx.Client(timeout=600) as client, ThreadPoolExecutor(max_workers=WORKERS) as pool, out.open("a", encoding="utf-8") as f:
         for i, result in enumerate(pool.map(lambda row: score(client, row), todo), 1):
             if result:
                 f.write(json.dumps(result, ensure_ascii=False) + "\n")
@@ -79,7 +79,7 @@ def main() -> None:
             if i % 25 == 0:
                 rate = i / (time.time() - started)
                 print(f"{i}/{len(todo)} scored, ~{(len(todo) - i) / rate / 60:.0f} min left", flush=True)
-    failed = len(todo) - sum(1 for _ in out.open()) + len(done)
+    failed = len(todo) - sum(1 for _ in out.open(encoding="utf-8")) + len(done)
     print(f"done; {failed} samples failed and can be retried by running again", flush=True)
 
 

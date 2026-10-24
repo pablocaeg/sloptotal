@@ -25,7 +25,7 @@ def _row(words, label, score, **extra):
 
 def _length_section(tmp_path, rows):
     results = tmp_path / "results.jsonl"
-    results.write_text("".join(json.dumps(row) + "\n" for row in rows))
+    results.write_text("".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8")
     report = subprocess.run(
         [sys.executable, str(ANALYZE), str(results)],
         capture_output=True,

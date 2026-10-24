@@ -125,8 +125,8 @@ def score_with_different_model(texts, modern, CLASSICS_COUNT):
 
 
 def main():
-    modern = json.load(open(sys.argv[1]))
-    classics = json.load(open(sys.argv[2]))
+    modern = json.load(open(sys.argv[1], encoding="utf-8"))
+    classics = json.load(open(sys.argv[2], encoding="utf-8"))
     CLASSICS_COUNT = len(classics)
     texts = [r["text"] for r in modern] + [r["text"] for r in classics]
     torch.set_num_threads(6)
@@ -172,7 +172,7 @@ def main():
             f"{r['ms_per_text']:.0f} ms  {r['params_m']}M  {domains}",
             flush=True,
         )
-    json.dump(results, open(sys.argv[3], "w"))
+    json.dump(results, open(sys.argv[3], "w", encoding="utf-8"))
 
 
 if __name__ == "__main__":

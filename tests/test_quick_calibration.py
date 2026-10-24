@@ -41,11 +41,11 @@ def test_undecided_engines_give_a_middling_score():
 def human_scores():
     texts = {}
     for path in (BENCH / "corpus").glob("human-*.jsonl"):
-        for line in path.open():
+        for line in path.open(encoding="utf-8"):
             row = json.loads(line)
             texts[row["id"]] = row["text"]
     scores = {}
-    for line in (BENCH / "results-20260930.jsonl").open():
+    for line in (BENCH / "results-20260930.jsonl").open(encoding="utf-8"):
         row = json.loads(line)
         if row["label"] != "human" or row["id"] not in texts:
             continue
