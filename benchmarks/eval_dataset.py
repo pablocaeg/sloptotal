@@ -7,6 +7,7 @@ runs them through the API, and computes per-engine and
 overall accuracy metrics (precision, recall, F1, calibration).
 """
 
+import os
 import asyncio
 import random
 import time
@@ -17,7 +18,7 @@ import numpy as np
 from collections import defaultdict
 from datasets import load_dataset
 
-API_URL = "http://localhost:8000"
+API_URL = os.getenv("SLOPTOTAL_URL", "http://localhost:8000")
 SAMPLE_SIZE = 200  # per class (200 human + 200 AI = 400 total)
 BATCH_SIZE = 10    # snippets per API call
 CONCURRENCY = 2    # parallel API calls
