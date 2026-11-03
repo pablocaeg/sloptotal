@@ -12,7 +12,7 @@
   <a href="https://sloptotal.com/zh/"><img src="https://img.shields.io/badge/在线体验-sloptotal.com-b5282e" alt="在线体验"></a>
 </p>
 
-<p align="center"><a href="README.md">English</a> · <b>简体中文</b> · <a href="README.ru.md">Русский</a></p>
+<p align="center"><a href="README.md">English</a> · <b>简体中文</b> · <a href="README.ru.md">Русский</a> · <a href="README.es.md">Español</a></p>
 
 # SlopTotal
 
