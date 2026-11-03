@@ -45,5 +45,5 @@ for name, truth, text in SAMPLES:
     }
     print(f"{name:26} truth={truth:5} overall={d['overall_score']:6.1f}  {d['overall_verdict']}")
 
-json.dump(results, open("/tmp/claude-0/-root/115c8718-8eb5-499a-b970-e492788cad29/scratchpad/probe_results.json", "w"), indent=2)
+json.dump(results, open("/tmp/claude-0/-root/115c8718-8eb5-499a-b970-e492788cad29/scratchpad/probe_results.json", "w", encoding="utf-8"), indent=2)
 print("\nwrote probe_results.json")

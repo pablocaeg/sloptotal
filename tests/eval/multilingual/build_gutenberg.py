@@ -151,7 +151,7 @@ def main() -> None:
         for lang in langs:
             rows = build(client, books, lang, n_books)
             if rows:
-                (OUT / f"gutenberg-{lang}.json").write_text(json.dumps(rows, ensure_ascii=False, indent=1))
+                (OUT / f"gutenberg-{lang}.json").write_text(json.dumps(rows, ensure_ascii=False, indent=1), encoding="utf-8")
             print(f"{lang}: {len(rows)} samples from {len({r['meta'] for r in rows})} books", flush=True)
 
 

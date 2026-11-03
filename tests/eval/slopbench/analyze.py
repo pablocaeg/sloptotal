@@ -50,7 +50,7 @@ def fmt(value: float | None) -> str:
 
 
 def main() -> None:
-    rows = [json.loads(line) for line in open(sys.argv[1]) if line.strip()]
+    rows = [json.loads(line) for line in open(sys.argv[1], encoding="utf-8") if line.strip()]
     base = [r for r in rows if "variant" not in r and r["label"] in ("human", "ai")]
     human = [r["overall"] for r in base if r["label"] == "human"]
     ai = [r["overall"] for r in base if r["label"] == "ai"]

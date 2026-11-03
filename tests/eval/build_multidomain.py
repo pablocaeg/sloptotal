@@ -60,6 +60,6 @@ for dom in DOMAINS:
                 break
         print(f"{dom:10} {m:14} ai={k}", flush=True)
 
-json.dump(corpus, open("corpus_multidomain.json", "w"), indent=1)
+json.dump(corpus, open("corpus_multidomain.json", "w", encoding="utf-8"), indent=1)
 h = sum(1 for c in corpus if c["label"] == "human")
 print(f"\ntotal={len(corpus)} human={h} ai={len(corpus)-h}")

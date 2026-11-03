@@ -10,7 +10,7 @@ import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
 API = "https://api.sloptotal.com/api/analyze"
-corpus = json.load(open("corpus.json"))
+corpus = json.load(open("corpus.json", encoding="utf-8"))
 
 
 def analyze(item):
@@ -45,5 +45,5 @@ print(f"analysed ok={len(ok)} failed={len(bad)}")
 for b in bad[:5]:
     print("   ERR", b["model"], b["error"])
 
-json.dump(ok, open("corpus_results.json", "w"))
+json.dump(ok, open("corpus_results.json", "w", encoding="utf-8"))
 print("wrote corpus_results.json")

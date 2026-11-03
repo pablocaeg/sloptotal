@@ -121,7 +121,7 @@ def infer_prompts(client: httpx.Client, source: str) -> None:
     """The essay sets come without their prompts; ask a model which question each
     essay answers, once, and store it as the seed."""
     path = CORPUS / f"human-{source}.jsonl"
-    rows = [json.loads(line) for line in path.read_text().splitlines()]
+    rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
     missing = [r for r in rows if not r.get("seed")]
     if not missing:
         return
@@ -133,7 +133,7 @@ def infer_prompts(client: httpx.Client, source: str) -> None:
 
     with ThreadPoolExecutor(WORKERS) as pool:
         list(pool.map(one, missing))
-    path.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows))
+    path.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows), encoding="utf-8")
 
 
 LEAK = re.compile(
@@ -191,9 +191,9 @@ def generate(client: httpx.Client, sample: dict) -> dict | None:
 def run(source: str, client: httpx.Client) -> None:
     if source.startswith("essay-"):
         infer_prompts(client, source)
-    human = [json.loads(line) for line in (CORPUS / f"human-{source}.jsonl").read_text().splitlines()]
+    human = [json.loads(line) for line in (CORPUS / f"human-{source}.jsonl").read_text(encoding="utf-8").splitlines()]
     out_path = CORPUS / f"ai-{source}.jsonl"
-    done = {json.loads(line)["pair"] for line in out_path.read_text().splitlines()} if out_path.exists() else set()
+    done = {json.loads(line)["pair"] for line in out_path.read_text(encoding="utf-8").splitlines()} if out_path.exists() else set()
     todo = [s for s in human if s["id"] not in done and s.get("seed")]
     if ONLY == "free":
         todo = [s for s in todo if model_for(s["id"]) in FREE_MODELS]
@@ -203,12 +203,12 @@ def run(source: str, client: httpx.Client) -> None:
     def one(sample: dict) -> None:
         row = generate(client, sample)
         if row:
-            with _lock, open(out_path, "a") as f:
+            with _lock, open(out_path, "a", encoding="utf-8") as f:
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")
 
     with ThreadPoolExecutor(WORKERS) as pool:
         list(pool.map(one, todo))
-    total = len(out_path.read_text().splitlines()) if out_path.exists() else 0
+    total = len(out_path.read_text(encoding="utf-8").splitlines()) if out_path.exists() else 0
     print(f"{source}: {total}/{len(human)} generated", flush=True)
 
 

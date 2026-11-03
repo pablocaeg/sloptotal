@@ -91,5 +91,5 @@ for gid, title, author, year in BOOKS:
             break
     print(f"  {title[:34]:34} {author:16} {year}  chunks={picked}", flush=True)
 
-json.dump(corpus, open("corpus_classics.json", "w"), indent=1)
+json.dump(corpus, open("corpus_classics.json", "w", encoding="utf-8"), indent=1)
 print(f"\ntotal classic human chunks: {len(corpus)}")

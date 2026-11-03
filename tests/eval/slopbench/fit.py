@@ -64,7 +64,7 @@ def logit(p: float) -> float:
 def load(paths: list[str]) -> list[dict]:
     rows = []
     for path in paths:
-        rows += [json.loads(line) for line in open(path) if line.strip()]
+        rows += [json.loads(line) for line in open(path, encoding="utf-8") if line.strip()]
     return rows
 
 
@@ -237,7 +237,7 @@ def main() -> None:
         json.dumps({"id": r["id"], "source": r["source"], "label": r["label"], "model": r.get("model", "human"),
                     "variant": r.get("variant", ""), "current": r["overall"], "fitted": round(float(s), 1)}) + "\n"
         for r, s in zip(full, held_out)
-    ))
+    ), encoding="utf-8")
 
     weights = dict(zip(engines, theta[1:]))
     print("\n## Weights\n")
@@ -257,11 +257,11 @@ def main() -> None:
 
 def write_section(name: str, section: dict) -> None:
     """Replace one section of app/calibration.json, keeping the others."""
-    data = json.loads(OUT.read_text()) if OUT.exists() else {}
+    data = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else {}
     data["version"] = date.today().isoformat()
     data["source"] = "tests/eval/slopbench (fit.py, fit_multilingual.py)"
     data[name] = section
-    OUT.write_text(json.dumps(data, indent=2) + "\n")
+    OUT.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
 if __name__ == "__main__":
     main()

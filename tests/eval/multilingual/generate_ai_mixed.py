@@ -65,14 +65,14 @@ def main() -> None:
             path = OUT / f"ai-mixed-{lang}.json"
             if path.exists():
                 continue
-            topics = [row["topic"] for row in json.loads((OUT / f"wikipedia-{lang}.json").read_text())]
+            topics = [row["topic"] for row in json.loads((OUT / f"wikipedia-{lang}.json").read_text(encoding="utf-8"))]
             jobs = [
                 (topic, lang, "encyclopedia" if i % 2 == 0 else "blog", MODELS[i % len(MODELS)])
                 for i, topic in enumerate(topics)
             ]
             with ThreadPoolExecutor(max_workers=8) as pool:
                 rows = [row for row in pool.map(lambda job: generate(client, *job), jobs) if row]
-            path.write_text(json.dumps(rows, ensure_ascii=False, indent=1))
+            path.write_text(json.dumps(rows, ensure_ascii=False, indent=1), encoding="utf-8")
             print(f"{lang}: {len(rows)}/{len(jobs)} samples", flush=True)
 
 

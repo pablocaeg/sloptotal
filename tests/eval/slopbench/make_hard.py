@@ -63,7 +63,7 @@ def base_samples(kind: str, variant: str) -> list[dict]:
     rng = random.Random(variant)
     picked = []
     for path in sorted(CORPUS.glob(f"{kind}-*.jsonl")):
-        rows = [json.loads(line) for line in path.read_text().splitlines()]
+        rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
         rows = [r for r in rows if r["label"] in ("human", "ai") and r["words"] >= 120]
         picked += rng.sample(rows, min(PER_SOURCE, len(rows)))
     return picked
@@ -77,7 +77,7 @@ def other_model(row: dict, rng: random.Random) -> str:
 def build(variant: str, client: httpx.Client) -> None:
     kind, label, template = VARIANTS[variant]
     out_path = CORPUS / f"hard-{variant}.jsonl"
-    done = {json.loads(line)["base"] for line in out_path.read_text().splitlines()} if out_path.exists() else set()
+    done = {json.loads(line)["base"] for line in out_path.read_text(encoding="utf-8").splitlines()} if out_path.exists() else set()
     rng = random.Random(f"{variant}-models")
     todo = [(row, other_model(row, rng)) for row in base_samples(kind, variant)]
     todo = [(row, model) for row, model in todo if row["id"] not in done]
@@ -113,12 +113,12 @@ def build(variant: str, client: httpx.Client) -> None:
         }
         if split_at:
             result["human_words"] = split_at
-        with _lock, open(out_path, "a") as f:
+        with _lock, open(out_path, "a", encoding="utf-8") as f:
             f.write(json.dumps(result, ensure_ascii=False) + "\n")
 
     with ThreadPoolExecutor(WORKERS) as pool:
         list(pool.map(one, todo))
-    print(f"{variant}: {len(out_path.read_text().splitlines())} samples", flush=True)
+    print(f"{variant}: {len(out_path.read_text(encoding="utf-8").splitlines())} samples", flush=True)
 
 
 def main() -> None:

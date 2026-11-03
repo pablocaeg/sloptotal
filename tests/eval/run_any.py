@@ -21,7 +21,7 @@ API = os.environ.get("SLOPTOTAL_API", "https://api.sloptotal.com/api/analyze")
 MAX_TRIES = 5
 
 inp, outp = sys.argv[1], sys.argv[2]
-corpus = json.load(open(inp))
+corpus = json.load(open(inp, encoding="utf-8"))
 
 
 def analyze(item):
@@ -62,7 +62,7 @@ bad = [r for r in results if "error" in r]
 print(f"{inp}: ok={len(ok)}/{len(corpus)} failed={len(bad)}")
 for b in bad[:5]:
     print("   ERR", b["model"], b["error"])
-json.dump(ok, open(outp, "w"))
+json.dump(ok, open(outp, "w", encoding="utf-8"))
 if len(ok) != len(corpus):
     print("INCOMPLETE — do not draw conclusions from this run")
     sys.exit(1)

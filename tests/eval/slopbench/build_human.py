@@ -643,7 +643,7 @@ def main() -> None:
     for name in sys.argv[1:] or ALL:
         rows = build(name)
         path = OUT / f"human-{name}.jsonl"
-        path.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows))
+        path.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows), encoding="utf-8")
         mean = sum(r["words"] for r in rows) / max(1, len(rows))
         print(f"{name}: {len(rows)} samples, mean {mean:.0f} words -> {path.name}", flush=True)
 

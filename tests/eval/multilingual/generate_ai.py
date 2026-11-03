@@ -77,11 +77,11 @@ def main() -> None:
     langs = sys.argv[1:] or list(LANGUAGES)
     with httpx.Client(base_url=BASE_URL, headers={"Authorization": f"Bearer {key}"}, timeout=180) as client:
         for lang in langs:
-            topics = [row["topic"] for row in json.loads((OUT / f"wikipedia-{lang}.json").read_text())]
+            topics = [row["topic"] for row in json.loads((OUT / f"wikipedia-{lang}.json").read_text(encoding="utf-8"))]
             jobs = [(topic, lang, "encyclopedia" if i % 2 == 0 else "blog") for i, topic in enumerate(topics)]
             with ThreadPoolExecutor(max_workers=6) as pool:
                 rows = [row for row in pool.map(lambda job: generate(client, *job), jobs) if row]
-            (OUT / f"ai-{MODEL}-{lang}.json").write_text(json.dumps(rows, ensure_ascii=False, indent=1))
+            (OUT / f"ai-{MODEL}-{lang}.json").write_text(json.dumps(rows, ensure_ascii=False, indent=1), encoding="utf-8")
             print(f"{lang}: {len(rows)}/{len(jobs)} samples", flush=True)
 
 

@@ -43,5 +43,5 @@ corpus = [
     {"label": "human" if m == "human" else "ai", "model": m, "domain": d, "meta": None, "text": t}
     for d, m, t in rows
 ]
-json.dump(corpus, open("corpus_raid.json", "w"), indent=1)
+json.dump(corpus, open("corpus_raid.json", "w", encoding="utf-8"), indent=1)
 print(len(corpus), Counter((c["domain"], c["label"]) for c in corpus))
