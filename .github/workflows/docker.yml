@@ -1,0 +1,44 @@
+name: Docker
+
+# Builds the image on pull requests that can break it, starts it and waits
+# for /health, so a base-image or dependency bump that does not install fails
+# here instead of on master. Nothing is pushed.
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - 'docker/**'
+      - 'requirements.txt'
+      - '.github/workflows/docker.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docker-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: docker/Dockerfile
+          push: false
+          load: true
+          tags: sloptotal:pr
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Start the image and wait for /health
+        run: |
+          docker run -d --name sloptotal -p 8000:8000 sloptotal:pr
+          for i in $(seq 1 60); do
+            if curl -fsS http://localhost:8000/health; then exit 0; fi
+            sleep 2
+          done
+          docker logs sloptotal
+          exit 1
