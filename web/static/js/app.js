@@ -178,8 +178,40 @@
 
     // ---- Queue ----
     var overlay = document.getElementById("queue-overlay");
-    function showQueue(data) { updateQueue(data); overlay.hidden = false; document.getElementById("queue-cancel").focus(); }
-    function hideQueue() { overlay.hidden = true; }
+    // The dialog is inside <main>, so <main> itself stays active. inert on the
+    // rest of the page keeps keyboard and screen-reader focus off the controls behind it.
+    function setBackgroundInert(inert) {
+        var nodes = [];
+        var header = document.querySelector("header");
+        var footer = document.querySelector("footer");
+        if (header) nodes.push(header);
+        if (footer) nodes.push(footer);
+        var main = document.querySelector("main");
+        if (main) {
+            Array.prototype.forEach.call(main.children, function (child) {
+                if (child !== overlay) nodes.push(child);
+            });
+        }
+        nodes.forEach(function (el) { el.toggleAttribute("inert", inert); });
+    }
+    function queueFocusables() {
+        var card = overlay.querySelector(".queue-card");
+        if (!card) return [];
+        return Array.prototype.filter.call(
+            card.querySelectorAll("a[href], button, input, select, textarea, [tabindex]"),
+            function (el) { return !el.disabled && el.tabIndex >= 0; }
+        );
+    }
+    function showQueue(data) {
+        updateQueue(data);
+        setBackgroundInert(true);
+        overlay.hidden = false;
+        document.getElementById("queue-cancel").focus();
+    }
+    function hideQueue() {
+        overlay.hidden = true;
+        setBackgroundInert(false);
+    }
     function updateQueue(data) {
         var pos = data.position || 1;
         var title = document.getElementById("queue-title");
@@ -223,7 +255,26 @@
         submit.focus();
     });
     document.addEventListener("keydown", function (e) {
-        if (e.key === "Escape" && !overlay.hidden) document.getElementById("queue-cancel").click();
+        if (overlay.hidden) return;
+        if (e.key === "Escape") {
+            document.getElementById("queue-cancel").click();
+            return;
+        }
+        if (e.key !== "Tab") return;
+        var items = queueFocusables();
+        if (!items.length) { e.preventDefault(); return; }
+        var first = items[0];
+        var last = items[items.length - 1];
+        var active = document.activeElement;
+        var card = overlay.querySelector(".queue-card");
+        var outside = !card || !card.contains(active);
+        if (e.shiftKey && (active === first || outside)) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && (active === last || outside)) {
+            e.preventDefault();
+            first.focus();
+        }
     });
 
     // ---- Website builder check ----
