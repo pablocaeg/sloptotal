@@ -6,14 +6,79 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
-### Fixed
+## [1.3.0] - 2026-11-03
+
+### Added
+- **GPU inference.** Every model now runs on CUDA when torch can see a GPU;
+  before, seven of them stayed on the CPU, and a typo (`total_mem`) meant the
+  GPU profile was never picked. On an RTX 5070 Ti, 12 texts take 5.3 s instead
+  of 319 s, with identical scores (#169).
+- **The score range while a report runs.** Cheap engines are queued first, the
+  report streams where the score can still land, and says which model engines
+  are running and when the score is final (#142, #143, #144, #147).
+- **A daily quota for direct API use** on public instances:
+  `SLOPTOTAL_DIRECT_DAILY_LIMIT` calls per IP per day from outside
+  `SLOPTOTAL_FIRST_PARTY_ORIGINS`. Off by default (#162).
+- `fast: true` on the web form request: half the windows per classifier, so the
+  windowed classifiers take about a third less time for a median score change
+  of one point (#164).
+- Example clients in Node.js (#140) and Ruby (#178).
+- READMEs in Chinese, Russian (#163) and Spanish (#177).
+- The site check recognises Emergent (#151).
+- Catalan is detected instead of being read as Spanish (#145); Thai, Lao, Khmer
+  and Burmese words are counted by characters (#136); Finnish, Czech and
+  Hungarian are recognised and marked unsupported (#126); the report page shows
+  the detected language (#122).
+- Word tables are extracted from `.docx` uploads (#130).
+- The report page highlights the phrases Linguistic Markers found (#105),
+  remembers your feedback answer after a reload (#118) and has the
+  sloptotal.com design (#95, #97, #99, #103, #104).
+- Docs: how the overall score is calibrated (`docs/CALIBRATION.md`, #149), RAM
+  and latency per engine (`docs/MODELS.md`, #154), the quick-path calibration
+  (#119), the performance benchmarks (#128), OpenAPI tags and request examples
+  in `/docs` (#107, #132).
+- A weekly link check for the README and docs (#150), a Docker build on pull
+  requests that touch the image (#186), and CodeQL and OpenSSF Scorecard
+  scanning (#187).
+
+### Changed
 - The quick and paragraph scores (`/api/quick-score`, `/api/paragraph-score`,
   used by the Chrome extension) are now calibrated on SlopBench like the full
   report: a logistic fit over the quick engines, with short texts pulled toward
   the middle and the band edges at measured human false-positive rates
   (`tests/eval/slopbench/fit_quick.py`). The old hand-weighted formula called
   12.5% of human texts AI, 35% of TOEFL essays and 11 of 87 classic books; the
-  fit calls 1.4% of human texts AI and 1 of 87 classics (#100).
+  fit calls 1.4% of human texts AI and 1 of 87 classics (#100, #101).
+- The startup banner prints the real engine count, and the unused
+  `SLOPTOTAL_LITE` flag is gone (#165).
+- The docs give the real footprint: about 9 GB of downloads and 8.3 GB of RAM
+  (#166).
+- Every benchmark script reads the server address from `SLOPTOTAL_URL` (#183).
+- ruff also checks import order, pyupgrade rules and file encodings (#138,
+  #139, #176). Quick-scan thresholds live in `app/config.py` (#96, #125).
+- fastapi 0.162.0, pydantic 2.14.1, trafilatura 2.3.1, pypdf 6.21.4 (#180,
+  #182).
+
+### Fixed
+- A failed write on a worker thread's database connection is rolled back;
+  before, it left the connection in a broken transaction and reports could stay
+  at "Scanning..." (#152).
+- Public endpoints no longer return scanned texts or URLs, and a test keeps it
+  that way (#148, #168).
+- DOCX uploads keep paragraphs and tables in document order (#153).
+- Text files are read and written as UTF-8, so the tests pass on Windows
+  (#176, #184).
+- The queue wait counts long jobs as long and stays sane after a restart
+  (#146).
+- Keyboard focus stays inside the queue dialog (#185), and upload status is
+  announced to screen readers (#129).
+- Copy link works on self-hosted servers without HTTPS (#134), and pages that
+  need JavaScript get a clear error (#133).
+
+### Tests
+- Direct tests for the calibration helpers, the feedback report's AUC edge
+  cases, the model update inventory, Burstiness's early returns and the
+  detection of more languages (#106, #124, #131, #135, #137).
 
 ## [1.2.0] - 2026-10-10
 
