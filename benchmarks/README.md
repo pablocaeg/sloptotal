@@ -1,7 +1,7 @@
 # Benchmarks
 
 Speed, load and older accuracy scripts. They talk to a running instance
-(`http://localhost:8000` by default, `SLOPTOTAL_URL` where supported) and write
+(`http://localhost:8000` by default, or `SLOPTOTAL_URL`) and write
 their reports to `benchmarks/results/`. Run them from the repository root.
 
 | Script | Measures |

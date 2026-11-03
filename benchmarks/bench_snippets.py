@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Benchmark snippet scan performance — simulates extension workload."""
 
+import os
 import asyncio
 import time
 import httpx
 import statistics
 
-API = "http://localhost:8000"
+API = os.getenv("SLOPTOTAL_URL", "http://localhost:8000")
 
 # Realistic snippets: mix of lengths, AI and human text
 SNIPPETS = [

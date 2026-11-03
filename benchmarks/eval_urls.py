@@ -3,12 +3,13 @@
 Real-world URL evaluation: known human content vs known AI-generated content.
 Tests both /api/quick-score and /api/analyze endpoints.
 """
+import os
 import asyncio
 import httpx
 import time
 import sys
 
-API_URL = "http://localhost:8000"
+API_URL = os.getenv("SLOPTOTAL_URL", "http://localhost:8000")
 
 # --- Known HUMAN content (pre-AI era or verified human authors) ---
 HUMAN_URLS = [

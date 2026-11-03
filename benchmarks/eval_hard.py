@@ -11,6 +11,7 @@ Usage:
     PYTHONUNBUFFERED=1 python benchmarks/eval_hard.py
 """
 
+import os
 import asyncio
 import random
 import time
@@ -22,7 +23,7 @@ import httpx
 import numpy as np
 from datasets import load_dataset
 
-API_URL = "http://localhost:8000"
+API_URL = os.getenv("SLOPTOTAL_URL", "http://localhost:8000")
 SEED = 42
 CONCURRENCY = 2
 

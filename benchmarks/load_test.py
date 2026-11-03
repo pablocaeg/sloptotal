@@ -11,6 +11,7 @@ Examples:
     python load_test.py --test urls --concurrent 5 --requests 10
 """
 
+import os
 import argparse
 import asyncio
 import random
@@ -477,7 +478,7 @@ def print_results(results: LoadTestResults):
 
 async def main():
     parser = argparse.ArgumentParser(description="Load test SlopTotal API")
-    parser.add_argument("--url", default="http://localhost:8000", help="Base URL of SlopTotal API")
+    parser.add_argument("--url", default=os.getenv("SLOPTOTAL_URL", "http://localhost:8000"), help="Base URL of SlopTotal API")
     parser.add_argument("--concurrent", type=int, default=5, help="Concurrent requests")
     parser.add_argument("--requests", type=int, default=20, help="Total requests")
     parser.add_argument(
