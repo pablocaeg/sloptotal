@@ -190,23 +190,52 @@
     // ---- Feedback: who wrote this text? ----
     var feedback = document.getElementById("feedback");
     var status = document.getElementById("feedback-status");
-    feedback.querySelectorAll("[data-label]").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-            fetch("/api/report/" + reportId + "/feedback", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ label: btn.dataset.label }),
-            })
-                .then(function (r) {
-                    if (!r.ok) throw new Error();
-                    feedback.querySelectorAll("[data-label]").forEach(function (b) {
-                        b.setAttribute("aria-pressed", b === btn ? "true" : "false");
-                    });
-                    status.textContent = "Thanks, your answer is saved.";
+    if (feedback) {
+        var storageKey = "sloptotal:feedback:" + reportId;
+        var savedLabel = null;
+        try {
+            savedLabel = localStorage.getItem(storageKey);
+        } catch (e) {}
+
+        var buttons = feedback.querySelectorAll("[data-label]");
+        if (savedLabel) {
+            buttons.forEach(function (b) {
+                b.setAttribute("aria-pressed", b.dataset.label === savedLabel ? "true" : "false");
+            });
+            var savedButton = feedback.querySelector('[data-label="' + savedLabel + '"]');
+            if (status && savedButton) {
+                status.textContent = "Your answer: " + savedButton.textContent.trim() + ".";
+            }
+        }
+
+        buttons.forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                var label = btn.dataset.label;
+                fetch("/api/report/" + reportId + "/feedback", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ label: label }),
                 })
-                .catch(function () { status.textContent = "Could not save your answer. Please try again."; });
+                    .then(function (r) {
+                        if (!r.ok) throw new Error("bad status");
+                        buttons.forEach(function (b) {
+                            b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+                        });
+                        try {
+                            localStorage.setItem(storageKey, label);
+                        } catch (e) {}
+                        if (status) {
+                            status.textContent = "Thanks, your answer is saved.";
+                        }
+                    })
+                    .catch(function () {
+                        if (status) {
+                            status.textContent = "Could not save your answer. Please try again.";
+                        }
+                    });
+            });
         });
-    });
+    }
 
     // ---- Website builder markers (URL reports only) ----
     var site = document.getElementById("site-check");
