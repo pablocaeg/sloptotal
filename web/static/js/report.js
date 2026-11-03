@@ -187,7 +187,7 @@
         }
     });
 
-// ---- Feedback: who wrote this text? ----
+    // ---- Feedback: who wrote this text? ----
     var feedback = document.getElementById("feedback");
     var status = document.getElementById("feedback-status");
     if (feedback) {
@@ -200,12 +200,11 @@
         var buttons = feedback.querySelectorAll("[data-label]");
         if (savedLabel) {
             buttons.forEach(function (b) {
-                if (b.dataset.label === savedLabel) {
-                    b.setAttribute("aria-pressed", "true");
-                }
+                b.setAttribute("aria-pressed", b.dataset.label === savedLabel ? "true" : "false");
             });
-            if (status) {
-                status.textContent = "Your answer: " + savedLabel + ".";
+            var savedButton = feedback.querySelector('[data-label="' + savedLabel + '"]');
+            if (status && savedButton) {
+                status.textContent = "Your answer: " + savedButton.textContent.trim() + ".";
             }
         }
 
@@ -220,9 +219,8 @@
                     .then(function (r) {
                         if (!r.ok) throw new Error("bad status");
                         buttons.forEach(function (b) {
-                            b.removeAttribute("aria-pressed");
+                            b.setAttribute("aria-pressed", b === btn ? "true" : "false");
                         });
-                        btn.setAttribute("aria-pressed", "true");
                         try {
                             localStorage.setItem(storageKey, label);
                         } catch (e) {}
