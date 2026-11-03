@@ -100,6 +100,9 @@ class _FakeModel:
     def eval(self):
         return self
 
+    def to(self, device):
+        return self
+
 
 def test_acquire_waits_out_a_slow_first_load():
     """The first boot downloads weights for minutes; requests must wait for the

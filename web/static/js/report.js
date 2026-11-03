@@ -46,7 +46,7 @@
         cell.textContent = v.toFixed(1);
         cell.classList.remove("st-engine__pending");
         if (details) row.title = details;
-        if (row.dataset.score === "-1") done++;
+        if (parseFloat(row.dataset.score) < 0) done++;
         row.dataset.score = v;
         sortRows();
         document.getElementById("progress").textContent = done + " / " + total;
@@ -113,8 +113,34 @@
             return;
         }
         setRow(msg.key, msg.score, msg.details);
-        setScore(msg.overall_score, msg.engines_flagged, false);
+        // Until the engines the score depends on are in, any number shown
+        // would still move; show progress instead. Older servers send no
+        // score_final, so they keep the running score.
+        if (msg.score_final !== false) {
+            setScore(msg.overall_score, msg.engines_flagged, false);
+        } else {
+            document.getElementById("summary").textContent = done + " of " + total + " engines finished.";
+            // Where the score can still land, narrowing as the engines report.
+            if (msg.score_range) {
+                document.getElementById("score-value").textContent =
+                    Math.round(msg.score_range[0]) + "\u2013" + Math.round(msg.score_range[1]);
+            }
+        }
     };
+    // Model engines announce when they start, so the rows show what is running.
+    stream.addEventListener("running", function (event) {
+        var key = JSON.parse(event.data).key;
+        var bar = document.getElementById("bar-" + key);
+        var cell = document.getElementById("score-" + key);
+        if (!bar || bar.dataset.band) return;
+        bar.dataset.running = "";
+        if (cell) cell.textContent = "Running";
+        var row = document.getElementById("row-" + key);
+        if (row && row.dataset.score === "-1") {
+            row.dataset.score = "-0.5"; // above the engines still waiting
+            sortRows();
+        }
+    });
     stream.onerror = function () {
         stream.close();
         loadReport().then(finish);
@@ -122,11 +148,43 @@
 
     // ---- Copy link ----
     var copy = document.getElementById("copy-btn");
+    // navigator.clipboard only exists on secure origins (HTTPS or localhost),
+    // so on a LAN address we select a read-only field and let the user copy it.
+    function showCopied() {
+        copy.textContent = "Copied";
+        setTimeout(function () { copy.textContent = "Copy link"; }, 2000);
+    }
+    function selectLinkForManualCopy(url) {
+        var input = document.getElementById("copy-fallback");
+        if (!input) {
+            input = document.createElement("input");
+            input.id = "copy-fallback";
+            input.type = "text";
+            input.readOnly = true;
+            input.setAttribute("aria-label", "Report link");
+            copy.parentNode.insertBefore(input, copy.nextSibling);
+        }
+        input.value = url;
+        input.focus();
+        input.select();
+        var ok = false;
+        try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+        if (ok) {
+            input.remove();
+            showCopied();
+        } else {
+            copy.textContent = "Press Ctrl+C to copy";
+        }
+    }
     copy.addEventListener("click", function () {
-        navigator.clipboard.writeText(window.location.href).then(function () {
-            copy.textContent = "Copied";
-            setTimeout(function () { copy.textContent = "Copy link"; }, 2000);
-        });
+        var url = window.location.href;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(showCopied, function () {
+                selectLinkForManualCopy(url);
+            });
+        } else {
+            selectLinkForManualCopy(url);
+        }
     });
 
 // ---- Feedback: who wrote this text? ----

@@ -1,11 +1,14 @@
 import math
 import threading
+
 import torch
 from transformers import GPT2LMHeadModel, GPT2TokenizerFast
-from app.engines.base import BaseEngine
-from app.schemas import EngineResult, score_to_engine_verdict
+
+from app.autoconfig import get_device
 from app.config import GPT2_MODEL
+from app.engines.base import BaseEngine
 from app.model_pool import LOAD_LOCK as _load_lock
+from app.schemas import EngineResult, score_to_engine_verdict
 
 _model = None
 _tokenizer = None
@@ -19,7 +22,7 @@ def _load_model():
             if _model is None:
                 _tokenizer = GPT2TokenizerFast.from_pretrained(GPT2_MODEL)
                 model = GPT2LMHeadModel.from_pretrained(GPT2_MODEL)
-                model.eval()
+                model.eval().to(get_device())
                 # Publish the model last: readers test it, so the tokenizer must
                 # already be set and the model already in eval mode when they see it.
                 _model = model

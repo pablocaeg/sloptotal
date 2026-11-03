@@ -1,7 +1,8 @@
 import threading
 from abc import ABC, abstractmethod
 from collections import deque
-from typing import Callable
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
 
 from app.schemas import EngineResult
 
@@ -10,6 +11,27 @@ MAX_WINDOWS = 8
 # analysis. Side-by-side windows, at most 4, halve their time on long texts and
 # moved 5 of 190 verdicts (benchmarks/perf: large_models.py, retime.py).
 LARGE_MODEL_MAX_WINDOWS = 4
+
+# Fast mode (see fast_windows) scores half as many windows in every classifier.
+_mode = threading.local()
+
+
+@contextmanager
+def fast_windows(enabled: bool = True) -> Iterator[None]:
+    """Halve every max_windows on this thread while the block runs.
+
+    The engines run in thread pools, so a thread-local is how one analysis asks
+    for fewer windows without changing the engines' signatures. Long texts cost
+    about half as much in the classifiers, at some cost in accuracy on texts
+    that change partway through; short texts, which fit in one window, are not
+    affected.
+    """
+    previous = getattr(_mode, "fast", False)
+    _mode.fast = enabled
+    try:
+        yield
+    finally:
+        _mode.fast = previous
 
 
 def window_starts(
@@ -20,8 +42,10 @@ def window_starts(
     Texts that need up to max_windows windows get every one of them. Longer
     texts get max_windows windows spread evenly from the start to the end, so
     one very long paste cannot hold a large model for minutes while other
-    analyses wait for it.
+    analyses wait for it. Inside fast_windows, max_windows is halved (at least 2).
     """
+    if getattr(_mode, "fast", False):
+        max_windows = max(2, max_windows // 2)
     starts = list(range(0, n_tokens, stride))
     if len(starts) <= max_windows:
         return starts

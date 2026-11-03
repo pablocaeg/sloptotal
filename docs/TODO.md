@@ -24,7 +24,7 @@ Concrete next steps. Longer-range ideas are in [docs/VISION.md](VISION.md).
 
 ## Infrastructure
 
-- [ ] `/health` reports engines that loaded, not only engines registered.
+- [x] `/health` reports engines that loaded, not only engines registered.
 - [ ] Publish per-engine RAM and latency in `docs/MODELS.md`.
 
 ## Publishing and outreach

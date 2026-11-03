@@ -26,7 +26,8 @@ FastAPI application with hardware-aware auto-configuration.
 - `app/routes/queue.py` -- Queue management (`/api/queue/status`, `/api/queue/ticket/{id}`)
 
 **Core:**
-- `app/analyzer.py` -- Engine orchestration, scoring calibration, batch inference
+- `app/analyzer.py` -- Engine orchestration, batch inference
+- `app/calibration.py` -- The overall score, its confidence and language support, from the fits in `app/calibration.json`
 - `app/engines/` -- 23 detection engines, each inheriting from `BaseEngine`
 - `app/config.py` -- Engine weights, scoring thresholds, paths
 - `app/schemas.py` -- Pydantic models for requests/responses
@@ -36,7 +37,7 @@ FastAPI application with hardware-aware auto-configuration.
 - `app/database.py` -- SQLite async storage for reports
 - `app/cache.py` -- Content hash-based caching
 - `app/scraper.py` -- URL fetching (rejects private/metadata addresses on every redirect hop) and main-content extraction
-- `app/site_fingerprints.py` -- AI app builder detection (Lovable, v0, Bolt, Base44, Replit, Same); see [docs/SITE_FINGERPRINTS.md](SITE_FINGERPRINTS.md)
+- `app/site_fingerprints.py` -- AI app builder detection (Lovable, v0, Bolt, Base44, Replit, Same, Emergent); see [docs/SITE_FINGERPRINTS.md](SITE_FINGERPRINTS.md)
 - `app/documents.py` -- Text extraction from uploaded PDF / DOCX / TXT
 
 ### Web Frontend (`web/`)
@@ -78,16 +79,16 @@ Incoming request
 
 ### Scoring Calibration
 
-The final score is **not** a simple average, and every step was derived from
-the corpora in `tests/eval/` (see `tests/eval/FINDINGS.md`):
+The score is produced by `app/calibration.py`. Parameters live in `app/calibration.json` and are never edited by hand; they are fitted by `tests/eval/slopbench/fit.py` (English) and `fit_multilingual.py`.
 
-1. **Weighted baseline** -- `ENGINE_WEIGHTS` in config.py, proportional to each engine's Somers' D (2*AUC - 1) and scaled down by any bias against pre-1920 prose
-2. **Anchor on unbiased classifiers** -- Desklib, SuperAnnotate, E5 and ReMoDetect consensus is blended 60/40 with the full weighted set
-3. **Confidence from agreement** -- spread across independent engine families, not one engine's certainty
-4. **Skepticism only when earned** -- unanimous high classifier scores are damped only when the text carries human markers (contractions, first person, slang)
-5. **Human signal adjustment** -- those markers also pull the score down slightly
+- **Logistic model** -- a weighted sum of engine logits with non-negative weights, mapped to 0-100 by piecewise-linear knots calibrated so band edges match a measured share of human text.
+- **Short-text adjustment** -- English texts under `SHORT_TEXT_WORDS = 80` are pulled toward a neutral score by `words / (words + k)`; other spaced languages use `short_alpha`.
+- **Per-language support** -- each language carries an offset and a support status: `supported`, `experimental`, or `unsupported`. Unsupported languages are scored but never above low confidence.
+- **Confidence** -- low for short texts, scores in `UNCERTAIN` (35-65), or unsupported languages; at most medium for experimental languages; high only outside `CONFIDENT` (15/80).
 
-Verdict bands (`SCORE_CLEAN` ... `SCORE_LIKELY_AI`) live only in config.py; the report page receives them from the template.
+The quick path has its own calibration, fitted by `tests/eval/slopbench/fit_quick.py`.
+
+Verdict bands (`SCORE_CLEAN` ... `SCORE_LIKELY_AI`) live only in `config.py`; the report page receives them from the template.
 
 ---
 

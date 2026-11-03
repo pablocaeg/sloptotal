@@ -3,15 +3,15 @@
 import json
 import logging
 import os
-import threading
 import sqlite3
+import threading
 from contextlib import asynccontextmanager
 from datetime import datetime
 from typing import Any
 
 import aiosqlite
 
-from app.config import DATABASE_PATH, DATA_DIR, DB_TIMEOUT, DB_BUSY_TIMEOUT
+from app.config import DATA_DIR, DATABASE_PATH, DB_BUSY_TIMEOUT, DB_TIMEOUT
 from app.schemas import AnalysisReport, EngineResult, Verdict
 
 log = logging.getLogger("sloptotal.database")
@@ -279,15 +279,11 @@ async def check_database_health() -> dict[str, Any]:
                 "status": "healthy",
                 "total_reports": report_count,
                 "completed_reports": completed_count,
-                "database_path": str(DATABASE_PATH),
             }
     except Exception as e:
+        # /health is public: the details go to the log, not the response.
         log.error(f"Database health check failed: {e}")
-        return {
-            "status": "unhealthy",
-            "error": str(e),
-            "database_path": str(DATABASE_PATH),
-        }
+        return {"status": "unhealthy"}
 
 
 def cleanup_connections() -> None:
@@ -330,6 +326,17 @@ def get_sync_connection() -> sqlite3.Connection:
         with _connections_lock:
             _all_connections.append(conn)
     return _thread_local.connection
+
+
+def _rollback(conn: sqlite3.Connection) -> None:
+    """End a failed write's transaction. A thread-local connection lives for the
+    whole process, so a transaction left open by one failed write keeps its old
+    WAL snapshot, and every later write on that thread fails at once with
+    "database is locked" (SQLITE_BUSY_SNAPSHOT) until the process restarts."""
+    try:
+        conn.rollback()
+    except sqlite3.Error as e:
+        log.warning(f"Rollback failed: {e}")
 
 
 async def create_report(
@@ -528,6 +535,7 @@ def insert_engine_result_sync(
         )
         conn.commit()
     except sqlite3.Error as e:
+        _rollback(conn)
         log.error(f"Failed to insert engine result for {report_id}/{engine_key}: {e}")
         raise
 
@@ -552,6 +560,7 @@ def update_report_score_sync(
         )
         conn.commit()
     except sqlite3.Error as e:
+        _rollback(conn)
         log.error(f"Failed to update report score for {report_id}: {e}")
         raise
 
@@ -629,6 +638,7 @@ def log_scan_sync(
         )
         conn.commit()
     except sqlite3.Error as e:
+        _rollback(conn)
         log.warning(f"Failed to log scan: {e}")
 
 
@@ -666,15 +676,11 @@ async def get_scan_stats() -> dict:
         )
         dist = {row["indicator"]: row["cnt"] for row in await cursor.fetchall()}
 
-        # Recent scans
-        cursor = await db.execute(
-            "SELECT * FROM scan_log ORDER BY created_at DESC LIMIT 50"
-        )
-        recent = [dict(row) for row in await cursor.fetchall()]
-
+        # Aggregates only. The rows themselves (text excerpts and the URLs the
+        # extension scanned) stay private: the endpoint is public, and a list
+        # of recent rows would show what other people read.
         return {
             "total_scans": total,
             "by_type": by_type,
             "score_distribution": dist,
-            "recent": recent,
         }

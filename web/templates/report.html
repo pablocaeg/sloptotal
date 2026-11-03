@@ -27,7 +27,7 @@
         <div class="st-readout">
             <div class="st-readout__head">
                 <div class="st-readout__score">
-                    <span class="st-readout__value" id="score-value">0.0</span>
+                    <span class="st-readout__value" id="score-value">…</span>
                     <span class="st-readout__max">/ 100</span>
                 </div>
                 <span class="st-verdict" id="verdict" hidden></span>
@@ -51,6 +51,9 @@
             <ul class="st-readout__facts">
                 <li><b>{{ "{:,}".format(report.word_count) }}</b> word{{ "" if report.word_count == 1 else "s" }}</li>
                 {% if report.source_type == "url" %}<li class="report-source">{{ report.source }}</li>{% else %}<li>Pasted text</li>{% endif %}
+                {% if report.language != "other" %}
+                <li>Language: <b>{{ report.language }}</b></li>
+                {% endif %}
             </ul>
         </div>
     </section>
@@ -76,6 +79,7 @@
             <button type="button" class="st-btn st-btn--secondary" data-label="unsure" aria-pressed="false">Not sure</button>
         </div>
         <p class="feedback__body" id="feedback-status" aria-live="polite"></p>
+        <p class="feedback__star">Free and open source. <a href="https://github.com/pablocaeg/sloptotal" target="_blank" rel="noopener"><span aria-hidden="true">★</span> Star SlopTotal on GitHub</a></p>
     </section>
 
     {% if report.source_type == "url" %}

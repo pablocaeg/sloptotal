@@ -9,6 +9,7 @@ import httpx
 import trafilatura
 from bs4 import BeautifulSoup
 
+from app.config import MIN_TEXT_LENGTH
 from app.language import count_words
 
 # Models only process ~750-1024 tokens. Extracting more is wasted work.
@@ -165,7 +166,7 @@ def _extract_text_from_html(html: str) -> str:
         fast=True,
     )
 
-    if not text or len(text.strip()) < 50:
+    if not text or len(text.strip()) < MIN_TEXT_LENGTH:
         text = trafilatura.extract(
             html,
             include_comments=False,
@@ -173,11 +174,13 @@ def _extract_text_from_html(html: str) -> str:
             fast=False,
         )
 
-    if not text or len(text.strip()) < 50:
-        raise ValueError("Could not extract meaningful text from the URL.")
+    if not text or len(text.strip()) < MIN_TEXT_LENGTH:
+        raise ValueError(
+            "This page has almost no text in its HTML. It may load its content with JavaScript. "
+            "Copy the text from your browser and paste it instead."
+        )
 
     text = text.strip()
-
     # Cap at MAX_WORDS to avoid wasting compute on huge articles
     words = text.split()
     if len(words) > MAX_WORDS:

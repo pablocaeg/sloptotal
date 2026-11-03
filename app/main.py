@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 
 # Auto-detect hardware and configure before any model loading.
 # Explicit env vars (e.g. for production) always override autoconfig.
-from app.autoconfig import run_autoconfig, format_banner, get_device
+from app.autoconfig import format_banner, get_device, run_autoconfig
 
 _hw, _profile, _config = run_autoconfig()
 
@@ -19,27 +19,27 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from app.config import TEMPLATES_DIR, STATIC_DIR
-from app.database import (
-    init_database,
-    check_database_health,
-    purge_invalid_cached_reports,
-    purge_expired_reports,
-    REPORT_RETENTION_DAYS,
-)
 from app.analyzer import (
-    get_engine_list,
-    shutdown_analyzer,
     _max_full,
     _max_short,
     _max_snippet,
+    get_engine_list,
+    shutdown_analyzer,
 )
+from app.config import FIRST_PARTY_ORIGINS, STATIC_DIR, TEMPLATES_DIR
+from app.database import (
+    REPORT_RETENTION_DAYS,
+    check_database_health,
+    init_database,
+    purge_expired_reports,
+    purge_invalid_cached_reports,
+)
+from app.direct_quota import DirectQuotaMiddleware
 from app.engine_status import get_health_summary, mark_failed, mark_loaded
 from app.queue_manager import QueueManager
-
-from app.routes.web import router as web_router
 from app.routes.api import router as api_router
 from app.routes.queue import router as queue_router
+from app.routes.web import router as web_router
 
 # Configure logging
 logging.basicConfig(
@@ -94,10 +94,11 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"^(chrome-extension://.*|http://localhost(:\d+)?|https://sloptotal\.com|https://pablocaeg\.github\.io)$",
+    allow_origin_regex=FIRST_PARTY_ORIGINS,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
+app.add_middleware(DirectQuotaMiddleware)
 
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 app.state.templates = Jinja2Templates(directory=str(TEMPLATES_DIR))

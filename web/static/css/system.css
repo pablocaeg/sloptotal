@@ -316,6 +316,11 @@ td.st-engine__family::first-letter { text-transform: uppercase; }
 .st-engine__bar[data-band="slop"] > i { background: var(--verdict-slop-fill); }
 .st-engine__score { font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: end; white-space: nowrap; width: 1%; }
 .st-engines td.st-engine__pending { color: var(--text-muted); }
+/* A model engine that has started and not reported yet */
+.st-engine__bar[data-running]:not([data-band]) > i { width: 30%; background: var(--text-muted); opacity: 0.5; animation: st-engine-run 1.4s ease-in-out infinite; }
+@keyframes st-engine-run { from { margin-inline-start: -30%; } to { margin-inline-start: 100%; } }
+@media (prefers-reduced-motion: reduce) { .st-engine__bar[data-running]:not([data-band]) > i { animation: none; } }
+
 @media (max-width: 600px) {
   .st-engines .st-engine__family { display: none; }
   .st-engines th, .st-engines td { padding-inline: var(--space-3); }

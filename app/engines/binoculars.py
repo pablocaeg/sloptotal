@@ -1,4 +1,5 @@
 import math
+
 from app.engines.base import BaseEngine
 from app.schemas import EngineResult, score_to_engine_verdict
 
@@ -28,7 +29,7 @@ class BinocularsEngine(BaseEngine):
 
     def analyze(self, text: str) -> EngineResult:
         try:
-            from app.engines.gpt2_cache import get_gpt2_outputs, get_distil_outputs
+            from app.engines.gpt2_cache import get_distil_outputs, get_gpt2_outputs
 
             gpt2 = get_gpt2_outputs(text)
             distil = get_distil_outputs(text)

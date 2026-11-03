@@ -3,8 +3,9 @@
 import logging
 import queue
 import threading
+from collections.abc import Callable
 from contextlib import contextmanager
-from typing import Any, Callable
+from typing import Any
 
 log = logging.getLogger("sloptotal.model_pool")
 

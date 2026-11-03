@@ -35,9 +35,10 @@ uvicorn app.main:app --port 8000 --reload
 Install git hooks so ruff runs on `app`, `tests` and `scripts` before you push:
 `pip install pre-commit && pre-commit install`
 
-Models (~2 GB) download on first run. Use `SLOPTOTAL_PROFILE=lite` on small
-machines. The web UI lives in `web/` (Jinja2 templates and vanilla JS, no build
-step). The Chrome extension has its own repository:
+Models (~9 GB) download on first run; see [docs/MODELS.md](../docs/MODELS.md).
+Use `SLOPTOTAL_PROFILE=lite` on small machines. The web UI lives in `web/`
+(Jinja2 templates and vanilla JS, no build step). The Chrome extension has its
+own repository:
 [pablocaeg/sloptotal-extension](https://github.com/pablocaeg/sloptotal-extension).
 
 ### Tests

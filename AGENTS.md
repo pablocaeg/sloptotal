@@ -36,7 +36,7 @@ benchmarks/              speed and load scripts
 pip install -r requirements-dev.txt
 pytest -q                                  # ~7 s, no downloads
 ruff check app tests scripts && ruff format --check app tests scripts
-uvicorn app.main:app --port 8000           # first run downloads ~2 GB of models
+uvicorn app.main:app --port 8000           # first run downloads ~9 GB of models
 python scripts/smoke_test.py               # every route, all 23 engines, live
 ```
 

@@ -16,7 +16,8 @@ beautifulsoup4==4.15.0
 
 # Models. Ranges rather than pins: engine scores are verified identical across
 # transformers 4.46 -> 5.x (see tests/eval/FINDINGS.md), and CPU-only torch
-# wheels are served from the PyTorch index below.
+# wheels are served from the PyTorch index below. For an NVIDIA GPU, swap in a
+# CUDA build of the same torch version afterwards (README, "NVIDIA GPU").
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch>=2.2
 transformers>=4.46,<6

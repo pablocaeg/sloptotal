@@ -1,3 +1,5 @@
+import pytest
+
 from app.scraper import _extract_text_from_html, extract_html_features
 
 ARTICLE = """
@@ -22,3 +24,18 @@ def test_extracts_article_body_without_chrome():
 
 def test_html_features_are_a_dict():
     assert isinstance(extract_html_features(ARTICLE), dict)
+
+
+def test_empty_javascript_app_shows_helpful_error():
+    html = """
+    <html>
+      <head><script src="/assets/app.js"></script></head>
+      <body><div id="root"></div></body>
+    </html>
+    """
+
+    with pytest.raises(
+        ValueError,
+        match="This page has almost no text in its HTML",
+    ):
+        _extract_text_from_html(html)

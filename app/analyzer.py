@@ -1,61 +1,72 @@
+import asyncio
 import logging
 import os
 import uuid
-import asyncio
+from collections.abc import AsyncGenerator
 from concurrent.futures import ThreadPoolExecutor
-from typing import AsyncGenerator
 
-from app.engine_status import mark_failed, mark_loaded
-from app.schemas import (
-    AnalysisReport,
-    EngineResult,
-    score_to_verdict_str,
-    score_to_engine_verdict,
+from app.cache import compute_text_hash, is_cacheable_report
+from app.calibration import (
+    CALIBRATION_VERSION,
+    calibrated_score,
+    quick_score,
+    score_range,
+    scoring_engines,
 )
-from app.calibration import CALIBRATION_VERSION, calibrated_score, quick_score
 from app.config import (
     CACHE_ENABLED,
     MAX_ANALYSED_CHARS,
     QUICK_AI_MIN,
     QUICK_CLEAN_MAX,
 )
-from app.cache import compute_text_hash, is_cacheable_report
-from app.language import count_words
 from app.database import (
-    create_report,
-    get_report as db_get_report,
-    get_report_by_hash,
-    get_pending_report_by_hash,
-    get_recent_reports as db_get_recent_reports,
-    mark_report_complete,
-    insert_engine_result_sync,
-    update_report_score_sync,
     cleanup_connections,
+    create_report,
+    get_pending_report_by_hash,
+    get_report_by_hash,
+    insert_engine_result_sync,
     log_scan_sync,
+    mark_report_complete,
+    update_report_score_sync,
 )
-from app.engines.perplexity import PerplexityEngine
+from app.database import (
+    get_recent_reports as db_get_recent_reports,
+)
+from app.database import (
+    get_report as db_get_report,
+)
+from app.engine_status import mark_failed, mark_loaded
+from app.engines.base import fast_windows
+from app.engines.binoculars import BinocularsEngine
 from app.engines.burstiness import BurstinessEngine
-from app.engines.linguistic import LinguisticEngine
-from app.engines.structural import StructuralEngine
-from app.engines.vocabulary import VocabularyEngine
-from app.engines.formulaic import FormulaicEngine
-from app.engines.readability import ReadabilityEngine
-from app.engines.sentiment import SentimentEngine
-from app.engines.classifier_openai import ClassifierOpenAIEngine
+from app.engines.classifier_bert_raid import ClassifierBERTRaidEngine
 from app.engines.classifier_chatgpt import ClassifierChatGPTEngine
-from app.engines.cross_perplexity import CrossPerplexityEngine
-from app.engines.classifier_remodetect import ClassifierReMoDetectEngine
-from app.engines.classifier_fakespot import ClassifierFakespotEngine
+from app.engines.classifier_desklib import ClassifierDesklibEngine
 from app.engines.classifier_e5 import ClassifierE5Engine
-from app.engines.gltr import GLTREngine
-from app.engines.log_rank import LogRankEngine
+from app.engines.classifier_fakespot import ClassifierFakespotEngine
+from app.engines.classifier_openai import ClassifierOpenAIEngine
+from app.engines.classifier_remodetect import ClassifierReMoDetectEngine
+from app.engines.classifier_superannotate import ClassifierSuperAnnotateEngine
+from app.engines.classifier_tmr import ClassifierTMREngine
+from app.engines.cross_perplexity import CrossPerplexityEngine
 from app.engines.diveye import DivEyeEngine
 from app.engines.fast_detectgpt import FastDetectGPTEngine
-from app.engines.binoculars import BinocularsEngine
-from app.engines.classifier_tmr import ClassifierTMREngine
-from app.engines.classifier_bert_raid import ClassifierBERTRaidEngine
-from app.engines.classifier_desklib import ClassifierDesklibEngine
-from app.engines.classifier_superannotate import ClassifierSuperAnnotateEngine
+from app.engines.formulaic import FormulaicEngine
+from app.engines.gltr import GLTREngine
+from app.engines.linguistic import LinguisticEngine
+from app.engines.log_rank import LogRankEngine
+from app.engines.perplexity import PerplexityEngine
+from app.engines.readability import ReadabilityEngine
+from app.engines.sentiment import SentimentEngine
+from app.engines.structural import StructuralEngine
+from app.engines.vocabulary import VocabularyEngine
+from app.language import count_words
+from app.schemas import (
+    AnalysisReport,
+    EngineResult,
+    score_to_engine_verdict,
+    score_to_verdict_str,
+)
 
 log = logging.getLogger("sloptotal.analyzer")
 
@@ -67,6 +78,13 @@ _result_counts: dict[str, int] = {}
 
 # report_id -> set once every engine has reported (see _finish_analysis)
 _done_events: dict[str, asyncio.Event] = {}
+
+# report_id -> engines still to report before the overall score is final
+_scoring_left: dict[str, set[str]] = {}
+# Reports being scored in fast mode, and the cache tag their results are stored
+# under, so a full request never reuses one.
+_fast_reports: set[str] = set()
+FAST_TAG = f"{CALIBRATION_VERSION}+fast"
 
 # Lock for pending dict modifications
 _pending_lock = asyncio.Lock()
@@ -145,6 +163,45 @@ _engines = [
     ("sentiment", _sentiment_engine),
 ]
 
+# Regex and counting engines: they finish in milliseconds, so they go first and
+# the report shows activity at once instead of waiting behind the models.
+_CHEAP_ENGINES = frozenset(
+    {"linguistic", "structural", "vocabulary", "formulaic", "readability", "sentiment"}
+)
+
+
+# Rough relative CPU cost of the model engines, slowest first within a tier,
+# so the longest job starts first and the tier ends as early as it can.
+_ENGINE_COST = {
+    "classifier_desklib": 5,
+    "classifier_superannotate": 4,
+    "classifier_remodetect": 4,
+    "binoculars": 3,
+    "fast_detectgpt": 3,
+    "classifier_tmr": 2,
+    "classifier_fakespot": 2,
+    "classifier_openai": 2,
+    "classifier_chatgpt": 2,
+    "perplexity": 2,
+    "cross_perplexity": 2,
+}
+
+
+def engine_order(text: str) -> list[tuple[str, object]]:
+    """_engines in the order they are queued: the cheap ones, then the models
+    the overall score depends on for this text, then the rest, the slowest
+    first within each group. The executors are FIFO, so this decides when the
+    score is final, not only when it shows."""
+    scoring = scoring_engines(text)
+
+    def rank(item: tuple[str, object]) -> tuple[int, int]:
+        key = item[0]
+        tier = 0 if key in _CHEAP_ENGINES else 1 if key in scoring else 2
+        return tier, -_ENGINE_COST.get(key, 1)
+
+    return sorted(_engines, key=rank)
+
+
 # --- CPU-aware executor splitting (Phase 2) ---
 _cpu_count = os.cpu_count() or 6
 _reserved = int(os.getenv("SLOPTOTAL_RESERVED_CORES", "2"))
@@ -166,6 +223,9 @@ _short_executor = ThreadPoolExecutor(
     thread_name_prefix="short",
 )
 _executors = {"full": _full_executor, "short": _short_executor}
+# The cheap engines get their own threads, so the first results of a report
+# show at once even while other analyses fill the model lanes.
+_cheap_executor = ThreadPoolExecutor(max_workers=2, thread_name_prefix="cheap")
 
 # --- HTTP-level concurrency guards (Phase 4) ---
 _max_full = int(os.getenv("SLOPTOTAL_MAX_CONCURRENT_FULL", "2"))
@@ -188,12 +248,14 @@ def shutdown_analyzer() -> None:
     _snippet_executor.shutdown(wait=True, cancel_futures=False)
     _full_executor.shutdown(wait=True, cancel_futures=False)
     _short_executor.shutdown(wait=True, cancel_futures=False)
+    _cheap_executor.shutdown(wait=True, cancel_futures=False)
     cleanup_connections()
     log.info("Analyzer shutdown complete")
 
 
-def _run_engine(engine, text: str) -> EngineResult:
-    result = engine.analyze(text)
+def _run_engine(engine, text: str, fast: bool = False) -> EngineResult:
+    with fast_windows(fast):
+        result = engine.analyze(text)
     engine_key = next((key for key, candidate in _engines if candidate is engine), None)
     if engine_key is None:
         return result
@@ -245,8 +307,13 @@ async def start_analysis(
     source: str = "",
     _queue_managed: bool = False,
     lane: str = "full",
+    fast: bool = False,
 ) -> tuple[str, bool]:
     """Start analysis and return (report_id, is_cached). Results stream via queue.
+
+    fast=True scores half as many windows per classifier (see fast_windows).
+    Fast reports are cached apart from full ones, so a full request never gets
+    a fast result; a fast request is happy to reuse a full one.
 
     When _queue_managed=True the caller (QueueManager) already tracks concurrency,
     so the internal _inflight_full_count gate is skipped.
@@ -259,16 +326,17 @@ async def start_analysis(
 
     # Check cache first
     if CACHE_ENABLED:
-        cached_report = await get_report_by_hash(text_hash, CALIBRATION_VERSION)
-        if cached_report and is_cacheable_report(cached_report):
-            log.debug(f"Cache hit for hash {text_hash[:16]}...")
-            return cached_report.id, True
+        for tag in (CALIBRATION_VERSION, FAST_TAG) if fast else (CALIBRATION_VERSION,):
+            cached_report = await get_report_by_hash(text_hash, tag)
+            if cached_report and is_cacheable_report(cached_report):
+                log.debug(f"Cache hit for hash {text_hash[:16]}...")
+                return cached_report.id, True
 
         # Check if there's already a pending analysis for this text
         pending_id = await get_pending_report_by_hash(text_hash)
         if pending_id:
             async with _pending_lock:
-                if pending_id in _pending:
+                if pending_id in _pending and (fast or pending_id not in _fast_reports):
                     log.debug(f"Joining pending analysis {pending_id}")
                     return pending_id, False
 
@@ -312,18 +380,39 @@ async def start_analysis(
         _pending[report_id] = queue
         _result_counts[report_id] = 0
         _done_events[report_id] = asyncio.Event()
+        _scoring_left[report_id] = set(scoring_engines(text))
+        if fast:
+            _fast_reports.add(report_id)
 
-    log.info(f"Starting analysis {report_id} ({word_count} words)")
+    log.info(
+        f"Starting analysis {report_id} ({word_count} words{', fast' if fast else ''})"
+    )
 
-    # Launch all engines using full executor
     loop = asyncio.get_event_loop()
-    for key, engine in _engines:
-        future = loop.run_in_executor(_executors[lane], _run_engine, engine, text)
+    for key, engine in engine_order(text):
+        if key in _CHEAP_ENGINES:
+            future = loop.run_in_executor(
+                _cheap_executor, _run_engine, engine, text, fast
+            )
+        else:
+            future = loop.run_in_executor(
+                _executors[lane], _run_announced, engine, text, key, loop, queue, fast
+            )
         future.add_done_callback(
             lambda f, k=key, q=queue, rid=report_id: _on_engine_done(f, k, q, rid)
         )
 
     return report_id, False
+
+
+def _run_announced(
+    engine, text: str, key: str, loop, queue: asyncio.Queue, fast: bool = False
+):
+    """Run a model engine, first telling the stream it has started: under load
+    a model can wait its turn for a while, and the report shows which ones are
+    running meanwhile. A start is (key, None, False, None) on the queue."""
+    loop.call_soon_threadsafe(queue.put_nowait, (key, None, False, None))
+    return _run_engine(engine, text, fast)
 
 
 def _on_engine_done(future, key: str, queue: asyncio.Queue, report_id: str):
@@ -356,14 +445,20 @@ def _on_engine_done(future, key: str, queue: asyncio.Queue, report_id: str):
 
     # Update result count and calculate scores
     _result_counts[report_id] = _result_counts.get(report_id, 0) + 1
+    current_range = None
     try:
-        _update_report_score_sync(report_id)
+        current_range = _update_report_score_sync(report_id)
     except Exception as e:
         log.error(f"Failed to update report score: {e}")
 
+    left = _scoring_left.get(report_id)
+    if left is not None:
+        left.discard(key)
+    score_final = not left
+
     # Push to queue (thread-safe)
     try:
-        queue.put_nowait((key, result))
+        queue.put_nowait((key, result, score_final, current_range))
     except Exception:
         pass
 
@@ -382,6 +477,8 @@ async def _finish_analysis(report_id: str) -> None:
     async with _pending_lock:
         _pending.pop(report_id, None)
         _result_counts.pop(report_id, None)
+        _scoring_left.pop(report_id, None)
+        _fast_reports.discard(report_id)
         done = _done_events.pop(report_id, None)
 
     async with _inflight_full_lock:
@@ -416,8 +513,10 @@ async def wait_until_done(report_id: str, timeout: float = 900) -> None:
         log.warning(f"Analysis {report_id} still running after {timeout:.0f}s")
 
 
-def _update_report_score_sync(report_id: str):
-    """Recalculate overall score from database engine results using calibration."""
+def _update_report_score_sync(report_id: str) -> tuple[float, float]:
+    """Recalculate overall score from database engine results using calibration.
+
+    Returns the range the score can still land in (see score_range)."""
     from app.database import get_sync_connection
 
     conn = get_sync_connection()
@@ -449,15 +548,31 @@ def _update_report_score_sync(report_id: str):
     overall_verdict = score_to_verdict_str(overall_score)
     engines_flagged = sum(1 for score in score_map.values() if score >= 0.4)
 
+    tag = FAST_TAG if report_id in _fast_reports else CALIBRATION_VERSION
     update_report_score_sync(
-        report_id, overall_score, overall_verdict, engines_flagged, CALIBRATION_VERSION
+        report_id, overall_score, overall_verdict, engines_flagged, tag
     )
+    return score_range(score_map, text)
 
 
 async def stream_results(
     report_id: str,
-) -> AsyncGenerator[tuple[str, EngineResult, AnalysisReport], None]:
-    """Yield (key, result, updated_report) as each engine completes."""
+) -> AsyncGenerator[
+    tuple[
+        str,
+        EngineResult | None,
+        AnalysisReport | None,
+        bool,
+        tuple[float, float] | None,
+    ],
+    None,
+]:
+    """Yield (key, result, updated_report, score_final, score_range) as each
+    engine completes; score_range is the (low, high) the score can still land in.
+
+    score_final turns true once every engine the overall score depends on has
+    reported; the remaining engines no longer move it. When a model engine
+    starts, (key, None, None, False, None) is yielded first."""
     async with _pending_lock:
         queue = _pending.get(report_id)
 
@@ -468,11 +583,16 @@ async def stream_results(
     total = len(_engines)
     while received < total:
         try:
-            key, result = await asyncio.wait_for(queue.get(), timeout=300)
+            key, result, score_final, current_range = await asyncio.wait_for(
+                queue.get(), timeout=300
+            )
+            if result is None:
+                yield key, None, None, False, None
+                continue
             received += 1
             report = await db_get_report(report_id)
             if report:
-                yield key, result, report
+                yield key, result, report, score_final, current_range
         except asyncio.TimeoutError:
             log.warning(f"Timeout waiting for engine results on {report_id}")
             break
@@ -703,8 +823,8 @@ async def paragraph_analyze(text: str) -> dict:
     Detects mixed human/AI content (e.g. human intro + AI body).
     Returns per-paragraph scores + overall summary.
     """
-    import time
     import re
+    import time
 
     start_time = time.perf_counter()
 
@@ -998,6 +1118,7 @@ def compute_gpt2_signals(text: str) -> dict | None:
     import math
     import re
     import statistics
+
     import torch
 
     try:

@@ -1,12 +1,14 @@
 import os
 import threading
+
 import torch
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-from app.engines.base import BaseEngine, window_starts
-from app.schemas import EngineResult, score_to_engine_verdict
-from app.model_pool import ModelPool
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
+
 from app.autoconfig import get_device
+from app.engines.base import BaseEngine, window_starts
 from app.model_pool import LOAD_LOCK as _load_lock
+from app.model_pool import ModelPool
+from app.schemas import EngineResult, score_to_engine_verdict
 
 _MODEL_NAME = "Oxidane/tmr-ai-text-detector"
 _model = None

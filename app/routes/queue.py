@@ -1,14 +1,20 @@
 import logging
 
-from fastapi import APIRouter, Request, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse
 
 log = logging.getLogger("sloptotal.routes.queue")
 
-router = APIRouter(prefix="/api/queue")
+router = APIRouter(
+    prefix="/api/queue",
+)
 
 
-@router.get("/status")
+@router.get(
+    "/status",
+    tags=["Queue"],
+    summary="Queue capacity status",
+)
 async def api_queue_status(request: Request):
     """Returns capacity info for all endpoint queues."""
     queue_manager = request.app.state.queue_manager
@@ -17,7 +23,7 @@ async def api_queue_status(request: Request):
     return queue_manager.queue_status()
 
 
-@router.get("/ticket/{ticket_id}")
+@router.get("/ticket/{ticket_id}", tags=["Queue"], summary="Poll queued request result")
 async def api_queue_ticket(request: Request, ticket_id: str):
     """Poll for a queued request's result.
 

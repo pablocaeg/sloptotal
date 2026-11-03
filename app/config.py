@@ -19,6 +19,16 @@ CACHE_ENABLED = os.getenv("SLOPTOTAL_CACHE_ENABLED", "true").lower() in (
 DB_TIMEOUT = float(os.getenv("SLOPTOTAL_DB_TIMEOUT", "30.0"))  # seconds
 DB_BUSY_TIMEOUT = int(os.getenv("SLOPTOTAL_DB_BUSY_TIMEOUT", "5000"))  # milliseconds
 
+# Browser origins of the site and the extension: CORS, and calls that the direct
+# API quota does not count.
+FIRST_PARTY_ORIGINS = os.getenv(
+    "SLOPTOTAL_FIRST_PARTY_ORIGINS",
+    r"^(chrome-extension://.*|http://localhost(:\d+)?|https://sloptotal\.com|https://pablocaeg\.github\.io)$",
+)
+# Analyses per client IP per UTC day for calls from anywhere else (0 = no limit).
+# See app/direct_quota.py.
+DIRECT_DAILY_LIMIT = int(os.getenv("SLOPTOTAL_DIRECT_DAILY_LIMIT", "0"))
+
 # GPT-2 model name for perplexity engines
 GPT2_MODEL = "gpt2-medium"
 

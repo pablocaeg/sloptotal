@@ -2,22 +2,21 @@ import json
 import logging
 
 import httpx
-
-from fastapi import APIRouter, Request, Form, HTTPException
-from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
+from fastapi import APIRouter, Form, HTTPException, Request
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from starlette.responses import StreamingResponse
 
-from app.config import SCORE_CLEAN, SCORE_LIKELY_AI, SCORE_LOW_RISK, SCORE_SUSPICIOUS
-from app.schemas import WebAnalyzeRequest
 from app.analyzer import (
-    lane_for,
-    start_analysis,
-    wait_until_done,
-    get_report,
-    stream_results,
     get_engine_list,
     get_engine_list_rich,
+    get_report,
+    lane_for,
+    start_analysis,
+    stream_results,
+    wait_until_done,
 )
+from app.config import SCORE_CLEAN, SCORE_LIKELY_AI, SCORE_LOW_RISK, SCORE_SUSPICIOUS
+from app.schemas import WebAnalyzeRequest
 from app.scraper import extract_text_from_url
 
 log = logging.getLogger("sloptotal.routes.web")
@@ -131,7 +130,11 @@ async def analyze_form(
     return RedirectResponse(url=f"/report/{report_id}", status_code=303)
 
 
-@router.post("/api/web/analyze")
+@router.post(
+    "/api/web/analyze",
+    tags=["Web UI"],
+    summary="Analyze text from web UI form",
+)
 async def api_web_analyze(request: Request, req: WebAnalyzeRequest):
     """Queue-aware endpoint for the web form.
 
@@ -162,13 +165,14 @@ async def api_web_analyze(request: Request, req: WebAnalyzeRequest):
 
         if not queue_manager:
             report_id, is_cached = await start_analysis(
-                content, source_type=source_type, source=source
+                content, source_type=source_type, source=source, fast=req.fast
             )
             return {"status": "started", "report_id": report_id}
 
         from app.cache import compute_text_hash
 
-        text_hash = compute_text_hash(content)
+        # Fast and full requests for the same text must not share a ticket.
+        text_hash = compute_text_hash(content) + (":fast" if req.fast else "")
 
         async def _execute(payload):
             rid, cached = await start_analysis(
@@ -177,6 +181,7 @@ async def api_web_analyze(request: Request, req: WebAnalyzeRequest):
                 source=payload["source"],
                 _queue_managed=True,
                 lane=payload["lane"],
+                fast=payload["fast"],
             )
             if cached:
                 return {"report_id": rid}
@@ -190,6 +195,7 @@ async def api_web_analyze(request: Request, req: WebAnalyzeRequest):
                 "source_type": source_type,
                 "source": source,
                 "lane": lane,
+                "fast": req.fast,
             },
             text_hash,
             _execute,
@@ -251,7 +257,11 @@ async def report_page(request: Request, report_id: str):
     )
 
 
-@router.get("/api/stream/{report_id}")
+@router.get(
+    "/api/stream/{report_id}",
+    tags=["Web UI"],
+    summary="Stream analysis progress via SSE",
+)
 async def sse_stream(report_id: str):
     """Server-Sent Events endpoint — streams engine results as they complete."""
     if not report_id or len(report_id) > 12 or not report_id.isalnum():
@@ -264,8 +274,19 @@ async def sse_stream(report_id: str):
     async def event_generator():
         has_stream = False
         try:
-            async for key, result, updated_report in stream_results(report_id):
+            async for (
+                key,
+                result,
+                updated_report,
+                score_final,
+                score_range,
+            ) in stream_results(report_id):
                 has_stream = True
+                if result is None:
+                    # A named event: clients that only listen to plain
+                    # messages ignore it.
+                    yield f"event: running\ndata: {json.dumps({'key': key})}\n\n"
+                    continue
                 data = json.dumps(
                     {
                         "key": key,
@@ -279,6 +300,9 @@ async def sse_stream(report_id: str):
                         "engines_flagged": updated_report.engines_flagged,
                         "engines_total": updated_report.engines_total,
                         "engines_done": len(updated_report.engine_results),
+                        "score_final": score_final,
+                        # where the score can still land: [low, high]
+                        "score_range": list(score_range) if score_range else None,
                     }
                 )
                 yield f"data: {data}\n\n"
@@ -306,6 +330,7 @@ async def sse_stream(report_id: str):
                         "engines_flagged": report.engines_flagged,
                         "engines_total": report.engines_total,
                         "engines_done": len(report.engine_results),
+                        "score_final": True,
                     }
                 )
                 yield f"data: {data}\n\n"

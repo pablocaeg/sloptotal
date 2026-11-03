@@ -1,7 +1,9 @@
 import math
 import re
 import statistics
+
 import torch
+
 from app.engines.base import BaseEngine
 from app.schemas import EngineResult, score_to_engine_verdict
 

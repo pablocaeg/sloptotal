@@ -3,12 +3,15 @@ started, so only routes that do not run inference are exercised here; the
 full pipeline is covered by the end-to-end run described in .github/CONTRIBUTING.md."""
 
 import asyncio
+from uuid import uuid4
 
 import httpx
 import pytest
 from fastapi.testclient import TestClient
 
-from app.database import init_database
+from app.config import MIN_TEXT_LENGTH
+from app.database import create_report, init_database
+from app.documents import extract_document_text
 from app.main import app
 
 
@@ -30,7 +33,49 @@ def test_engines_endpoint_lists_all_engines(client):
 def test_rejects_short_text(client, path):
     r = client.post(path, json={"text": "too short"})
     assert r.status_code == 400
-    assert "50 characters" in r.json()["error"]
+    assert f"{MIN_TEXT_LENGTH} characters" in r.json()["error"]
+
+
+# Issue #84: the length checks used a literal 50, so moving MIN_TEXT_LENGTH
+# would have left them behind. These pin the boundary to the constant.
+# Only the rejection path is exercised: accepting a text runs inference, which
+# this module deliberately does not start.
+@pytest.mark.parametrize(
+    "path", ["/api/analyze", "/api/quick-score", "/api/paragraph-score"]
+)
+def test_one_character_short_is_rejected(client, path):
+    r = client.post(path, json={"text": "a" * (MIN_TEXT_LENGTH - 1)})
+    assert r.status_code == 400
+    assert f"{MIN_TEXT_LENGTH} characters" in r.json()["error"]
+
+
+@pytest.mark.parametrize("path", ["/api/quick-score", "/api/paragraph-score"])
+def test_the_length_boundary_tracks_a_changed_min_text_length(
+    client, path, monkeypatch
+):
+    """Raising the constant moves the boundary and the message with it.
+
+    A text that was long enough before is now rejected, which is what a
+    hard-coded 50 could not do.
+    """
+    monkeypatch.setattr("app.routes.api.MIN_TEXT_LENGTH", 500)
+    r = client.post(path, json={"text": "a" * 200})
+    assert r.status_code == 400
+    assert "500 characters" in r.json()["error"]
+
+
+def test_extract_document_text_follows_min_text_length(monkeypatch):
+    """Uploads use the same constant, not their own copy of 50."""
+    with pytest.raises(ValueError, match="No readable text found"):
+        extract_document_text("short.txt", b"a" * (MIN_TEXT_LENGTH - 1))
+
+    assert extract_document_text("ok.txt", b"a" * MIN_TEXT_LENGTH) == (
+        "a" * MIN_TEXT_LENGTH
+    )
+
+    monkeypatch.setattr("app.documents.MIN_TEXT_LENGTH", 500)
+    with pytest.raises(ValueError, match="No readable text found"):
+        extract_document_text("short.txt", b"a" * 200)
 
 
 @pytest.mark.parametrize("path", ["/api/analyze", "/api/quick-score"])
@@ -131,3 +176,151 @@ def test_a_report_says_which_language_it_scored(client):
     dumped = report.model_dump()
     assert dumped["language"] == "es"
     assert dumped["language_support"] in {"supported", "experimental", "unsupported"}
+
+
+def test_api_paths_have_tags(client):
+    openapi = client.app.openapi()
+    for path, methods in openapi["paths"].items():
+        if path.startswith("/api"):
+            for method, method_data in methods.items():
+                if method.lower() in (
+                    "get",
+                    "post",
+                    "put",
+                    "delete",
+                    "patch",
+                    "options",
+                    "head",
+                ):
+                    assert method_data.get("tags"), f"{path} {method} missing tags"
+
+
+def test_upload_status_is_accessible_live_region(client):
+    r = client.get("/")
+    assert r.status_code == 200
+    html = r.text
+    assert 'id="upload-status"' in html
+    assert 'aria-live="polite"' in html
+    assert 'role="status"' in html
+
+
+def test_report_shows_detected_language(client):
+    report_id = uuid4().hex[:12]
+
+    asyncio.run(
+        create_report(
+            report_id=report_id,
+            text_hash="a" * 64,
+            source_type="text",
+            source="",
+            text_excerpt=(
+                "The quick brown fox jumps over the lazy dog. "
+                "This is a simple English sentence with the words "
+                "the, and, of, to, in, is, that, it, for, and was. "
+            ),
+            word_count=25,
+            engines_total=23,
+        )
+    )
+
+    response = client.get(f"/report/{report_id}")
+
+    assert response.status_code == 200
+    assert "Language:" in response.text
+    assert "<b>en</b>" in response.text
+
+
+def test_report_hides_unknown_language(client):
+    report_id = uuid4().hex[:12]
+
+    asyncio.run(
+        create_report(
+            report_id=report_id,
+            text_hash="b" * 64,
+            source_type="text",
+            source="",
+            text_excerpt="12345 !!!",
+            word_count=0,
+            engines_total=23,
+        )
+    )
+
+    response = client.get(f"/report/{report_id}")
+
+    assert response.status_code == 200
+    assert "Language:" not in response.text
+
+
+def test_scan_stats_shows_no_texts_or_urls(client):
+    """The endpoint is public: aggregates only, never the scanned texts or URLs."""
+    from app.database import log_scan_sync
+
+    log_scan_sync(
+        scan_type="url",
+        text_excerpt="a private page someone read",
+        text_hash="c" * 64,
+        chars=27,
+        score=50.0,
+        indicator="yellow",
+        confidence="low",
+        bert=0.5,
+        e5=0.5,
+        tmr=0.5,
+        fakespot=0.5,
+        source_url="https://private.example/page",
+    )
+    r = client.get("/api/scan/stats")
+    assert r.status_code == 200
+    assert "recent" not in r.json()
+    assert "private" not in r.text
+
+
+@pytest.mark.parametrize("path", ["/api/recent", "/api/scan/stats"])
+def test_public_endpoints_return_no_submitted_content(client, path):
+    """/api/recent and /api/scan/stats are unauthenticated, so neither may carry
+    a submitted text, a scanned URL or a report id, whatever fields they gain."""
+    from app.database import log_scan_sync, mark_report_complete
+
+    text = "canary-text-1234"
+    url = "https://canary.example/canary-url-1234"
+    report_id = uuid4().hex[:12]
+    asyncio.run(
+        create_report(
+            report_id=report_id,
+            text_hash=uuid4().hex * 2,
+            source_type="text",
+            source=url,
+            text_excerpt=text,
+            word_count=2,
+            engines_total=23,
+        )
+    )
+    asyncio.run(mark_report_complete(report_id))
+    log_scan_sync(
+        scan_type="url",
+        text_excerpt=text,
+        text_hash=uuid4().hex * 2,
+        chars=len(text),
+        score=50.0,
+        indicator="yellow",
+        confidence="low",
+        bert=0.5,
+        e5=0.5,
+        tmr=0.5,
+        fakespot=0.5,
+        source_url=url,
+    )
+
+    r = client.get(path)
+    assert r.status_code == 200
+    # The report is completed and the scan is logged, so there is something
+    # here to leak: an empty body would pass the checks below for nothing.
+    assert r.json()
+    for secret in (text, url, "canary-url-1234", report_id):
+        assert secret not in r.text
+
+
+def test_health_does_not_show_the_database_path(client):
+    r = client.get("/health")
+    assert r.status_code == 200
+    assert "database_path" not in r.json()["database"]

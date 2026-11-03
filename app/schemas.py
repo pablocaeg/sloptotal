@@ -1,7 +1,21 @@
-from pydantic import BaseModel, Field, computed_field
-from enum import Enum
-from typing import Literal, Optional
 from datetime import datetime
+from enum import Enum
+from typing import Literal
+
+from pydantic import BaseModel, Field, computed_field
+
+EXAMPLE_URL = "https://example.com"
+EXAMPLE_TEXT = (
+    "The rapid spread of large language models has made it increasingly "
+    "difficult to tell whether a piece of writing was produced by a person or "
+    "by a machine. Automated detectors attempt to close that gap by measuring "
+    "perplexity, burstiness, and other statistical fingerprints that tend to "
+    "differ between human and generated prose. No single signal is reliable on "
+    "its own, so modern systems combine many weak indicators into a single "
+    "calibrated score. The result is a useful tool rather than a verdict, and "
+    "it should always be read alongside context, provenance, and the plain "
+    "judgement of a careful human reader."
+)
 
 
 class Verdict(str, Enum):
@@ -21,10 +35,26 @@ class EngineResult(BaseModel):
 class FeedbackRequest(BaseModel):
     label: Literal["human", "ai", "mixed", "unsure"]
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {"label": "human"},
+            ]
+        }
+    }
+
 
 class AnalyzeRequest(BaseModel):
-    url: Optional[str] = None
-    text: Optional[str] = None
+    url: str | None = None
+    text: str | None = None
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {"text": EXAMPLE_TEXT},
+            ]
+        }
+    }
 
 
 class AnalysisReport(BaseModel):
@@ -38,7 +68,7 @@ class AnalysisReport(BaseModel):
     overall_verdict: str
     engines_flagged: int
     engines_total: int
-    input_chars: Optional[int] = None
+    input_chars: int | None = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
     @computed_field
@@ -72,9 +102,9 @@ def score_to_verdict_str(score: float) -> str:
     """
     from app.config import (
         SCORE_CLEAN,
+        SCORE_LIKELY_AI,
         SCORE_LOW_RISK,
         SCORE_SUSPICIOUS,
-        SCORE_LIKELY_AI,
     )
 
     if score <= SCORE_CLEAN:
@@ -104,6 +134,17 @@ def score_to_engine_verdict(score: float) -> Verdict:
 class WebAnalyzeRequest(BaseModel):
     url: str = ""
     text: str = ""
+    # Half as many windows per classifier on long texts: faster, a little less
+    # accurate on texts that change partway through. Off unless asked for.
+    fast: bool = False
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {"text": EXAMPLE_TEXT},
+            ]
+        }
+    }
 
 
 class SnippetItem(BaseModel):
@@ -111,18 +152,58 @@ class SnippetItem(BaseModel):
     text: str
     url: str = ""
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {"id": "snippet-1", "text": EXAMPLE_TEXT, "url": EXAMPLE_URL},
+            ]
+        }
+    }
+
 
 class SnippetBatchRequest(BaseModel):
     snippets: list[SnippetItem]
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "snippets": [
+                        {
+                            "id": "snippet-1",
+                            "text": EXAMPLE_TEXT,
+                            "url": EXAMPLE_URL,
+                        }
+                    ]
+                }
+            ]
+        }
+    }
 
 
 class SiteScanRequest(BaseModel):
     url: str = ""
     include_text: bool = True
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {"url": EXAMPLE_URL, "include_text": True},
+            ]
+        }
+    }
+
 
 class BatchUrlRequest(BaseModel):
     urls: list[str]
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {"urls": [EXAMPLE_URL, "https://example.org"]},
+            ]
+        }
+    }
 
 
 class UrlScanItem(BaseModel):
@@ -130,6 +211,22 @@ class UrlScanItem(BaseModel):
     url: str
     dom_features: dict | None = None
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {"id": "page-1", "url": EXAMPLE_URL},
+            ]
+        }
+    }
+
 
 class UrlScanRequest(BaseModel):
     urls: list[UrlScanItem]
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {"urls": [{"id": "page-1", "url": EXAMPLE_URL}]},
+            ]
+        }
+    }

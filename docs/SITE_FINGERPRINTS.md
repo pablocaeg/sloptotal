@@ -3,7 +3,7 @@
 `app/site_fingerprints.py` names the AI app builder behind a website only from
 markers the builder itself leaves in what it deploys. This file records where
 each marker was confirmed, so a signal is never added on a hunch. Checked
-September 2026.
+September 2026; Emergent checked October 2026.
 
 ## Method
 
@@ -35,6 +35,10 @@ September 2026.
 | Replit | `replit-badge` | ~2k `index.html` files on GitHub |
 | Same | `same-assets.com` asset host | ~4k files on GitHub |
 | Anything | `*.created.app` host; `create.xyz` reference (weak) | GitHub code search |
+| Emergent | `*.emergent.host` host | 82 live sites sampled, October 2026 |
+| Emergent | `__emg_vid` and `__emg_sid` response cookies (set by the platform, so present even when the generated HTML is replaced) | 55 of 82 live `*.emergent.host` sites; none of 15 other sites checked as controls |
+| Emergent | `assets.emergent.sh/scripts/emergent-main.js` script | 38 of 82 live `*.emergent.host` sites; ~2,250 `index.html` files on GitHub |
+| Emergent | `*.preview.emergentagent.com` host (the preview domain) | 25 live preview sites |
 
 A builder is reported as **confirmed** on one strong marker or any two markers,
 and as **possible** on a single weak one.
@@ -45,6 +49,10 @@ and as **possible** on a single weak one.
   in an AI editor (Cursor, Copilot, Claude Code), carries no marker. "No
   fingerprints" is not evidence of hand-written code.
 - Markers can be removed by the site owner.
+- The Emergent cookies and script were confirmed on `*.emergent.host` sites only.
+  On a custom domain that Emergent serves they should appear too, but no live one
+  was available to confirm. Without the hosting domain, 55 of the 82 sampled sites
+  still carry a fingerprint, so a third of them would show none.
 - Style signals used by other checkers (Tailwind class density, missing
   security headers, gradient heroes) are deliberately not used: hand-built
   sites share them, and no one has published a measurement showing they

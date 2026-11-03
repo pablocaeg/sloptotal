@@ -1,8 +1,10 @@
 import torch
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
+
+from app.autoconfig import get_device
 from app.engines.base import BaseEngine, FairLock, score_in_windows
-from app.schemas import EngineResult, score_to_engine_verdict
 from app.model_pool import LOAD_LOCK as _load_lock
+from app.schemas import EngineResult, score_to_engine_verdict
 
 _MODEL_NAME = "Hello-SimpleAI/chatgpt-detector-roberta"
 _model = None
@@ -17,7 +19,7 @@ def _load_model():
             if _model is None:
                 _tokenizer = AutoTokenizer.from_pretrained(_MODEL_NAME)
                 model = AutoModelForSequenceClassification.from_pretrained(_MODEL_NAME)
-                model.eval()
+                model.eval().to(get_device())
                 # Publish the model last: readers test it, so the tokenizer must
                 # already be set and the model already in eval mode when they see it.
                 _model = model
@@ -37,7 +39,9 @@ def _get_ai_label_index(model) -> int:
 
 def _score_chunk(text: str, model, tokenizer, ai_idx: int) -> float:
     """Score a single chunk and return AI probability."""
+    device = next(model.parameters()).device
     inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=512)
+    inputs = {k: v.to(device) for k, v in inputs.items()}
     with torch.no_grad():
         logits = model(**inputs).logits
     probs = torch.softmax(logits, dim=-1)[0]

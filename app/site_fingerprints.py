@@ -129,6 +129,28 @@ BUILDERS: tuple[Builder, ...] = (
             Signal("html", r"create\.xyz", "References create.xyz", strong=False),
         ),
     ),
+    Builder(
+        "Emergent",
+        "https://emergent.sh",
+        (
+            Signal("host", ".emergent.host", "Hosted on emergent.host"),
+            Signal(
+                "host",
+                ".preview.emergentagent.com",
+                "Hosted on Emergent's preview domain",
+            ),
+            Signal(
+                "html",
+                r"assets\.emergent\.sh/scripts/emergent-main\.js",
+                "Loads Emergent's emergent-main.js script",
+            ),
+            Signal(
+                "header",
+                r"set-cookie:[^\n]*__emg_(?:sid|vid)=",
+                "Sets Emergent's __emg_sid session cookie",
+            ),
+        ),
+    ),
 )
 
 _GENERATOR_RE = re.compile(

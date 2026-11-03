@@ -6,6 +6,8 @@ pasted text, so uploads follow exactly the same analysis and retention path.
 
 import io
 
+from app.config import MIN_TEXT_LENGTH
+
 MAX_UPLOAD_BYTES = 10 * 1024 * 1024
 SUPPORTED = (".pdf", ".docx", ".txt", ".md")
 
@@ -26,18 +28,34 @@ def extract_document_text(filename: str, data: bytes) -> str:
         text = "\n\n".join(p.strip() for p in pages if p.strip())
     elif name.endswith(".docx"):
         from docx import Document
+        from docx.text.paragraph import Paragraph
 
         try:
             doc = Document(io.BytesIO(data))
         except Exception as exc:
             raise ValueError("Could not read that Word document.") from exc
-        text = "\n\n".join(p.text.strip() for p in doc.paragraphs if p.text.strip())
+        parts = []
+        for block in doc.iter_inner_content():
+            if isinstance(block, Paragraph):
+                paragraph_text = block.text.strip()
+                if paragraph_text:
+                    parts.append(paragraph_text)
+                continue
+            seen_cells = set()
+            for row in block.rows:
+                for cell in row.cells:
+                    if cell._tc not in seen_cells:
+                        seen_cells.add(cell._tc)
+                        cell_text = cell.text.strip()
+                        if cell_text:
+                            parts.append(cell_text)
+        text = "\n\n".join(parts)
     elif name.endswith((".txt", ".md")):
         text = data.decode("utf-8", errors="replace")
     else:
         raise ValueError("Supported files: " + ", ".join(SUPPORTED))
     text = text.strip()
-    if len(text) < 50:
+    if len(text) < MIN_TEXT_LENGTH:
         raise ValueError(
             "No readable text found. Scanned PDFs (images of pages) are not supported."
         )

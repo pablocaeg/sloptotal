@@ -202,6 +202,9 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .feedback__body { font-size: 14px; line-height: 22px; color: var(--text-muted); max-width: 60ch; }
 .feedback__row { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
 .feedback .st-btn[aria-pressed="true"] { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
+.feedback__star { font-size: 14px; line-height: 22px; color: var(--text-muted); padding-top: var(--space-3); border-top: 1px solid var(--border); }
+.feedback__star a { color: var(--text); font-weight: 600; text-underline-offset: 3px; }
+.feedback__star span { color: #e3b341; }
 
 /* ---------- Manuscript type, as on sloptotal.com ---------- */
 h1, .display, .section-head h2, .report-head h1, .st-readout__value, .site-result__verdict, .feedback__title { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.015em; }

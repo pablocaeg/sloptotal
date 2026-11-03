@@ -107,7 +107,13 @@ OPENROUTER_API_KEY=... python make_hard.py             # hard cases
 SLOPTOTAL_URL=http://127.0.0.1:8000 python score.py results.jsonl
 python analyze.py results.jsonl                        # tables
 python fit.py results.jsonl results-short.jsonl        # calibration
+python fit_quick.py results.jsonl results-short.jsonl > quick-report.md   # quick-path calibration
 ```
+
+`fit_quick.py` writes the `"quick"` section of `app/calibration.json` using
+only the engines run by the quick path (`/api/quick-score` and
+`/api/paragraph-score`); the command above saves its report to `quick-report.md`.
+Rerun it whenever those engines change.
 
 Generating the AI side, the hard cases and the extra multilingual AI text cost $1.73 through OpenRouter.
 

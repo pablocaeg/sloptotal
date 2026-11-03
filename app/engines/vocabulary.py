@@ -1,6 +1,7 @@
-import re
 import math
+import re
 from collections import Counter
+
 from app.engines.base import BaseEngine
 from app.schemas import EngineResult, score_to_engine_verdict
 

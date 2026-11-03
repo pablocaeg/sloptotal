@@ -9,8 +9,9 @@ This turns 6 sequential forward passes into 1 — the single biggest speedup.
 """
 
 import threading
-import torch
 from collections import OrderedDict
+
+import torch
 
 _cache_lock = threading.Lock()
 _cache: OrderedDict[int, dict] = OrderedDict()
@@ -54,10 +55,14 @@ def get_gpt2_outputs(text: str) -> dict:
                 "n_tokens": n_tokens,
             }
         else:
+            # Forward pass on the model's device; results come back to the CPU so
+            # the engines' post-processing is unchanged and the cache (up to 5
+            # copies of 1024 x 50257 logits) never holds GPU memory.
+            device_ids = input_ids.to(next(model.parameters()).device)
             with torch.no_grad():
-                outputs = model(input_ids, labels=input_ids)
+                outputs = model(device_ids, labels=device_ids)
                 result = {
-                    "logits": outputs.logits.detach(),
+                    "logits": outputs.logits.detach().cpu(),
                     "loss": outputs.loss.item(),
                     "input_ids": input_ids.detach(),
                     "n_tokens": n_tokens,
@@ -87,7 +92,7 @@ def get_distil_outputs(text: str) -> dict:
         if text_hash in _distil_cache:
             return _distil_cache[text_hash]
 
-    from app.engines.cross_perplexity import _load_distil_model, _distil_lock
+    from app.engines.cross_perplexity import _distil_lock, _load_distil_model
 
     model, tokenizer = _load_distil_model()
 
@@ -108,8 +113,9 @@ def get_distil_outputs(text: str) -> dict:
                 "n_tokens": input_ids.size(1) - 1,
             }
         else:
+            device_ids = input_ids.to(next(model.parameters()).device)
             with torch.no_grad():
-                outputs = model(input_ids, labels=input_ids)
+                outputs = model(device_ids, labels=device_ids)
                 result = {
                     "loss": outputs.loss.item(),
                     "input_ids": input_ids.detach(),

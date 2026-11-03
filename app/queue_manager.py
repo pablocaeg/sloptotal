@@ -16,7 +16,8 @@ import asyncio
 import logging
 import time
 import uuid
-from typing import Any, Awaitable, Callable
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 from app.capacity import EndpointCapacity
 
@@ -65,8 +66,13 @@ class QueueManager:
         self._capacities: dict[str, EndpointCapacity] = {
             "snippet": EndpointCapacity(max_concurrent=max_snippet, max_queue=50),
             "quick": EndpointCapacity(max_concurrent=max_quick, max_queue=50),
-            "full": EndpointCapacity(max_concurrent=max_full, max_queue=20),
-            "short": EndpointCapacity(max_concurrent=max_short, max_queue=20),
+            # Typical whole-scan times on production, until real ones come in.
+            "full": EndpointCapacity(
+                max_concurrent=max_full, max_queue=20, default_latency_ms=30_000
+            ),
+            "short": EndpointCapacity(
+                max_concurrent=max_short, max_queue=20, default_latency_ms=10_000
+            ),
         }
 
         # asyncio.PriorityQueue per endpoint
@@ -163,7 +169,9 @@ class QueueManager:
                     "status": "queued",
                     "ticket_id": existing_ticket,
                     "position": position,
-                    "estimated_wait_ms": cap.estimated_wait_ms(position),
+                    "estimated_wait_ms": cap.estimated_wait_ms(
+                        position, time.monotonic()
+                    ),
                 }
             # Also check results store
             if existing_ticket in self._results:
@@ -179,6 +187,7 @@ class QueueManager:
             await slots.acquire()
             cap.active += 1
             start = time.monotonic()
+            cap.job_started(start)
             try:
                 result = await execute_fn(payload)
             except Exception as e:
@@ -210,7 +219,7 @@ class QueueManager:
                 "position": position,
                 "ahead": position - 1,
                 "active": cap.active,
-                "estimated_wait_ms": cap.estimated_wait_ms(position),
+                "estimated_wait_ms": cap.estimated_wait_ms(position, time.monotonic()),
             }
 
         # --- Queue full: reject ---
@@ -247,7 +256,9 @@ class QueueManager:
                         "position": position,
                         "ahead": position - 1,
                         "active": cap.active,
-                        "estimated_wait_ms": cap.estimated_wait_ms(position),
+                        "estimated_wait_ms": cap.estimated_wait_ms(
+                            position, time.monotonic()
+                        ),
                     }
             return {"status": "processing"}
 
@@ -279,6 +290,7 @@ class QueueManager:
     def _release(self, endpoint: str, start: float) -> None:
         cap = self._capacities[endpoint]
         cap.active = max(0, cap.active - 1)
+        cap.job_finished(start)
         cap.record_latency(time.monotonic() - start)
         self._slots[endpoint].release()
 

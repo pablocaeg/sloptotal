@@ -7,9 +7,12 @@
   <a href="https://github.com/pablocaeg/sloptotal/releases"><img src="https://img.shields.io/github/v/release/pablocaeg/sloptotal?color=b5282e" alt="Latest release"></a>
   <a href="https://github.com/pablocaeg/sloptotal/pkgs/container/sloptotal"><img src="https://img.shields.io/badge/docker-ghcr.io-1a1a18?logo=docker&logoColor=white" alt="Docker image"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-3d3b37" alt="Python 3.10+">
+  <a href="https://github.com/pablocaeg/sloptotal/stargazers"><img src="https://img.shields.io/github/stars/pablocaeg/sloptotal?style=flat&color=e3b341&logo=github" alt="GitHub stars"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2d8a4e" alt="MIT license"></a>
   <a href="https://sloptotal.com"><img src="https://img.shields.io/badge/live%20demo-sloptotal.com-b5282e" alt="Live demo"></a>
 </p>
+
+<p align="center"><b>English</b> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.ru.md">Русский</a></p>
 
 # SlopTotal
 
@@ -38,15 +41,16 @@ it publishes how accurate that is, failures included.
 - **Text, URLs and documents.** Paste text, scan a web page (main content is
   extracted automatically), or upload `.pdf`, `.docx`, `.txt` or `.md`.
 - **Site check: was this website vibe-coded?** Finds the fingerprints that
-  Lovable, v0, Bolt, Base44, Replit and Same leave in the sites they deploy,
+  Lovable, v0, Bolt, Base44, Replit, Same and Emergent leave in the sites they deploy,
   and shows the evidence for each one. [How it works](#site-check-detect-sites-built-with-ai-app-builders)
 - **Per-paragraph heat map** through the API, to see which parts read as AI.
 - **Measured, not claimed.** Every accuracy number below comes with the corpus,
   the harness and the raw per-sample scores.
 - **Private by default.** Self-hosted, no third-party AI APIs, no tracking,
   reports deleted after 30 days.
-- **CPU-only is fine.** Auto-detects your hardware; 4 GB RAM is enough for the
-  lite profile, a GPU is optional.
+- **CPU-only is fine.** Auto-detects your hardware; a GPU is optional. Loaded
+  models need about 8.3 GB of RAM (an estimate; see
+  [docs/MODELS.md](docs/MODELS.md)).
 - **JSON API and a [Chrome extension](https://github.com/pablocaeg/sloptotal-extension)**
   that marks AI-looking results in Google Search and LinkedIn.
 
@@ -93,9 +97,10 @@ classifiers which top the RAID benchmark drop to AUC 0.75 on current models.
 docker run -p 8000:8000 -v sloptotal-models:/app/models ghcr.io/pablocaeg/sloptotal
 ```
 
-Open <http://localhost:8000>. The first scan downloads about 2 GB of models into
-the `sloptotal-models` volume, so later starts are quick. To build from source
-instead, run `docker compose -f docker/docker-compose.yml up`.
+Open <http://localhost:8000>. The first scan downloads about 9 GB of models
+(see [docs/MODELS.md](docs/MODELS.md)) into the `sloptotal-models` volume, so
+later starts are quick. To build from source instead, run
+`docker compose -f docker/docker-compose.yml up`.
 
 ### From source
 
@@ -135,6 +140,7 @@ sites or in the builders' own templates:
 | Base44 | `app.base44.com` platform calls, `base44_access_token`, `*.base44.app` |
 | Replit | Replit Agent dev banner, Replit badge, `*.replit.app` |
 | Same | assets served from `same-assets.com` |
+| Emergent | `__emg_sid` and `__emg_vid` cookies, `emergent-main.js` script, `*.emergent.host` |
 
 A site with no marker may still have been written with AI: code exported from
 these tools and hosted elsewhere, or written in an AI editor, carries no
@@ -178,6 +184,14 @@ python examples/python_client.py "Paste at least 50 characters of text here..." 
 
 The response lists every engine with its score, verdict and a plain-language
 detail line, plus `overall_score` (0-100) and `overall_verdict`.
+
+From Node 18+, [`examples/node_client.mjs`](examples/node_client.mjs) uses the
+built-in `fetch` to analyse a text and print the overall score, the verdict and
+the five engines scoring highest. Pass `--base` to point it at another server:
+
+```bash
+node examples/node_client.mjs "Paste at least 50 characters of text here..." --base http://localhost:8000
+```
 
 ## Detection Engines
 
@@ -229,7 +243,8 @@ The overall score is a logistic model over the engine scores, fitted on
 [SlopBench](tests/eval/slopbench/). The fitted parameters are in
 [app/calibration.json](app/calibration.json), and every number in the fit's
 report, [tests/eval/slopbench/FINDINGS.md](tests/eval/slopbench/FINDINGS.md), is
-measured on kinds of writing the fit never saw.
+measured on kinds of writing the fit never saw. [docs/CALIBRATION.md](docs/CALIBRATION.md)
+explains each field in the JSON and how to regenerate it.
 
 1. **Weights from a fit, not by hand.** Each engine's score is turned into
    log-odds and weighted by the model, with weights kept non-negative. An engine
@@ -261,11 +276,32 @@ the Fakespot bias against pre-1920 prose that led to it.
 SlopTotal detects CPU, RAM and GPU at startup and picks a profile. Everything
 can be overridden with environment variables; see [`.env.example`](.env.example).
 
-| Profile | RAM | CPU | GPU | Notes |
-|---------|-----|-----|-----|-------|
-| Lite | 4 GB | 2 cores | None | All engines, slower |
-| Standard | 8 GB | 4 cores | None | Default for most laptops |
-| Performance | 16 GB+ | 6+ cores | CUDA optional | Pool replicas, max throughput |
+| Profile | When chosen (RAM) | CPU | GPU | Notes |
+|---------|-------------------|-----|-----|-------|
+| Lite | below 8 GB | 2 cores | None | Fewer workers; still loads every model |
+| Standard | 8 GB or more | 4 cores | None | Default for most laptops |
+| Performance | 16 GB or more | 6+ cores | CUDA optional | Pool replicas, max throughput |
+
+Profiles change workers and replicas, not which engines run. Every profile loads
+all models: about 8.3 GB of RAM once loaded (an estimate) and about 9 GB on
+disk. Per-engine memory and latency, measured on one machine, are in
+[docs/MODELS.md](docs/MODELS.md).
+
+**NVIDIA GPU:** `requirements.txt` installs the CPU-only torch wheel. To run the
+models on the GPU, replace it with a CUDA build of the same torch version (keep
+the version: upgrading torch can move scores):
+
+```bash
+pip uninstall -y torch
+pip install torch==<installed version> --index-url https://download.pytorch.org/whl/cu130 --extra-index-url https://pypi.org/simple
+python -c "import torch; print(torch.cuda.is_available())"   # True
+```
+
+`cu130` needs an NVIDIA driver with CUDA 13 support and covers RTX 20xx through
+50xx; pick another index from [pytorch.org](https://pytorch.org/get-started/locally/)
+for older cards. With CUDA and at least 4 GB of VRAM, startup selects the
+`performance` profile and the banner shows `Device: cuda`. All models run in
+fp32, so scores match the CPU to three decimals.
 
 **High-RAM CPU servers (e.g. 64 GB, no GPU):** you automatically get the `performance` profile. With no CUDA, all inference stays on CPU but you can run more concurrent workers and model pool replicas:
 
@@ -285,6 +321,8 @@ export SLOPTOTAL_POOL_TMR=2
 |---|---|---|
 | `SLOPTOTAL_PROFILE` | auto | `lite`, `standard` or `performance` |
 | `SLOPTOTAL_RETENTION_DAYS` | `30` | Delete reports after N days (`0` keeps them) |
+| `SLOPTOTAL_DIRECT_DAILY_LIMIT` | `0` (no limit) | Calls per client IP per UTC day that start an analysis from outside the first-party origins below; for a public instance |
+| `SLOPTOTAL_FIRST_PARTY_ORIGINS` | sloptotal.com, the extension, localhost | Regex of browser origins allowed by CORS and not counted by the daily limit |
 | `SLOPTOTAL_ALLOW_PRIVATE_URLS` | off | Let URL scans reach private or intranet hosts (blocked by default) |
 | `SLOPTOTAL_DATA_DIR` | project-root `data/` | Directory for stored reports and the database |
 | `SLOPTOTAL_DB_NAME` | `sloptotal.db` | Database filename inside the data directory |

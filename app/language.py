@@ -12,6 +12,7 @@ words do not vote: English "I" would read as Polish "i". Anything else is
 import math
 import re
 from collections import Counter
+from fractions import Fraction
 
 FUNCTION_WORDS = {
     "en": "the of and to in is that it for was on with as are this be by not have",
@@ -24,11 +25,31 @@ FUNCTION_WORDS = {
     "pl": "na nie się do to że jest jak co ale tak od po przez dla oraz jego jej są był była który która które ich jako także tego też może już",
     "tr": "ve bir bu da de için ile olarak çok daha gibi olan en ama sonra kadar ise olduğu değil her göre ancak kendi sadece",
     "ro": "și în este pentru care sunt cu din pe mai fost această acest fiind prin între sau nu ca la",
-    "ca": "amb per els les del una que és són també però aquest aquesta seu dels això",
+    # Catalan shares most of its commonest function words with Spanish (no de la el
+    # un en al, as well as que una del), so they voted for Spanish only and Catalan
+    # text read as Spanish, a supported language. Listing them here too makes them
+    # vote for both, and the Catalan-only forms decide. Those (perquè molt seva
+    # doncs què més quan només) are closed-class words from the OPUS/OpenSubtitles
+    # list at https://github.com/hermitdave/FrequencyWords that are at least 700
+    # per million words in Catalan, are absent or 300 times rarer in the Spanish
+    # list, and do not occur in the non-Catalan texts in tests/eval/multilingual.
+    "ca": "amb per els les del una que és són també però aquest aquesta seu dels això no de la el un en al perquè molt seva doncs què més quan només",
     "id": "yang dan di untuk dengan ini itu dari dalam tidak ada pada akan juga atau",
     "vi": "và của là có được trong cho những với này không người các một đã",
     "sv": "och att det som är för med på inte av till har om ett jag",
     "da": "og at det som er for med på ikke af til har om et jeg",
+    # Finnish, Czech and Hungarian have no fit either, and without them text in
+    # these languages fell through to whichever language shares a few short
+    # words: Czech read as Polish (a *supported* language, so it was scored
+    # under the Polish calibration rather than reported as unsupported).
+    # Word lists are the most frequent function words from the OPUS/OpenSubtitles
+    # frequency lists at https://github.com/hermitdave/FrequencyWords, keeping
+    # the forms that are closed-class and at least two letters.
+    "fi": "ja on ei että se oli hän mutta kuin niin myös kun jos tai vain ovat ole tämä siitä",
+    # Czech shares ale/do/jako/na/to with Polish, so the list leans on the forms
+    # Polish does not have (je, že, jsou, které, při, podle).
+    "cs": "je že se na to do ale jako byl jsou nebo pro jeho které který při podle také už",
+    "hu": "az és hogy nem is egy de van csak már még meg ha mint volt vagy ami után által lehet",
 }
 _WORDS = {lang: set(words.split()) for lang, words in FUNCTION_WORDS.items()}
 _TOKEN = re.compile(r"[^\W\d_]+", re.UNICODE)
@@ -43,6 +64,20 @@ _LETTER = re.compile(r"[^\W\d_]")
 # The SlopBench corpus asks for "about 600 characters" in Chinese and Japanese
 # where it asks for "about 300 words" elsewhere.
 CJK_CHARACTERS_PER_WORD = 2
+# Thai, Lao, Khmer and Burmese have no such corpus figure, so they come from the
+# Universal Declaration of Human Rights (http://efele.net/udhr), whose English text
+# is 1,747 words. Counting every character in each script's Unicode block, Thai has
+# 8,890 (5.1 a word), Lao 10,196 (5.8), Khmer 10,187 (5.8) and Burmese 14,602 (8.4),
+# rounded to a whole number. Like the CJK figure these are characters per word of
+# English text, not per word of the language, because the thresholds that use the
+# count (short text, lane) are in English words. One formal text is a rough guide.
+_UNSPACED_SCRIPTS = (
+    (_CJK, CJK_CHARACTERS_PER_WORD),
+    (re.compile(r"[\u0e00-\u0e7f]"), 5),  # Thai
+    (re.compile(r"[\u0e80-\u0eff]"), 6),  # Lao
+    (re.compile(r"[\u1780-\u17ff]"), 6),  # Khmer
+    (re.compile(r"[\u1000-\u109f]"), 8),  # Burmese
+)
 
 
 def _script_counts(text: str) -> Counter:
@@ -73,11 +108,15 @@ def is_unspaced(text: str) -> bool:
 
 
 def count_words(text: str) -> int:
-    """Words separated by spaces, with Chinese and Japanese, which use none,
-    counted at CJK_CHARACTERS_PER_WORD characters a word."""
-    cjk = len(_CJK.findall(text))
-    spaced = len(_CJK_PUNCTUATION.sub(" ", _CJK.sub(" ", text)).split())
-    return spaced + math.ceil(cjk / CJK_CHARACTERS_PER_WORD)
+    """Words separated by spaces, with the scripts that use none (Chinese,
+    Japanese, Thai, Lao, Khmer, Burmese) counted at a fixed number of characters
+    a word."""
+    spaced = _CJK_PUNCTUATION.sub(" ", text)
+    unspaced = Fraction(0)
+    for script, characters_per_word in _UNSPACED_SCRIPTS:
+        unspaced += Fraction(len(script.findall(text)), characters_per_word)
+        spaced = script.sub(" ", spaced)
+    return len(spaced.split()) + math.ceil(unspaced)
 
 
 def detect_language(text: str) -> str:
