@@ -193,6 +193,14 @@ the five engines scoring highest. Pass `--base` to point it at another server:
 node examples/node_client.mjs "Paste at least 50 characters of text here..." --base http://localhost:8000
 ```
 
+From Go, [`examples/go_client/main.go`](examples/go_client/main.go) uses only
+the standard library to analyse a text and print the overall score, the verdict
+and the five engines scoring highest:
+
+```bash
+go run ./examples/go_client "Paste at least 50 characters of text here..." --base http://localhost:8000
+```
+
 ## Detection Engines
 
 Every engine links to its page on sloptotal.com, which carries its measured scores against both corpora. AUC below is the probability the engine ranks a random AI passage above a random human one: 1.0 is perfect, 0.5 is a coin flip.
