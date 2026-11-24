@@ -171,6 +171,9 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .report-status { display: inline-flex; align-items: center; gap: var(--space-2); margin-top: var(--space-1); font-size: 14px; line-height: 22px; color: var(--text-muted); }
 .report-status__dot { width: 8px; height: 8px; border-radius: var(--radius-full); background: var(--verdict-clean-fill); }
 .report-status__dot.is-live { background: var(--text-muted); animation: report-pulse 1.2s ease-in-out infinite; }
+.report-wait { margin-top: var(--space-1); font-size: 14px; line-height: 22px; color: var(--text-muted); }
+.report-band .report-wait { color: var(--night-muted); }
+.report-wait #elapsed { font-variant-numeric: tabular-nums; margin-right: var(--space-2); }
 @keyframes report-pulse { 50% { opacity: 0.3; } }
 .report-notes { display: grid; gap: var(--space-2); }
 .report-section { margin-top: var(--space-5); display: grid; gap: var(--space-3); }
