@@ -152,6 +152,14 @@ curl -X POST http://localhost:8000/api/scan/site \
   -H "Content-Type: application/json" -d '{"url": "example.com"}'
 ```
 
+## Example clients
+
+- [Python](examples/python_client.py)
+- [Node.js](examples/node_client.mjs)
+- [Go](examples/go_client/main.go)
+- [Ruby](examples/ruby_client.rb)
+- [Rust](examples/rust_client/)
+
 ## API
 
 | Endpoint | Method | What it does | Typical latency (CPU) |
