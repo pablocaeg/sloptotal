@@ -201,6 +201,14 @@ and the five engines scoring highest:
 go run ./examples/go_client "Paste at least 50 characters of text here..." --base http://localhost:8000
 ```
 
+From Rust, [`examples/rust_client`](examples/rust_client/) is a small Cargo
+project (`reqwest` blocking client plus `serde`) that prints the same summary.
+It also reads the text from stdin and honours `SLOPTOTAL_URL`:
+
+```bash
+cargo run --manifest-path examples/rust_client/Cargo.toml -- "Paste at least 50 characters of text here..." --base http://localhost:8000
+```
+
 ## Detection Engines
 
 Every engine links to its page on sloptotal.com, which carries its measured scores against both corpora. AUC below is the probability the engine ranks a random AI passage above a random human one: 1.0 is perfect, 0.5 is a coin flip.
