@@ -30,6 +30,9 @@ class EngineResult(BaseModel):
     verdict: Verdict
     details: str
     description: str = ""
+    # Wall time of this engine's analyze() call, in milliseconds. Missing on
+    # reports stored before the field existed.
+    elapsed_ms: float | None = None
 
 
 class FeedbackRequest(BaseModel):

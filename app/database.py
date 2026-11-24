@@ -70,6 +70,7 @@ async def init_database() -> None:
                 verdict TEXT NOT NULL,
                 details TEXT NOT NULL,
                 description TEXT DEFAULT '',
+                elapsed_ms REAL,
                 UNIQUE(report_id, engine_key)
             )
         """)
@@ -115,6 +116,11 @@ async def init_database() -> None:
                 await db.execute(f"ALTER TABLE reports ADD COLUMN {column}")
             except Exception:
                 pass  # Column already exists
+
+        try:
+            await db.execute("ALTER TABLE engine_results ADD COLUMN elapsed_ms REAL")
+        except Exception:
+            pass  # Column already exists
 
         for col_name, col_type in _structural_columns:
             try:
@@ -399,6 +405,7 @@ async def get_report(report_id: str) -> AnalysisReport | None:
                 verdict=Verdict(r["verdict"]),
                 details=r["details"],
                 description=r["description"] or "",
+                elapsed_ms=r["elapsed_ms"],
             )
             for r in result_rows
         ]
@@ -521,6 +528,7 @@ def insert_engine_result_sync(
     verdict: str,
     details: str,
     description: str,
+    elapsed_ms: float | None = None,
 ) -> None:
     """Thread-safe insert of engine result (for use in ThreadPoolExecutor callbacks)."""
     conn = get_sync_connection()
@@ -528,10 +536,20 @@ def insert_engine_result_sync(
         conn.execute(
             """
             INSERT OR REPLACE INTO engine_results
-            (report_id, engine_key, engine_name, score, verdict, details, description)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            (report_id, engine_key, engine_name, score, verdict, details,
+             description, elapsed_ms)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
-            (report_id, engine_key, engine_name, score, verdict, details, description),
+            (
+                report_id,
+                engine_key,
+                engine_name,
+                score,
+                verdict,
+                details,
+                description,
+                elapsed_ms,
+            ),
         )
         conn.commit()
     except sqlite3.Error as e:
