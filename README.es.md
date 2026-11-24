@@ -12,7 +12,7 @@
   <a href="https://sloptotal.com/es/"><img src="https://img.shields.io/badge/demo-sloptotal.com-b5282e" alt="Demo en línea"></a>
 </p>
 
-<p align="center"><a href="README.md">English</a> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.ru.md">Русский</a> · <b>Español</b></p>
+<p align="center"><a href="README.md">English</a> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.ru.md">Русский</a> · <b>Español</b> · <a href="README.pt-BR.md">Português</a></p>
 
 # SlopTotal
 
