@@ -21,24 +21,9 @@ services:
 
     restart: unless-stopped
 
-  # Uncomment for NVIDIA GPU support:
-  # sloptotal-gpu:
-  #   build: .
-  #   ports:
-  #     - "8000:8000"
-  #   volumes:
-  #     - sloptotal-models:/app/models
-  #     - sloptotal-data:/app/data
-  #   environment:
-  #     - HF_HOME=/app/models
-  #   deploy:
-  #     resources:
-  #       reservations:
-  #         devices:
-  #           - driver: nvidia
-  #             count: 1
-  #             capabilities: [gpu]
-  #   restart: unless-stopped
+  # NVIDIA GPU: this image installs CPU-only PyTorch (requirements.txt), so
+  # reserving a GPU here would not move the models to it. Run from source with
+  # a CUDA build of torch instead: README.md, "Configuration", "NVIDIA GPU".
 
 volumes:
   sloptotal-models:

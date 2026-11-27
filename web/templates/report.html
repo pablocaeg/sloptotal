@@ -58,6 +58,14 @@
         </div>
     </section>
 
+    <div class="star-note" id="star-note" hidden>
+        <p class="star-note__text">SlopTotal is free and open source. If it helps you, a star helps others find it.</p>
+        <a class="st-btn st-btn--secondary star-note__star" id="star-note-star" href="https://github.com/pablocaeg/sloptotal" target="_blank" rel="noopener"><span aria-hidden="true">&#9733;</span> Star</a>
+        <button type="button" class="star-note__close" id="star-note-close" aria-label="Dismiss">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9"/></svg>
+        </button>
+    </div>
+
     {% if notes %}
     <div class="report-notes">
         {% for note in notes %}

@@ -1,6 +1,6 @@
 // Analyse a text with the SlopTotal JSON API, using only the Go standard library.
 //
-// Usage: go run ./examples/go_client "some text..." [--base URL]
+// Usage: go run examples/go_client/main.go "some text..." [--base URL]
 package main
 
 import (
@@ -63,7 +63,7 @@ func main() {
 	}
 
 	if text == "" {
-		fmt.Fprintln(os.Stderr, `Usage: go run ./examples/go_client "some text..." [--base URL]`)
+		fmt.Fprintln(os.Stderr, `Usage: go run examples/go_client/main.go "some text..." [--base URL]`)
 		os.Exit(1)
 	}
 
