@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import os
+import time
 import uuid
 from collections.abc import AsyncGenerator
 from concurrent.futures import ThreadPoolExecutor
@@ -254,8 +255,10 @@ def shutdown_analyzer() -> None:
 
 
 def _run_engine(engine, text: str, fast: bool = False) -> EngineResult:
+    started = time.perf_counter()
     with fast_windows(fast):
         result = engine.analyze(text)
+    result.elapsed_ms = round((time.perf_counter() - started) * 1000, 1)
     engine_key = next((key for key, candidate in _engines if candidate is engine), None)
     if engine_key is None:
         return result
@@ -439,6 +442,7 @@ def _on_engine_done(future, key: str, queue: asyncio.Queue, report_id: str):
             verdict=result.verdict.value,
             details=result.details,
             description=result.description,
+            elapsed_ms=result.elapsed_ms,
         )
     except Exception as e:
         log.error(f"Failed to insert engine result: {e}")
@@ -679,6 +683,7 @@ async def _analyze_text_inner(
                 verdict=result.verdict.value,
                 details=result.details,
                 description=result.description,
+                elapsed_ms=result.elapsed_ms,
             )
         except Exception as e:
             log.error(f"Failed to insert engine result: {e}")

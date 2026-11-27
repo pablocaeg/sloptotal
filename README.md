@@ -262,6 +262,10 @@ python examples/python_client.py "Paste at least 50 characters of text here..." 
 
 The response lists every engine with its score, verdict and a plain-language
 detail line, plus `overall_score` (0-100) and `overall_verdict`.
+Each engine entry also carries `elapsed_ms`, the time that engine took in
+milliseconds (absent on reports stored before it was added);
+`python scripts/engine_timings.py` prints it as a table for 100, 500 and 2,000
+word texts.
 
 From Node 18+, [`examples/node_client.mjs`](examples/node_client.mjs) uses the
 built-in `fetch` to analyse a text and print the overall score, the verdict and
