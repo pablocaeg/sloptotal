@@ -38,6 +38,8 @@ it publishes how accurate that is, failures included.
 
 ## Run locally
 
+Prefer to watch? [75-second walkthrough on YouTube](https://www.youtube.com/watch?v=QwM7Ri4BscQ).
+
 Docker (x86-64 or ARM, Apple Silicon included), one command:
 
 ```bash
