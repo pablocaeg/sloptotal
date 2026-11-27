@@ -12,19 +12,25 @@
   "version": "0.1.0",
   "packages": [
     {
-      "registryType": "pypi",
-      "registryBaseUrl": "https://pypi.org",
-      "identifier": "sloptotal-mcp",
-      "version": "0.1.0",
-      "runtimeHint": "uvx",
+      "registryType": "oci",
+      "identifier": "ghcr.io/pablocaeg/sloptotal-mcp:0.1.0",
+      "runtimeHint": "docker",
       "transport": {
         "type": "stdio"
       },
+      "runtimeArguments": [
+        {
+          "type": "named",
+          "name": "--add-host",
+          "value": "host.docker.internal:host-gateway",
+          "description": "Lets the container reach a SlopTotal server running on this machine (needed on Linux; harmless on Docker Desktop)."
+        }
+      ],
       "environmentVariables": [
         {
           "name": "SLOPTOTAL_URL",
-          "description": "SlopTotal server to call. Default http://localhost:8000 (self-hosted, text stays local). https://api.sloptotal.com sends the text to sloptotal.com.",
-          "default": "http://localhost:8000",
+          "description": "SlopTotal server to call. Default http://host.docker.internal:8000, a self-hosted server on this machine (docker run -p 8000:8000 ghcr.io/pablocaeg/sloptotal), so the text stays local. https://api.sloptotal.com sends the text to sloptotal.com.",
+          "default": "http://host.docker.internal:8000",
           "format": "string",
           "isRequired": false,
           "isSecret": false

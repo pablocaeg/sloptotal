@@ -100,6 +100,15 @@ async def test_public_api_links_to_the_website_report(api, monkeypatch):
     assert str(api[0].url).startswith("https://api.sloptotal.com/api/analyze")
 
 
+async def test_docker_host_is_local_and_links_to_localhost(api, monkeypatch):
+    monkeypatch.setenv("SLOPTOTAL_URL", "http://host.docker.internal:8000")
+    assert server.is_local(server.base_url())
+    api.routes[("POST", "/api/analyze")] = httpx.Response(200, json=REPORT)
+    out = payload(await call("analyze_text", {"text": TEXT}))
+    assert out["report_url"] == "http://localhost:8000/report/abc123"
+    assert str(api[0].url).startswith("http://host.docker.internal:8000/api/analyze")
+
+
 async def test_short_text_is_refused_without_a_request(api):
     result = await call("analyze_text", {"text": "too short"})
     assert result.is_error

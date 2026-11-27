@@ -48,6 +48,8 @@ The score is a probability estimate, not proof. Report it with its verdict
 and the language support field; never present it as certain authorship.
 """
 
+DOCKER_HOST_NAME = "host.docker.internal"
+
 
 def base_url() -> str:
     return (
@@ -57,9 +59,14 @@ def base_url() -> str:
 
 def is_local(url: str) -> bool:
     host = (urlsplit(url).hostname or "").lower()
-    return host in {"localhost", "127.0.0.1", "::1", "0.0.0.0"} or host.endswith(
-        ".local"
-    )
+    return host in {
+        "localhost",
+        "127.0.0.1",
+        "::1",
+        "0.0.0.0",
+        # The Docker image reaches a server on the host through this name.
+        DOCKER_HOST_NAME,
+    } or host.endswith(".local")
 
 
 def report_url(base: str, report_id: str | None) -> str | None:
@@ -67,6 +74,13 @@ def report_url(base: str, report_id: str | None) -> str | None:
         return None
     if urlsplit(base).hostname == PUBLIC_API_HOST:
         return f"https://sloptotal.com/report/?id={report_id}"
+    # Inside the Docker image the host is host.docker.internal; the report
+    # link is opened in a browser on the host, where it is localhost.
+    parts = urlsplit(base)
+    if parts.hostname == DOCKER_HOST_NAME:
+        base = parts._replace(
+            netloc=parts.netloc.replace(DOCKER_HOST_NAME, "localhost")
+        ).geturl()
     return f"{base}/report/{report_id}"
 
 
