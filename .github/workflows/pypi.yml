@@ -20,14 +20,11 @@ jobs:
         working-directory: integrations/mcp
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
-        with:
-          python-version: '3.13'
-      - name: Test and build the sdist and wheel
-        run: |
-          pip install -e ".[test]" build
-          pytest -q
-          python -m build
+      - uses: astral-sh/setup-uv@v10
+      - name: Test
+        run: uv run --python 3.13 --extra test pytest -q
+      - name: Build the sdist and wheel (hatchling)
+        run: uv build
       - uses: actions/upload-artifact@v7
         with:
           name: dist
