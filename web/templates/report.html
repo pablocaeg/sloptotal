@@ -12,6 +12,10 @@
                     <span id="status-label">Scanning&hellip;</span>
                     <span>&middot; <span id="report-date" data-created="{{ report.created_at.isoformat() }}"></span></span>
                 </p>
+                <p class="report-wait" id="report-wait" hidden>
+                    <span id="elapsed" aria-hidden="true"></span>
+                    <span id="wait-note" aria-live="polite"></span>
+                </p>
             </div>
             <div class="report-head__actions">
                 <button type="button" class="st-btn st-btn--secondary" id="copy-btn">Copy link</button>

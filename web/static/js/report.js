@@ -82,7 +82,30 @@
         if (details) details.open = true;
     }
 
+    // While the scan runs, show how long it has been going. The timer text is
+    // aria-hidden and sits outside the live region, so screen readers hear only
+    // the one-off note below, not every tick.
+    var waitBox = document.getElementById("report-wait");
+    var elapsedEl = document.getElementById("elapsed");
+    var waitNote = document.getElementById("wait-note");
+    var startedAt = Date.now();
+    var LONG_WAIT_SECONDS = 30;
+    var waitTimer = setInterval(function () {
+        var secs = Math.floor((Date.now() - startedAt) / 1000);
+        waitBox.hidden = false;
+        elapsedEl.textContent = Math.floor(secs / 60) + ":" + ("0" + (secs % 60)).slice(-2) + " elapsed";
+        if (secs >= LONG_WAIT_SECONDS && !waitNote.textContent) {
+            waitNote.textContent = "Long texts can take a couple of minutes, so this tab is fine to leave open.";
+        }
+    }, 1000);
+
+    function stopWait() {
+        clearInterval(waitTimer);
+        if (waitBox) waitBox.hidden = true;
+    }
+
     function finish(report) {
+        stopWait();
         highlightMarkers(report);
         var dot = document.getElementById("status-dot");
         dot.classList.remove("is-live");
