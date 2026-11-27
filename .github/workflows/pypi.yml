@@ -20,7 +20,7 @@ jobs:
         working-directory: integrations/mcp
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.4.0
       - name: Test
         run: uv run --python 3.13 --extra test pytest -q
       - name: Build the sdist and wheel (hatchling)
