@@ -15,8 +15,8 @@ curl -s -X POST http://localhost:8000/api/analyze -H "Content-Type: application/
   -d '{"text": "At least 50 characters of the text to check go here, the longer the better."}'
 ```
 
-- The image is `linux/amd64` only. On ARM (Apple Silicon included) or without
-  Docker, install from source: Python 3.10 to 3.14, `pip install -r
+- The image is built for `linux/amd64` and `linux/arm64` (Apple Silicon
+  included). Without Docker, install from source: Python 3.10 to 3.14, `pip install -r
   requirements.txt`, `./scripts/start.sh`. It also listens on port 8000.
 - The first start downloads about 9 GB of models; loaded they take about
   8.3 GB of RAM. No GPU, key or account is needed.

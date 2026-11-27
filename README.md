@@ -65,8 +65,8 @@ It returns a JSON report: `overall_score` (0-100), `overall_verdict` and the
 
 **Requirements.** About 12 GB of RAM (the loaded models take about 8.3 GB, an
 estimate; see [docs/MODELS.md](docs/MODELS.md)) and about 9 GB of disk. No GPU,
-account or API key. The image is built for `linux/amd64` only: on Apple Silicon
-or other ARM machines, install from source.
+account or API key. The image is built for `linux/amd64` and `linux/arm64`, so
+it runs natively on Apple Silicon and ARM servers such as AWS Graviton.
 
 **From source** (Python 3.10 to 3.14; macOS ships 3.9, which is too old):
 
@@ -438,7 +438,7 @@ a different question.
 | `TypeError: unsupported operand type(s) for \|` at startup | Python 3.9 or older; use 3.10+ |
 | An engine reports `Model loading failed` | Check disk space and network for the first model download, then restart; `python scripts/smoke_test.py` shows which engine fails |
 | First scan is slow | Models are loading; later scans take seconds |
-| `no matching manifest for linux/arm64/v8` | The image is amd64 only; install from source, or add `--platform linux/amd64` (emulated, much slower) |
+| `no matching manifest for linux/arm64/v8` | An old local copy of the image from before arm64 builds; run `docker pull ghcr.io/pablocaeg/sloptotal` |
 | The container stops with exit code 137 | Out of memory; in Docker Desktop raise the memory limit to 12 GB (Settings, Resources) |
 | `port is already allocated` | Port 8000 is taken; run with `-p 8080:8000` and use <http://localhost:8080> |
 | A URL scan says "private network address" | Intended; set `SLOPTOTAL_ALLOW_PRIVATE_URLS=1` to scan intranet pages |

@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- **The Docker image runs on ARM.** `ghcr.io/pablocaeg/sloptotal` is now
+  published for `linux/arm64` as well as `linux/amd64`, built natively on an
+  arm64 runner, so Apple Silicon and ARM servers pull it without emulation.
+
 ## [1.3.0] - 2026-11-03
 
 ### Added
