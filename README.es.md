@@ -13,7 +13,7 @@
   <a href="https://github.com/josephmisiti/awesome-machine-learning#python-natural-language-processing"><img src="https://awesome.re/mentioned-badge-flat.svg" alt="Mentioned in Awesome Machine Learning"></a>
 </p>
 
-<p align="center"><a href="README.md">English</a> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.ru.md">Русский</a> · <b>Español</b></p>
+<p align="center"><a href="README.md">English</a> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.ru.md">Русский</a> · <b>Español</b> · <a href="README.pt-BR.md">Português</a></p>
 
 # SlopTotal
 
