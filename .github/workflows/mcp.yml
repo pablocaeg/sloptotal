@@ -7,11 +7,15 @@ on:
     paths:
       - 'integrations/mcp/**'
       - '.github/workflows/mcp.yml'
+      - '.github/workflows/mcp-publish.yml'
+      - '.github/workflows/pypi.yml'
   pull_request:
     branches: [master]
     paths:
       - 'integrations/mcp/**'
       - '.github/workflows/mcp.yml'
+      - '.github/workflows/mcp-publish.yml'
+      - '.github/workflows/pypi.yml'
 
 permissions:
   contents: read
@@ -45,5 +49,9 @@ jobs:
           import json, tomllib
           v = tomllib.load(open("pyproject.toml", "rb"))["project"]["version"]
           s = json.load(open("server.json"))
-          assert s["version"] == v == s["packages"][0]["version"], (v, s["version"])
+          assert s["version"] == v, (v, s["version"])
+          for p in s["packages"]:
+              # OCI packages carry the version in the image tag, others in "version".
+              got = p["identifier"].rsplit(":", 1)[1] if p["registryType"] == "oci" else p["version"]
+              assert got == v, (p["identifier"], got, v)
           PY

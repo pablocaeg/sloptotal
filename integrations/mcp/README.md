@@ -36,18 +36,34 @@ limits. Prefer a local server for anything private.
 
 ## 2. Add it to your client
 
-The server runs with [uv](https://docs.astral.sh/uv/) (`uvx`), which fetches
-it from this repository; nothing else to install.
+Two ways to run the MCP server; pick whichever tool you already have.
+
+- **Docker**: the image `ghcr.io/pablocaeg/sloptotal-mcp` (`linux/amd64` and
+  `linux/arm64`, about 60 MB: only the MCP client, no models). It reaches the
+  SlopTotal server on your machine through `host.docker.internal`; the
+  `--add-host` flag makes that name work on Linux too.
+- **uv**: `uvx` fetches the server from this repository; nothing else to
+  install.
+
+It is also listed in the [official MCP registry](https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.pablocaeg/sloptotal)
+as `io.github.pablocaeg/sloptotal`, so clients that browse the registry (VS
+Code, for one) can install it from there.
 
 ### Claude Code
 
 ```bash
+# Docker
+claude mcp add sloptotal -- docker run -i --rm --add-host=host.docker.internal:host-gateway ghcr.io/pablocaeg/sloptotal-mcp
+
+# uv
 claude mcp add sloptotal -- uvx --from "git+https://github.com/pablocaeg/sloptotal#subdirectory=integrations/mcp" sloptotal-mcp
 ```
 
 With the public instance instead of a local server:
 
 ```bash
+claude mcp add sloptotal -- docker run -i --rm -e SLOPTOTAL_URL=https://api.sloptotal.com ghcr.io/pablocaeg/sloptotal-mcp
+# or
 claude mcp add sloptotal -e SLOPTOTAL_URL=https://api.sloptotal.com -- uvx --from "git+https://github.com/pablocaeg/sloptotal#subdirectory=integrations/mcp" sloptotal-mcp
 ```
 
@@ -55,7 +71,20 @@ Add `--scope user` to have it in every project.
 
 ### Claude Desktop
 
-Settings, Developer, Edit Config (`claude_desktop_config.json`):
+Settings, Developer, Edit Config (`claude_desktop_config.json`). With Docker:
+
+```json
+{
+  "mcpServers": {
+    "sloptotal": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "--add-host=host.docker.internal:host-gateway", "ghcr.io/pablocaeg/sloptotal-mcp"]
+    }
+  }
+}
+```
+
+With uv:
 
 ```json
 {
@@ -69,21 +98,20 @@ Settings, Developer, Edit Config (`claude_desktop_config.json`):
 }
 ```
 
-Restart Claude Desktop. If it cannot find `uvx`, put its full path
-(`which uvx`) in `command`.
+Restart Claude Desktop. If it cannot find `docker` or `uvx`, put its full path
+(`which docker`, `which uvx`) in `command`.
 
 ### Cursor
 
 `~/.cursor/mcp.json` (all projects) or `.cursor/mcp.json` (one project), the
-same block as Claude Desktop:
+same blocks as Claude Desktop. With Docker:
 
 ```json
 {
   "mcpServers": {
     "sloptotal": {
-      "command": "uvx",
-      "args": ["--from", "git+https://github.com/pablocaeg/sloptotal#subdirectory=integrations/mcp", "sloptotal-mcp"],
-      "env": { "SLOPTOTAL_URL": "http://localhost:8000" }
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "--add-host=host.docker.internal:host-gateway", "ghcr.io/pablocaeg/sloptotal-mcp"]
     }
   }
 }
@@ -91,7 +119,22 @@ same block as Claude Desktop:
 
 ### VS Code (Copilot agent mode)
 
-`.vscode/mcp.json` in the workspace, or "MCP: Open User Configuration":
+`.vscode/mcp.json` in the workspace, or "MCP: Open User Configuration". With
+Docker:
+
+```json
+{
+  "servers": {
+    "sloptotal": {
+      "type": "stdio",
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "--add-host=host.docker.internal:host-gateway", "ghcr.io/pablocaeg/sloptotal-mcp"]
+    }
+  }
+}
+```
+
+With uv:
 
 ```json
 {
@@ -108,14 +151,18 @@ same block as Claude Desktop:
 
 ### Any other MCP client
 
-Run `uvx --from "git+https://github.com/pablocaeg/sloptotal#subdirectory=integrations/mcp" sloptotal-mcp`
-as a stdio server.
+Run either of these as a stdio server:
+
+```bash
+docker run -i --rm --add-host=host.docker.internal:host-gateway ghcr.io/pablocaeg/sloptotal-mcp
+uvx --from "git+https://github.com/pablocaeg/sloptotal#subdirectory=integrations/mcp" sloptotal-mcp
+```
 
 ## Settings
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `SLOPTOTAL_URL` | `http://localhost:8000` | The SlopTotal server to call. `https://api.sloptotal.com` sends your text to sloptotal.com. |
+| `SLOPTOTAL_URL` | `http://localhost:8000` (`http://host.docker.internal:8000` in the Docker image) | The SlopTotal server to call. `https://api.sloptotal.com` sends your text to sloptotal.com. |
 | `SLOPTOTAL_TIMEOUT` | `300` | Seconds to wait for a queued scan before giving up. |
 
 ## Try it
@@ -124,6 +171,13 @@ Ask your agent: "Use SlopTotal to check whether this paragraph was written by
 AI: ...", or "Was example.com built with an AI app builder?".
 
 ## Develop
+
+The image is built from `Dockerfile` here. Each GitHub release (or a manual
+run of the "Publish MCP server" workflow) pushes it to ghcr.io and publishes
+`server.json` to the MCP registry; bump the version in `pyproject.toml`,
+`src/sloptotal_mcp/__init__.py` and `server.json` (version and image tag)
+together, CI checks they match.
+
 
 ```bash
 cd integrations/mcp

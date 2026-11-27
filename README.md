@@ -110,12 +110,16 @@ Installing SlopTotal for a user, or calling it as a tool:
 
 The [MCP server](integrations/mcp/) gives agents three tools: `analyze_text`,
 `analyze_url` and `check_website_builder`. It calls the SlopTotal server on
-`http://localhost:8000`, so start that first; it needs
-[uv](https://docs.astral.sh/uv/). In Claude Code:
+`http://localhost:8000`, so start that first. In Claude Code, with Docker or
+with [uv](https://docs.astral.sh/uv/):
 
 ```bash
+claude mcp add sloptotal -- docker run -i --rm --add-host=host.docker.internal:host-gateway ghcr.io/pablocaeg/sloptotal-mcp
 claude mcp add sloptotal -- uvx --from "git+https://github.com/pablocaeg/sloptotal#subdirectory=integrations/mcp" sloptotal-mcp
 ```
+
+It is in the [official MCP registry](https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.pablocaeg/sloptotal)
+as `io.github.pablocaeg/sloptotal`.
 
 Configuration for Claude Desktop, Cursor and VS Code is in
 [integrations/mcp](integrations/mcp/README.md). Setting

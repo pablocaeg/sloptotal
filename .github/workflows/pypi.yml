@@ -1,0 +1,53 @@
+name: Publish MCP server to PyPI
+
+# Uploads integrations/mcp as the PyPI package sloptotal-mcp with Trusted
+# Publishing (OIDC, no token). Works once PyPI has a (pending) trusted
+# publisher for: owner pablocaeg, repository sloptotal, workflow pypi.yml,
+# environment pypi. A version PyPI already has is skipped.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: integrations/mcp
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+      - name: Test and build the sdist and wheel
+        run: |
+          pip install -e ".[test]" build
+          pytest -q
+          python -m build
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: integrations/mcp/dist/
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/sloptotal-mcp/
+    permissions:
+      id-token: write # PyPI Trusted Publishing
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true

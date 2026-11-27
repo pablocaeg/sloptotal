@@ -27,3 +27,8 @@ updates:
     directory: /docker
     schedule:
       interval: monthly
+
+  - package-ecosystem: docker
+    directory: /integrations/mcp
+    schedule:
+      interval: monthly

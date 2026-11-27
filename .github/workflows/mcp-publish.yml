@@ -1,0 +1,165 @@
+name: Publish MCP server
+
+# Publishes the MCP server in integrations/mcp:
+#   1. the image ghcr.io/pablocaeg/sloptotal-mcp (linux/amd64 + linux/arm64,
+#      tagged with the package version and latest). It holds only the thin MCP
+#      client, no models, and carries the io.modelcontextprotocol.server.name
+#      label the official MCP registry checks to verify ownership;
+#   2. server.json to the official MCP registry (registry.modelcontextprotocol.io),
+#      signed in with GitHub OIDC, so no secret is needed.
+# Runs on every GitHub release and by hand. A version the registry already has
+# is skipped, so releases of the main app that do not bump the MCP server pass.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mcp-publish
+  cancel-in-progress: false
+
+env:
+  IMAGE: ghcr.io/pablocaeg/sloptotal-mcp
+  SERVER_NAME: io.github.pablocaeg/sloptotal
+  MCP_PUBLISHER_VERSION: v1.8.9
+
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    defaults:
+      run:
+        working-directory: integrations/mcp
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+      - name: Tests
+        run: pip install -e ".[test]" && pytest -q
+      - id: version
+        name: Version (pyproject.toml, server.json and the image tag must agree)
+        run: |
+          python - <<'PY'
+          import json, os, tomllib
+          v = tomllib.load(open("pyproject.toml", "rb"))["project"]["version"]
+          s = json.load(open("server.json"))
+          image = os.environ["IMAGE"]
+          oci = [p for p in s["packages"] if p["registryType"] == "oci"]
+          assert s["name"] == os.environ["SERVER_NAME"], s["name"]
+          assert s["version"] == v, (s["version"], v)
+          assert oci and oci[0]["identifier"] == f"{image}:{v}", oci
+          open(os.environ["GITHUB_OUTPUT"], "a").write(f"version={v}\n")
+          PY
+      - uses: docker/setup-qemu-action@v4
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build for amd64 and start it as an MCP client would
+        uses: docker/build-push-action@v7
+        with:
+          context: integrations/mcp
+          load: true
+          tags: sloptotal-mcp:test
+          cache-from: type=gha,scope=mcp
+      - name: Smoke test (initialize + tools/list over stdio)
+        run: |
+          out=$(printf '%s\n' \
+            '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"ci","version":"0"}}}' \
+            '{"jsonrpc":"2.0","method":"notifications/initialized"}' \
+            '{"jsonrpc":"2.0","id":2,"method":"tools/list"}' \
+            | timeout 60 docker run -i --rm sloptotal-mcp:test)
+          echo "$out"
+          echo "$out" | grep -q '"analyze_text"'
+          docker inspect -f '{{ index .Config.Labels "io.modelcontextprotocol.server.name" }}' sloptotal-mcp:test | grep -qx "$SERVER_NAME"
+      - name: Build and push linux/amd64 + linux/arm64
+        uses: docker/build-push-action@v7
+        with:
+          context: integrations/mcp
+          platforms: linux/amd64,linux/arm64
+          push: true
+          labels: |
+            org.opencontainers.image.source=https://github.com/pablocaeg/sloptotal
+            org.opencontainers.image.title=sloptotal-mcp
+            org.opencontainers.image.description=MCP server for SlopTotal, the open-source AI text detector (client only, no models)
+            org.opencontainers.image.licenses=MIT
+            org.opencontainers.image.version=${{ steps.version.outputs.version }}
+            org.opencontainers.image.revision=${{ github.sha }}
+          annotations: |
+            index:org.opencontainers.image.source=https://github.com/pablocaeg/sloptotal
+            index:org.opencontainers.image.description=MCP server for SlopTotal, the open-source AI text detector (client only, no models)
+            index:org.opencontainers.image.licenses=MIT
+          tags: |
+            ${{ env.IMAGE }}:${{ steps.version.outputs.version }}
+            ${{ env.IMAGE }}:latest
+          cache-from: type=gha,scope=mcp
+          cache-to: type=gha,mode=max,scope=mcp
+      - name: The image is public (the registry reads it anonymously)
+        run: |
+          token=$(curl -fsS "https://ghcr.io/token?scope=repository:pablocaeg/sloptotal-mcp:pull" | jq -r .token)
+          code=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $token" \
+            -H 'Accept: application/vnd.oci.image.index.v1+json' \
+            "https://ghcr.io/v2/pablocaeg/sloptotal-mcp/manifests/${{ steps.version.outputs.version }}")
+          if [ "$code" != 200 ]; then
+            echo "::error::Anonymous pull returned $code: make the package public (github.com/users/pablocaeg/packages/container/sloptotal-mcp/settings)."
+            exit 1
+          fi
+
+  registry:
+    needs: image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # GitHub OIDC login to the MCP registry
+    defaults:
+      run:
+        working-directory: integrations/mcp
+    steps:
+      - uses: actions/checkout@v7
+      - id: known
+        name: Skip a version the registry already has
+        env:
+          VERSION: ${{ needs.image.outputs.version }}
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' \
+            "https://registry.modelcontextprotocol.io/v0.1/servers/${SERVER_NAME//\//%2F}/versions/$VERSION")
+          echo "registry answered $code for $SERVER_NAME $VERSION"
+          echo "published=$([ "$code" = 200 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - name: Install cosign
+        if: steps.known.outputs.published != 'true'
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      - name: Download and verify mcp-publisher
+        if: steps.known.outputs.published != 'true'
+        run: |
+          set -euo pipefail
+          archive="mcp-publisher_linux_amd64.tar.gz"
+          base_url="https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}"
+          curl --fail --location --silent --show-error --output "$archive" "$base_url/$archive"
+          curl --fail --location --silent --show-error --output "$archive.sigstore.json" "$base_url/$archive.sigstore.json"
+          cosign verify-blob \
+            --bundle "$archive.sigstore.json" \
+            --certificate-identity "https://github.com/modelcontextprotocol/registry/.github/workflows/release.yml@refs/tags/${MCP_PUBLISHER_VERSION}" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "$archive"
+          tar xzf "$archive" mcp-publisher
+          rm -f "$archive" "$archive.sigstore.json"
+      - name: Publish to the MCP registry
+        if: steps.known.outputs.published != 'true'
+        run: |
+          ./mcp-publisher validate
+          ./mcp-publisher login github-oidc
+          ./mcp-publisher publish
+      - name: Check it is listed
+        run: |
+          curl -fsS "https://registry.modelcontextprotocol.io/v0.1/servers?search=$SERVER_NAME" | tee /dev/stderr \
+            | jq -e --arg v "${{ needs.image.outputs.version }}" '.servers[] | select(.server.version == $v)' > /dev/null
