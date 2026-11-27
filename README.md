@@ -37,7 +37,7 @@ it publishes how accurate that is, failures included.
 
 ## Run locally
 
-Docker on an x86-64 machine, one command:
+Docker (x86-64 or ARM, Apple Silicon included), one command:
 
 ```bash
 docker run -d --name sloptotal -p 8000:8000 -v sloptotal-models:/app/models ghcr.io/pablocaeg/sloptotal
@@ -65,8 +65,8 @@ It returns a JSON report: `overall_score` (0-100), `overall_verdict` and the
 
 **Requirements.** About 12 GB of RAM (the loaded models take about 8.3 GB, an
 estimate; see [docs/MODELS.md](docs/MODELS.md)) and about 9 GB of disk. No GPU,
-account or API key. The image is built for `linux/amd64` only: on Apple Silicon
-or other ARM machines, install from source.
+account or API key. The image is built for `linux/amd64` and `linux/arm64`, so
+it runs natively on Apple Silicon and ARM servers such as AWS Graviton.
 
 **From source** (Python 3.10 to 3.14; macOS ships 3.9, which is too old):
 
@@ -92,8 +92,8 @@ problems are in the [self-hosting guide](https://sloptotal.com/self-host/)
 
 Installing SlopTotal for a user, or calling it as a tool:
 
-1. `docker --version` and `uname -m`. Docker on `x86_64`: use the Docker
-   command above. Otherwise, or with no Docker: install from source.
+1. `docker --version`. With Docker (x86-64 or arm64): use the Docker command
+   above. With no Docker: install from source.
 2. Start it, then wait for `Model preloading complete` in the log (the loop
    above). The first start takes minutes: it downloads about 9 GB.
 3. Check it with the `curl` above. Any JSON with `overall_score` and
@@ -438,7 +438,7 @@ a different question.
 | `TypeError: unsupported operand type(s) for \|` at startup | Python 3.9 or older; use 3.10+ |
 | An engine reports `Model loading failed` | Check disk space and network for the first model download, then restart; `python scripts/smoke_test.py` shows which engine fails |
 | First scan is slow | Models are loading; later scans take seconds |
-| `no matching manifest for linux/arm64/v8` | The image is amd64 only; install from source, or add `--platform linux/amd64` (emulated, much slower) |
+| `no matching manifest for linux/arm64/v8` | An old local copy of the image from before arm64 builds; run `docker pull ghcr.io/pablocaeg/sloptotal` |
 | The container stops with exit code 137 | Out of memory; in Docker Desktop raise the memory limit to 12 GB (Settings, Resources) |
 | `port is already allocated` | Port 8000 is taken; run with `-p 8080:8000` and use <http://localhost:8080> |
 | A URL scan says "private network address" | Intended; set `SLOPTOTAL_ALLOW_PRIVATE_URLS=1` to scan intranet pages |
