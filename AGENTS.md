@@ -26,6 +26,10 @@ curl -s -X POST http://localhost:8000/api/analyze -H "Content-Type: application/
   `retry_after` seconds. Schema: `/openapi.json`.
 - Scores of 55 and up are "Likely AI"; under about 80 words a score is a weak
   signal. Tell the user a score is evidence, not proof.
+- As an MCP tool (`analyze_text`, `analyze_url`, `check_website_builder`):
+  `claude mcp add sloptotal -- uvx --from
+  "git+https://github.com/pablocaeg/sloptotal#subdirectory=integrations/mcp"
+  sloptotal-mcp`. Other clients: `integrations/mcp/README.md`.
 - Full guide, with offline use, GPU, updates and fixes:
   https://sloptotal.com/self-host/ (Markdown: https://sloptotal.com/self-host.md).
 

@@ -106,6 +106,22 @@ Installing SlopTotal for a user, or calling it as a tool:
    the top 2%, 80 the top 0.5%. Under about 80 words it is a weak signal, and
    no detector is proof on its own.
 
+### As an MCP tool (Claude Code, Cursor, VS Code, Claude Desktop)
+
+The [MCP server](integrations/mcp/) gives agents three tools: `analyze_text`,
+`analyze_url` and `check_website_builder`. It calls the SlopTotal server on
+`http://localhost:8000`, so start that first; it needs
+[uv](https://docs.astral.sh/uv/). In Claude Code:
+
+```bash
+claude mcp add sloptotal -- uvx --from "git+https://github.com/pablocaeg/sloptotal#subdirectory=integrations/mcp" sloptotal-mcp
+```
+
+Configuration for Claude Desktop, Cursor and VS Code is in
+[integrations/mcp](integrations/mcp/README.md). Setting
+`SLOPTOTAL_URL=https://api.sloptotal.com` uses the public instance instead of a
+local server; the text then leaves your machine.
+
 No key is needed. The OpenAPI schema is at `http://localhost:8000/openapi.json`.
 Ready-made clients for Python, Node, Go and Ruby are in [examples/](examples/)
 (see [API](#api)). Once the models are loaded, the log prints one line asking for a GitHub

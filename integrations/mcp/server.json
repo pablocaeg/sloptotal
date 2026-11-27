@@ -1,0 +1,43 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.pablocaeg/sloptotal",
+  "title": "SlopTotal",
+  "description": "Open-source AI text detector: 23 engines, one calibrated score. Checks texts, pages and sites.",
+  "websiteUrl": "https://sloptotal.com",
+  "repository": {
+    "url": "https://github.com/pablocaeg/sloptotal",
+    "source": "github",
+    "subfolder": "integrations/mcp"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "sloptotal-mcp",
+      "version": "0.1.0",
+      "runtimeHint": "uvx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "SLOPTOTAL_URL",
+          "description": "SlopTotal server to call. Default http://localhost:8000 (self-hosted, text stays local). https://api.sloptotal.com sends the text to sloptotal.com.",
+          "default": "http://localhost:8000",
+          "format": "string",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "SLOPTOTAL_TIMEOUT",
+          "description": "Seconds to wait for a queued scan before giving up.",
+          "default": "300",
+          "format": "number",
+          "isRequired": false,
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}
