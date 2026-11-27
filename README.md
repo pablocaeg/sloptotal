@@ -37,7 +37,7 @@ it publishes how accurate that is, failures included.
 
 ## Run locally
 
-Docker on an x86-64 machine, one command:
+Docker (x86-64 or ARM, Apple Silicon included), one command:
 
 ```bash
 docker run -d --name sloptotal -p 8000:8000 -v sloptotal-models:/app/models ghcr.io/pablocaeg/sloptotal
@@ -92,8 +92,8 @@ problems are in the [self-hosting guide](https://sloptotal.com/self-host/)
 
 Installing SlopTotal for a user, or calling it as a tool:
 
-1. `docker --version` and `uname -m`. Docker on `x86_64`: use the Docker
-   command above. Otherwise, or with no Docker: install from source.
+1. `docker --version`. With Docker (x86-64 or arm64): use the Docker command
+   above. With no Docker: install from source.
 2. Start it, then wait for `Model preloading complete` in the log (the loop
    above). The first start takes minutes: it downloads about 9 GB.
 3. Check it with the `curl` above. Any JSON with `overall_score` and
