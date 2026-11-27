@@ -29,9 +29,7 @@ curl -s -X POST http://localhost:8000/api/analyze -H "Content-Type: application/
 - As an MCP tool (`analyze_text`, `analyze_url`, `check_website_builder`):
   `claude mcp add sloptotal -- docker run -i --rm
   --add-host=host.docker.internal:host-gateway ghcr.io/pablocaeg/sloptotal-mcp`
-  or `claude mcp add sloptotal -- uvx --from
-  "git+https://github.com/pablocaeg/sloptotal#subdirectory=integrations/mcp"
-  sloptotal-mcp`. Other clients: `integrations/mcp/README.md`. Registry name:
+  or `claude mcp add sloptotal -- uvx sloptotal-mcp` (PyPI). Other clients: `integrations/mcp/README.md`. Registry name:
   `io.github.pablocaeg/sloptotal`.
 - Full guide, with offline use, GPU, updates and fixes:
   https://sloptotal.com/self-host/ (Markdown: https://sloptotal.com/self-host.md).
