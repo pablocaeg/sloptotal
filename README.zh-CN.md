@@ -10,6 +10,7 @@
   <a href="https://github.com/pablocaeg/sloptotal/stargazers"><img src="https://img.shields.io/github/stars/pablocaeg/sloptotal?style=flat&color=e3b341&logo=github" alt="GitHub Star 数"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2d8a4e" alt="MIT 许可证"></a>
   <a href="https://sloptotal.com/zh/"><img src="https://img.shields.io/badge/在线体验-sloptotal.com-b5282e" alt="在线体验"></a>
+  <a href="https://github.com/josephmisiti/awesome-machine-learning#python-natural-language-processing"><img src="https://awesome.re/mentioned-badge-flat.svg" alt="Mentioned in Awesome Machine Learning"></a>
 </p>
 
 <p align="center"><a href="README.md">English</a> · <b>简体中文</b> · <a href="README.ru.md">Русский</a> · <a href="README.es.md">Español</a></p>
