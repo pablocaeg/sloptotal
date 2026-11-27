@@ -9,11 +9,39 @@
     "source": "github",
     "subfolder": "integrations/mcp"
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "packages": [
     {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "sloptotal-mcp",
+      "version": "0.1.1",
+      "runtimeHint": "uvx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "SLOPTOTAL_URL",
+          "description": "SlopTotal server to call. Default http://localhost:8000, a self-hosted server (docker run -p 8000:8000 ghcr.io/pablocaeg/sloptotal), so the text stays local. https://api.sloptotal.com sends the text to sloptotal.com.",
+          "default": "http://localhost:8000",
+          "format": "string",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "SLOPTOTAL_TIMEOUT",
+          "description": "Seconds to wait for a queued scan before giving up.",
+          "default": "300",
+          "format": "number",
+          "isRequired": false,
+          "isSecret": false
+        }
+      ]
+    },
+    {
       "registryType": "oci",
-      "identifier": "ghcr.io/pablocaeg/sloptotal-mcp:0.1.0",
+      "identifier": "ghcr.io/pablocaeg/sloptotal-mcp:0.1.1",
       "runtimeHint": "docker",
       "transport": {
         "type": "stdio"

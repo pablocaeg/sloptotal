@@ -135,6 +135,18 @@ jobs:
             "https://registry.modelcontextprotocol.io/v0.1/servers/${SERVER_NAME//\//%2F}/versions/$VERSION")
           echo "registry answered $code for $SERVER_NAME $VERSION"
           echo "published=$([ "$code" = 200 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - name: Wait for the PyPI upload (pypi.yml runs alongside on releases)
+        if: steps.known.outputs.published != 'true'
+        env:
+          VERSION: ${{ needs.image.outputs.version }}
+        run: |
+          if ! jq -e '.packages[] | select(.registryType == "pypi")' server.json > /dev/null; then exit 0; fi
+          for i in $(seq 1 60); do
+            if curl -fsS -o /dev/null "https://pypi.org/pypi/sloptotal-mcp/$VERSION/json"; then exit 0; fi
+            sleep 15
+          done
+          echo "::error::sloptotal-mcp $VERSION is not on PyPI; run the \"Publish MCP server to PyPI\" workflow first."
+          exit 1
       - name: Install cosign
         if: steps.known.outputs.published != 'true'
         uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2

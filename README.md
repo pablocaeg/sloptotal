@@ -115,7 +115,7 @@ with [uv](https://docs.astral.sh/uv/):
 
 ```bash
 claude mcp add sloptotal -- docker run -i --rm --add-host=host.docker.internal:host-gateway ghcr.io/pablocaeg/sloptotal-mcp
-claude mcp add sloptotal -- uvx --from "git+https://github.com/pablocaeg/sloptotal#subdirectory=integrations/mcp" sloptotal-mcp
+claude mcp add sloptotal -- uvx sloptotal-mcp
 ```
 
 It is in the [official MCP registry](https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.pablocaeg/sloptotal)

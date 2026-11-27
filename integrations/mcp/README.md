@@ -39,11 +39,12 @@ limits. Prefer a local server for anything private.
 Two ways to run the MCP server; pick whichever tool you already have.
 
 - **Docker**: the image `ghcr.io/pablocaeg/sloptotal-mcp` (`linux/amd64` and
-  `linux/arm64`, about 60 MB: only the MCP client, no models). It reaches the
+  `linux/arm64`, about 55 MB: only the MCP client, no models). It reaches the
   SlopTotal server on your machine through `host.docker.internal`; the
   `--add-host` flag makes that name work on Linux too.
-- **uv**: `uvx` fetches the server from this repository; nothing else to
-  install.
+- **uv**: `uvx sloptotal-mcp` fetches the [PyPI package](https://pypi.org/project/sloptotal-mcp/);
+  nothing else to install. To run the latest code from this repository instead:
+  `uvx --from "git+https://github.com/pablocaeg/sloptotal#subdirectory=integrations/mcp" sloptotal-mcp`.
 
 It is also listed in the [official MCP registry](https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.pablocaeg/sloptotal)
 as `io.github.pablocaeg/sloptotal`, so clients that browse the registry (VS
@@ -56,7 +57,7 @@ Code, for one) can install it from there.
 claude mcp add sloptotal -- docker run -i --rm --add-host=host.docker.internal:host-gateway ghcr.io/pablocaeg/sloptotal-mcp
 
 # uv
-claude mcp add sloptotal -- uvx --from "git+https://github.com/pablocaeg/sloptotal#subdirectory=integrations/mcp" sloptotal-mcp
+claude mcp add sloptotal -- uvx sloptotal-mcp
 ```
 
 With the public instance instead of a local server:
@@ -64,7 +65,7 @@ With the public instance instead of a local server:
 ```bash
 claude mcp add sloptotal -- docker run -i --rm -e SLOPTOTAL_URL=https://api.sloptotal.com ghcr.io/pablocaeg/sloptotal-mcp
 # or
-claude mcp add sloptotal -e SLOPTOTAL_URL=https://api.sloptotal.com -- uvx --from "git+https://github.com/pablocaeg/sloptotal#subdirectory=integrations/mcp" sloptotal-mcp
+claude mcp add sloptotal -e SLOPTOTAL_URL=https://api.sloptotal.com -- uvx sloptotal-mcp
 ```
 
 Add `--scope user` to have it in every project.
@@ -91,7 +92,7 @@ With uv:
   "mcpServers": {
     "sloptotal": {
       "command": "uvx",
-      "args": ["--from", "git+https://github.com/pablocaeg/sloptotal#subdirectory=integrations/mcp", "sloptotal-mcp"],
+      "args": ["sloptotal-mcp"],
       "env": { "SLOPTOTAL_URL": "http://localhost:8000" }
     }
   }
@@ -142,7 +143,7 @@ With uv:
     "sloptotal": {
       "type": "stdio",
       "command": "uvx",
-      "args": ["--from", "git+https://github.com/pablocaeg/sloptotal#subdirectory=integrations/mcp", "sloptotal-mcp"],
+      "args": ["sloptotal-mcp"],
       "env": { "SLOPTOTAL_URL": "http://localhost:8000" }
     }
   }
@@ -155,7 +156,7 @@ Run either of these as a stdio server:
 
 ```bash
 docker run -i --rm --add-host=host.docker.internal:host-gateway ghcr.io/pablocaeg/sloptotal-mcp
-uvx --from "git+https://github.com/pablocaeg/sloptotal#subdirectory=integrations/mcp" sloptotal-mcp
+uvx sloptotal-mcp
 ```
 
 ## Settings
@@ -173,7 +174,8 @@ AI: ...", or "Was example.com built with an AI app builder?".
 ## Develop
 
 The image is built from `Dockerfile` here. Each GitHub release (or a manual
-run of the "Publish MCP server" workflow) pushes it to ghcr.io and publishes
+run of the "Publish MCP server to PyPI" and "Publish MCP server" workflows)
+uploads the package to PyPI, pushes the image to ghcr.io and publishes
 `server.json` to the MCP registry; bump the version in `pyproject.toml`,
 `src/sloptotal_mcp/__init__.py` and `server.json` (version and image tag)
 together, CI checks they match.
