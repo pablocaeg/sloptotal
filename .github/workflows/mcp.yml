@@ -1,0 +1,49 @@
+name: MCP server
+
+# Tests the MCP server in integrations/mcp against a mocked SlopTotal API.
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'integrations/mcp/**'
+      - '.github/workflows/mcp.yml'
+  pull_request:
+    branches: [master]
+    paths:
+      - 'integrations/mcp/**'
+      - '.github/workflows/mcp.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mcp-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.14']
+    defaults:
+      run:
+        working-directory: integrations/mcp
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e ".[test]" "$(grep '^ruff==' ../../requirements-dev.txt)"
+      - run: ruff check . && ruff format --check .
+      - run: pytest -q
+      - name: server.json matches the package version
+        if: matrix.python-version == '3.14'
+        run: |
+          python - <<'PY'
+          import json, tomllib
+          v = tomllib.load(open("pyproject.toml", "rb"))["project"]["version"]
+          s = json.load(open("server.json"))
+          assert s["version"] == v == s["packages"][0]["version"], (v, s["version"])
+          PY

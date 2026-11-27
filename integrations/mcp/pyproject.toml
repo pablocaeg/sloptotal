@@ -1,0 +1,41 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sloptotal-mcp"
+version = "0.1.0"
+description = "MCP server for SlopTotal: let AI agents check whether a text or website is AI-generated"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [{ name = "pablocaeg" }]
+keywords = ["mcp", "model-context-protocol", "ai-detection", "ai-text-detector", "sloptotal"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+    "mcp>=2.3,<3",
+    "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8", "pytest-asyncio>=0.24"]
+
+[project.scripts]
+sloptotal-mcp = "sloptotal_mcp.server:main"
+
+[project.urls]
+Homepage = "https://sloptotal.com"
+Repository = "https://github.com/pablocaeg/sloptotal"
+Documentation = "https://github.com/pablocaeg/sloptotal/tree/master/integrations/mcp"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sloptotal_mcp"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
