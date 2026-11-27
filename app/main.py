@@ -110,6 +110,17 @@ app.include_router(api_router)
 app.include_router(queue_router)
 
 
+STAR_LINE = (
+    "SlopTotal is free and open source. If it helps you, a star helps others "
+    "find it: https://github.com/pablocaeg/sloptotal"
+)
+
+
+def _quiet() -> bool:
+    """SLOPTOTAL_QUIET=1 drops the one-line star invitation from the startup log."""
+    return os.getenv("SLOPTOTAL_QUIET", "").strip().lower() in {"1", "true", "yes"}
+
+
 async def _retention_loop():
     """Re-run the retention purge once a day for as long as the app is up.
 
@@ -167,6 +178,8 @@ def _preload_models():
                 log.warning(f"{name} preload failed: {e}")
 
         log.info("Model preloading complete — 23 engines ready")
+        if not _quiet():
+            log.info(STAR_LINE)
 
         # NOTE: GPT-2 Large (774M) is NOT pre-warmed here. It loads on-demand
         # for full analysis only. Loading it eagerly would add ~3-5s startup

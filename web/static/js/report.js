@@ -89,6 +89,39 @@
         document.getElementById("status-label").textContent = "Complete";
         if (report) setScore(report.overall_score, report.engines_flagged, true);
         document.getElementById("feedback").hidden = false;
+        maybeShowStarNote();
+    }
+
+    // A small "star the repo" note from the second finished report on, until
+    // it is dismissed or the link is followed. Only localStorage, nothing is sent.
+    function maybeShowStarNote() {
+        var note = document.getElementById("star-note");
+        if (!note) return;
+        var seenKey = "sloptotal:reports-seen";
+        var dismissKey = "sloptotal:star-note";
+        try {
+            if (localStorage.getItem(dismissKey)) return;
+            var seen = JSON.parse(localStorage.getItem(seenKey) || "[]");
+            if (!Array.isArray(seen)) seen = [];
+            if (seen.indexOf(reportId) === -1) {
+                seen.push(reportId);
+                localStorage.setItem(seenKey, JSON.stringify(seen.slice(-10)));
+            }
+            if (seen.length < 2) return;
+        } catch (e) {
+            return;
+        }
+        function dismiss() {
+            note.hidden = true;
+            try { localStorage.setItem(dismissKey, "dismissed"); } catch (e) {}
+        }
+        document.getElementById("star-note-close").addEventListener("click", dismiss);
+        document.getElementById("star-note-star").addEventListener("click", function () {
+            try { localStorage.setItem(dismissKey, "starred"); } catch (e) {}
+        });
+        var feedbackStar = document.querySelector(".feedback__star");
+        if (feedbackStar) feedbackStar.hidden = true;
+        note.hidden = false;
     }
 
     function loadReport() {

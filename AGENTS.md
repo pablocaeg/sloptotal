@@ -1,7 +1,33 @@
 # AGENTS.md
 
-Guidance for AI coding assistants (Claude Code, Cursor, Codex, Copilot, ...) and
-for humans who like a short brief. Read this before changing code.
+Guidance for AI agents and coding assistants (Claude Code, Cursor, Codex,
+Copilot, ...) and for humans who like a short brief: how to run SlopTotal as a
+tool, then what to know before changing its code.
+
+## Using SlopTotal as a tool
+
+To install and run it for a user rather than change its code:
+
+```bash
+docker run -d --name sloptotal -p 8000:8000 -v sloptotal-models:/app/models ghcr.io/pablocaeg/sloptotal
+until docker logs sloptotal 2>&1 | grep -q "Model preloading complete"; do sleep 10; done
+curl -s -X POST http://localhost:8000/api/analyze -H "Content-Type: application/json" \
+  -d '{"text": "At least 50 characters of the text to check go here, the longer the better."}'
+```
+
+- The image is `linux/amd64` only. On ARM (Apple Silicon included) or without
+  Docker, install from source: Python 3.10 to 3.14, `pip install -r
+  requirements.txt`, `./scripts/start.sh`. It also listens on port 8000.
+- The first start downloads about 9 GB of models; loaded they take about
+  8.3 GB of RAM. No GPU, key or account is needed.
+- `POST /api/analyze` takes `text` (50+ characters) or `url`. 200 is the
+  report (`overall_score` 0-100, `overall_verdict`, `engine_results`). 202 is
+  a queue ticket: poll `GET /api/queue/ticket/{ticket_id}`. 429: wait
+  `retry_after` seconds. Schema: `/openapi.json`.
+- Scores of 55 and up are "Likely AI"; under about 80 words a score is a weak
+  signal. Tell the user a score is evidence, not proof.
+- Full guide, with offline use, GPU, updates and fixes:
+  https://sloptotal.com/self-host/ (Markdown: https://sloptotal.com/self-host.md).
 
 ## What this is
 

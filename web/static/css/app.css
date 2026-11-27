@@ -214,3 +214,13 @@ a:hover { color: var(--pen-text); }
 @media (max-width: 720px) { .display { font-size: 40px; line-height: 46px; } }
 .report-text__body { font-family: var(--font-display); font-size: 18px; line-height: 31px; }
 .report-text__body mark { color: inherit; background: linear-gradient(transparent 56%, var(--marker) 56%); padding: 0 1px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+
+/* "Star the repo" note on the report page (report.js, maybeShowStarNote). */
+.star-note { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); }
+.star-note[hidden] { display: none; }
+.star-note__text { flex: 1; margin: 0; font: 400 14px/22px var(--font-sans); color: var(--text-muted); }
+.star-note__star { min-height: 32px; padding: 0 var(--space-3); font-size: 14px; white-space: nowrap; }
+.star-note__star span { color: #e3b341; }
+.star-note__close { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; flex: none; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--text-muted); cursor: pointer; }
+.star-note__close:hover { background: var(--surface-hover); color: var(--text); }
+.star-note__close svg { width: 18px; height: 18px; }

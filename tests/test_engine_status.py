@@ -65,3 +65,22 @@ def test_a_failing_loader_is_reported_and_does_not_stop_the_others(preload):
         "loaded": 10,
         "failed": ["classifier_superannotate"],
     }
+
+
+def test_ready_log_ends_with_one_star_line(preload, caplog):
+    caplog.set_level("INFO", logger="sloptotal")
+    preload()
+    messages = [r.getMessage() for r in caplog.records if r.name == "sloptotal"]
+
+    assert messages[-1] == main.STAR_LINE
+    assert messages.count(main.STAR_LINE) == 1
+    assert "engines ready" in messages[-2]
+
+
+@pytest.mark.parametrize("value", ["1", "true", "YES"])
+def test_sloptotal_quiet_drops_the_star_line(preload, caplog, monkeypatch, value):
+    monkeypatch.setenv("SLOPTOTAL_QUIET", value)
+    caplog.set_level("INFO", logger="sloptotal")
+    preload()
+
+    assert main.STAR_LINE not in [r.getMessage() for r in caplog.records]
